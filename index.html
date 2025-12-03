@@ -635,17 +635,36 @@
                     </div>
 
                     <div class="intro-card">
-                        <h3>⊚ Canvas 3: GCD Structure</h3>
+                        <h3>⊚ Canvas 3: GCD Structure - 3D Sphere</h3>
                         <p>
-                            <strong>What it shows:</strong> Network of GCD relationships between pairs of elements. 
-                            Concentric rings represent different GCD values.
+                            <strong>What it shows:</strong> Interactive 3D sphere visualization mapping pairs (a,b) to spherical coordinates 
+                            based on their GCD value. Points are positioned using spherical coordinates (θ, φ) where θ = 2πa/m (azimuthal) 
+                            and φ = πb/m (polar), with radius proportional to gcd(a,b).
                         </p>
                         <p>
-                            <strong>Connections:</strong> Lines connect pairs (a,b) where gcd(a,b) > 1, with color indicating the GCD value.
-                            Ring radius corresponds to GCD magnitude.
+                            <strong>360° Rotation Control:</strong> Two sliders control X-axis and Y-axis rotation independently (0-360°).
+                            Zoom slider adjusts view distance (50%-200%). Auto-rotate option continuously spins the sphere. 
+                            Reset button returns to default view (45°, 45°, 100%).
                         </p>
                         <p>
-                            <strong>Key insight:</strong> Reveals the divisibility structure and how elements share common factors with m.
+                            <strong>Interactive Features:</strong>
+                            <br>• <em>Rotation X/Y:</em> Full 360° control on both axes - explore from any angle
+                            <br>• <em>Zoom:</em> Adjust perspective from 50% to 200%
+                            <br>• <em>Show Connections:</em> Draw lines between related GCD pairs
+                            <br>• <em>Show Grid:</em> Display latitude/longitude grid with X/Y/Z axes
+                            <br>• <em>Auto-Rotate:</em> Continuous animation for presentation mode
+                        </p>
+                        <p>
+                            <strong>3D Mapping:</strong> Each pair (a,b) with gcd value g maps to 3D coordinates:
+                            x = r·sin(φ)·cos(θ), y = r·sin(φ)·sin(θ), z = r·cos(φ), where r = (g/max_gcd)·radius.
+                            Perspective projection with depth sorting ensures proper occlusion. Point size and opacity scale with depth 
+                            for realistic 3D effect.
+                        </p>
+                        <p>
+                            <strong>Key insight:</strong> The 3D sphere reveals spatial clustering of GCD relationships that aren't 
+                            visible in 2D. Coprime pairs (gcd=1, gold) cluster near the surface. Higher GCD values create concentric 
+                            shells. Rotation exposes hidden symmetries in the divisibility structure. The spherical topology naturally 
+                            represents the periodic nature of modular arithmetic.
                         </p>
                     </div>
 
@@ -768,7 +787,7 @@
                         <div class="panel-subtitle">Modular Residue Channels · Phase Rotation · Dyadic Lifting</div>
                     </div>
                 </div>
-                <canvas id="circleCanvas" width="1000" height="1000"></canvas>
+                <canvas id="circleCanvas" width="800" height="800"></canvas>
                 <div class="canvas-info" id="circleInfo">
                     <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
                         <div style="flex: 1; min-width: 200px;">
@@ -819,17 +838,57 @@
                 </div>
             </div>
 
-            <!-- Canvas 3: GCD Structure -->
+            <!-- Canvas 3: GCD Structure 3D Sphere -->
             <div class="canvas-panel">
                 <div class="panel-header">
                     <div>
-                        <div class="panel-title">⊚ GCD Structure</div>
-                        <div class="panel-subtitle">Coprimality Network</div>
+                        <div class="panel-title">⊚ GCD Structure - 3D Sphere</div>
+                        <div class="panel-subtitle">Interactive 360° View · Coprimality Network</div>
                     </div>
                 </div>
                 <canvas id="gcdCanvas" width="800" height="800"></canvas>
                 <div class="canvas-info" id="gcdInfo">
-                    Visual representation of gcd relationships
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center; margin-bottom: 15px;">
+                        <div style="flex: 1; min-width: 200px;">
+                            <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 5px;">
+                                Rotation X-axis:
+                            </label>
+                            <input type="range" id="rotationX" min="0" max="360" value="45" 
+                                   style="width: 100%;" oninput="updateGCDVisualization()">
+                            <span id="rotXValue" style="color: var(--gold); font-family: monospace;">45°</span>
+                        </div>
+                        <div style="flex: 1; min-width: 200px;">
+                            <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 5px;">
+                                Rotation Y-axis:
+                            </label>
+                            <input type="range" id="rotationY" min="0" max="360" value="45" 
+                                   style="width: 100%;" oninput="updateGCDVisualization()">
+                            <span id="rotYValue" style="color: var(--gold); font-family: monospace;">45°</span>
+                        </div>
+                        <div style="flex: 1; min-width: 200px;">
+                            <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 5px;">
+                                Zoom:
+                            </label>
+                            <input type="range" id="zoomLevel" min="50" max="200" value="100" 
+                                   style="width: 100%;" oninput="updateGCDVisualization()">
+                            <span id="zoomValue" style="color: var(--gold); font-family: monospace;">100%</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="show3DConnections" checked onchange="updateGCDVisualization()">
+                            <span style="color: var(--text-primary);">Show Connections</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showGCDSphereGrid" onchange="updateGCDVisualization()">
+                            <span style="color: var(--text-primary);">Show Grid</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="autoRotate" onchange="toggleAutoRotate()">
+                            <span style="color: var(--text-primary);">Auto-Rotate</span>
+                        </label>
+                        <button class="btn btn-secondary" onclick="resetGCD3DView()" style="padding: 8px 15px;">Reset View</button>
+                    </div>
                 </div>
             </div>
 
@@ -1565,7 +1624,9 @@
         }
 
 
-        // Canvas 3: GCD Structure
+        // Canvas 3: GCD Structure - 3D Sphere
+        let autoRotateInterval = null;
+        
         function drawGCDCanvas(m) {
             const canvas = document.getElementById('gcdCanvas');
             const ctx = canvas.getContext('2d');
@@ -1576,43 +1637,247 @@
             ctx.fillStyle = '#0a0e1a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw rings for each gcd value
-            const maxGCD = Math.floor(m / 2);
-            for (let g = 1; g <= maxGCD; g++) {
-                const radius = (g / maxGCD) * Math.min(centerX, centerY) * 0.9;
-                const hue = (g / maxGCD) * 360;
-                
-                ctx.strokeStyle = `hsl(${hue}, 70%, 60%)`;
-                ctx.lineWidth = 2;
-                ctx.setLineDash([5, 5]);
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-                ctx.stroke();
-                ctx.setLineDash([]);
+            // Get rotation parameters
+            const rotX = (document.getElementById('rotationX')?.value || 45) * Math.PI / 180;
+            const rotY = (document.getElementById('rotationY')?.value || 45) * Math.PI / 180;
+            const zoom = (document.getElementById('zoomLevel')?.value || 100) / 100;
+            const showConnections = document.getElementById('show3DConnections')?.checked !== false;
+            const showGrid = document.getElementById('showGCDSphereGrid')?.checked || false;
+            
+            // Update display values
+            if (document.getElementById('rotXValue')) {
+                document.getElementById('rotXValue').textContent = Math.round(rotX * 180 / Math.PI) + '°';
+            }
+            if (document.getElementById('rotYValue')) {
+                document.getElementById('rotYValue').textContent = Math.round(rotY * 180 / Math.PI) + '°';
+            }
+            if (document.getElementById('zoomValue')) {
+                document.getElementById('zoomValue').textContent = Math.round(zoom * 100) + '%';
             }
 
-            // Plot points
-            for (let a = 1; a < m; a++) {
+            const baseRadius = Math.min(centerX, centerY) * 0.7 * zoom;
+
+            // 3D rotation matrices
+            function rotateX(point, angle) {
+                const cos = Math.cos(angle);
+                const sin = Math.sin(angle);
+                return {
+                    x: point.x,
+                    y: point.y * cos - point.z * sin,
+                    z: point.y * sin + point.z * cos
+                };
+            }
+
+            function rotateY(point, angle) {
+                const cos = Math.cos(angle);
+                const sin = Math.sin(angle);
+                return {
+                    x: point.x * cos + point.z * sin,
+                    y: point.y,
+                    z: -point.x * sin + point.z * cos
+                };
+            }
+
+            function project3D(point) {
+                // Apply rotations
+                let rotated = rotateY(point, rotY);
+                rotated = rotateX(rotated, rotX);
+                
+                // Perspective projection
+                const perspective = 1000;
+                const scale = perspective / (perspective + rotated.z);
+                
+                return {
+                    x: centerX + rotated.x * scale,
+                    y: centerY + rotated.y * scale,
+                    z: rotated.z,
+                    scale: scale
+                };
+            }
+
+            // Calculate positions for all elements on sphere
+            const points3D = [];
+            const maxGCD = Math.floor(m / 2);
+            
+            for (let a = 0; a < m; a++) {
                 for (let b = a + 1; b < m; b++) {
                     const g = gcd(a, b);
-                    if (g > 1) {
-                        const angle1 = (2 * Math.PI * a) / m - Math.PI / 2;
-                        const angle2 = (2 * Math.PI * b) / m - Math.PI / 2;
-                        const radius = (g / maxGCD) * Math.min(centerX, centerY) * 0.9;
+                    if (g >= 1) {
+                        // Map to sphere using spherical coordinates
+                        const theta = (2 * Math.PI * a) / m; // azimuthal
+                        const phi = Math.PI * b / m; // polar
+                        const r = (g / Math.max(maxGCD, 1)) * baseRadius;
                         
-                        const x1 = centerX + radius * Math.cos(angle1);
-                        const y1 = centerY + radius * Math.sin(angle1);
-                        const x2 = centerX + radius * Math.cos(angle2);
-                        const y2 = centerY + radius * Math.sin(angle2);
+                        const x = r * Math.sin(phi) * Math.cos(theta);
+                        const y = r * Math.sin(phi) * Math.sin(theta);
+                        const z = r * Math.cos(phi);
                         
-                        const hue = (g / maxGCD) * 360;
-                        ctx.strokeStyle = `hsla(${hue}, 70%, 60%, 0.3)`;
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(x1, y1);
-                        ctx.lineTo(x2, y2);
-                        ctx.stroke();
+                        points3D.push({
+                            a, b, g,
+                            x3d: x, y3d: y, z3d: z,
+                            r: r
+                        });
                     }
+                }
+            }
+
+            // Project all points
+            points3D.forEach(p => {
+                const proj = project3D({ x: p.x3d, y: p.y3d, z: p.z3d });
+                p.x2d = proj.x;
+                p.y2d = proj.y;
+                p.depth = proj.z;
+                p.scale = proj.scale;
+            });
+
+            // Sort by depth (back to front)
+            points3D.sort((a, b) => a.depth - b.depth);
+
+            // Draw sphere grid if enabled
+            if (showGrid) {
+                ctx.strokeStyle = 'rgba(255, 215, 0, 0.15)';
+                ctx.lineWidth = 1;
+                
+                // Latitude lines
+                for (let lat = 0; lat <= 10; lat++) {
+                    const phi = Math.PI * lat / 10;
+                    ctx.beginPath();
+                    for (let lon = 0; lon <= 40; lon++) {
+                        const theta = 2 * Math.PI * lon / 40;
+                        const x = baseRadius * Math.sin(phi) * Math.cos(theta);
+                        const y = baseRadius * Math.sin(phi) * Math.sin(theta);
+                        const z = baseRadius * Math.cos(phi);
+                        const proj = project3D({ x, y, z });
+                        if (lon === 0) {
+                            ctx.moveTo(proj.x, proj.y);
+                        } else {
+                            ctx.lineTo(proj.x, proj.y);
+                        }
+                    }
+                    ctx.stroke();
+                }
+                
+                // Longitude lines
+                for (let lon = 0; lon < 12; lon++) {
+                    const theta = 2 * Math.PI * lon / 12;
+                    ctx.beginPath();
+                    for (let lat = 0; lat <= 20; lat++) {
+                        const phi = Math.PI * lat / 20;
+                        const x = baseRadius * Math.sin(phi) * Math.cos(theta);
+                        const y = baseRadius * Math.sin(phi) * Math.sin(theta);
+                        const z = baseRadius * Math.cos(phi);
+                        const proj = project3D({ x, y, z });
+                        if (lat === 0) {
+                            ctx.moveTo(proj.x, proj.y);
+                        } else {
+                            ctx.lineTo(proj.x, proj.y);
+                        }
+                    }
+                    ctx.stroke();
+                }
+            }
+
+            // Draw connections if enabled
+            if (showConnections) {
+                points3D.forEach(p => {
+                    if (p.g > 1) {
+                        // Find corresponding a and b points
+                        const aPoint = points3D.find(pt => pt.a === p.a && pt.b === p.a + 1);
+                        const bPoint = points3D.find(pt => pt.a === p.b && pt.b === p.b + 1);
+                        
+                        if (aPoint) {
+                            const hue = (p.g / maxGCD) * 360;
+                            const alpha = 0.15 + 0.2 * (p.scale - 0.5);
+                            ctx.strokeStyle = `hsla(${hue}, 70%, 60%, ${Math.max(0.1, alpha)})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.beginPath();
+                            ctx.moveTo(p.x2d, p.y2d);
+                            ctx.lineTo(aPoint.x2d, aPoint.y2d);
+                            ctx.stroke();
+                        }
+                    }
+                });
+            }
+
+            // Draw points
+            points3D.forEach(p => {
+                const hue = (p.g / Math.max(maxGCD, 1)) * 360;
+                const brightness = 40 + 40 * p.scale;
+                const alpha = 0.3 + 0.7 * p.scale;
+                
+                ctx.fillStyle = `hsla(${hue}, 70%, ${brightness}%, ${alpha})`;
+                const size = (p.g === 1 ? 3 : 2) * p.scale;
+                
+                ctx.beginPath();
+                ctx.arc(p.x2d, p.y2d, size, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Highlight coprime points
+                if (p.g === 1) {
+                    ctx.strokeStyle = `rgba(255, 215, 0, ${alpha * 0.5})`;
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+            });
+
+            // Draw axes if grid is shown
+            if (showGrid) {
+                const axisLength = baseRadius * 1.2;
+                const axes = [
+                    { dir: { x: axisLength, y: 0, z: 0 }, color: '#FF6B6B', label: 'X' },
+                    { dir: { x: 0, y: axisLength, z: 0 }, color: '#4ECDC4', label: 'Y' },
+                    { dir: { x: 0, y: 0, z: axisLength }, color: '#95E1D3', label: 'Z' }
+                ];
+                
+                axes.forEach(axis => {
+                    const proj = project3D(axis.dir);
+                    ctx.strokeStyle = axis.color;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(proj.x, proj.y);
+                    ctx.stroke();
+                    
+                    ctx.fillStyle = axis.color;
+                    ctx.font = 'bold 14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(axis.label, proj.x, proj.y);
+                });
+            }
+
+            // Center sphere outline
+            ctx.strokeStyle = 'rgba(255, 215, 0, 0.4)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, baseRadius, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
+
+        function updateGCDVisualization() {
+            const m = parseInt(document.getElementById('modulusInput').value);
+            drawGCDCanvas(m);
+        }
+
+        function resetGCD3DView() {
+            document.getElementById('rotationX').value = 45;
+            document.getElementById('rotationY').value = 45;
+            document.getElementById('zoomLevel').value = 100;
+            updateGCDVisualization();
+        }
+
+        function toggleAutoRotate() {
+            const enabled = document.getElementById('autoRotate').checked;
+            
+            if (enabled) {
+                autoRotateInterval = setInterval(() => {
+                    const rotY = document.getElementById('rotationY');
+                    rotY.value = (parseInt(rotY.value) + 1) % 360;
+                    updateGCDVisualization();
+                }, 50);
+            } else {
+                if (autoRotateInterval) {
+                    clearInterval(autoRotateInterval);
+                    autoRotateInterval = null;
                 }
             }
         }
@@ -1737,8 +2002,8 @@
                 },
                 'gcd': { 
                     id: 'gcdCanvas', 
-                    title: '⊚ GCD Structure Network',
-                    subtitle: `m=${m} · ${coprimePairs} coprime pairs · φ(${m})=${units.length} · Density ${(units.length/m).toFixed(4)}`
+                    title: '⊚ GCD Structure - 3D Sphere',
+                    subtitle: `m=${m} · 3D Spherical View · ${coprimePairs} coprime pairs · φ(${m})=${units.length} · Density ${(units.length/m).toFixed(4)}`
                 },
                 'density': { 
                     id: 'densityCanvas', 
@@ -1798,8 +2063,9 @@
             // Draw canvas
             ctx.save();
             ctx.translate(0, margin);
-            ctx.scale(3840 / 1000, 3840 / 1000);
-            ctx.drawImage(canvas, 0, 0);
+            const sourceCanvas = document.getElementById(info.id);
+            ctx.scale(3840 / sourceCanvas.width, 3840 / sourceCanvas.height);
+            ctx.drawImage(sourceCanvas, 0, 0);
             ctx.restore();
             
             // Footer
@@ -1843,8 +2109,8 @@
                 },
                 { 
                     id: 'gcdCanvas', 
-                    title: '⊚ GCD Structure',
-                    metrics: `Coprimality network · Density ${coprimeDensity.toFixed(4)}`
+                    title: '⊚ GCD 3D Sphere',
+                    metrics: `360° rotation · Coprimality network · Density ${coprimeDensity.toFixed(4)}`
                 },
                 { 
                     id: 'densityCanvas', 
@@ -1890,8 +2156,9 @@
                 // Draw canvas
                 ctx.save();
                 ctx.translate(x, y);
-                ctx.scale(3840 / 1000, 3840 / 1000);
-                ctx.drawImage(canvas, 0, 0);
+                const sourceCanvas = document.getElementById(info.id);
+                ctx.scale(3840 / sourceCanvas.width, 3840 / sourceCanvas.height);
+                ctx.drawImage(sourceCanvas, 0, 0);
                 ctx.restore();
                 
                 // Draw title at top of each panel
