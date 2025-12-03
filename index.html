@@ -2068,29 +2068,284 @@
             ctx.drawImage(sourceCanvas, 0, 0);
             ctx.restore();
             
-            // Footer
-            ctx.fillStyle = '#718096';
-            ctx.font = '32px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('Wessen Getachew | github.com/wessengetachew | @7dview', exportCanvas.width / 2, exportCanvas.height - 40);
-            ctx.font = '28px Arial';
-            ctx.fillText(new Date().toLocaleDateString(), exportCanvas.width / 2, exportCanvas.height - 10);
+            // ========== ADD LEGEND PANEL TO RIGHT SIDE ==========
+            const legendWidth = 700;
+            const legendX = 3840 + 50;
+            const legendY = margin + 50;
+            const legendHeight = 3840 - 100;
             
-            exportCanvas.toBlob(blob => {
+            // Expand canvas width to include legend
+            const finalCanvas = document.createElement('canvas');
+            finalCanvas.width = 3840 + legendWidth + 100;
+            finalCanvas.height = 3840 + margin;
+            const finalCtx = finalCanvas.getContext('2d', { alpha: false });
+            
+            // Copy everything we've drawn so far
+            finalCtx.fillStyle = '#ffffff';
+            finalCtx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+            finalCtx.drawImage(exportCanvas, 0, 0);
+            
+            // Now draw legend on final canvas
+            finalCtx.fillStyle = '#f7fafc';
+            finalCtx.fillRect(legendX - 20, legendY - 20, legendWidth + 40, legendHeight + 40);
+            finalCtx.strokeStyle = '#cbd5e0';
+            finalCtx.lineWidth = 4;
+            finalCtx.strokeRect(legendX - 20, legendY - 20, legendWidth + 40, legendHeight + 40);
+            
+            finalCtx.fillStyle = '#2d3748';
+            finalCtx.font = 'bold 56px Arial';
+            finalCtx.textAlign = 'left';
+            finalCtx.fillText('Legend', legendX, legendY + 50);
+            
+            let yPos = legendY + 120;
+            const lineHeight = 46;
+            const sectionGap = 60;
+            const smallFont = '34px Arial';
+            const mediumFont = '38px Arial';
+            
+            // Modulus info
+            finalCtx.font = 'bold 46px Arial';
+            finalCtx.fillStyle = '#667eea';
+            finalCtx.fillText('Modulus', legendX, yPos);
+            yPos += lineHeight + 8;
+            
+            finalCtx.font = mediumFont;
+            finalCtx.fillStyle = '#2d3748';
+            finalCtx.fillText(`m = ${m}`, legendX, yPos);
+            yPos += lineHeight;
+            
+            finalCtx.font = smallFont;
+            finalCtx.fillStyle = '#4a5568';
+            finalCtx.fillText(`${getPrimeFactorization(m)}`, legendX + 15, yPos);
+            yPos += lineHeight;
+            
+            if (isPrime(m)) {
+                finalCtx.fillStyle = '#48BB78';
+                finalCtx.fillText(`✓ Prime (Field)`, legendX + 15, yPos);
+            } else {
+                finalCtx.fillStyle = '#718096';
+                finalCtx.fillText(`Composite`, legendX + 15, yPos);
+            }
+            yPos += sectionGap;
+            
+            // Units
+            finalCtx.font = 'bold 46px Arial';
+            finalCtx.fillStyle = '#667eea';
+            finalCtx.fillText('Units (ℤ/mℤ)×', legendX, yPos);
+            yPos += lineHeight + 8;
+            
+            finalCtx.font = mediumFont;
+            finalCtx.fillStyle = '#2d3748';
+            finalCtx.fillText(`φ(${m}) = ${units.length}`, legendX, yPos);
+            yPos += lineHeight;
+            
+            finalCtx.font = smallFont;
+            finalCtx.fillStyle = '#4a5568';
+            const density = units.length / m;
+            finalCtx.fillText(`Density: ${density.toFixed(6)}`, legendX + 15, yPos);
+            yPos += lineHeight;
+            
+            const baselLimit = 6 / (Math.PI * Math.PI);
+            finalCtx.fillText(`Basel: ${baselLimit.toFixed(6)}`, legendX + 15, yPos);
+            yPos += lineHeight;
+            
+            if (units.length <= 18) {
+                const unitStr = `{${units.join(',')}}`;
+                const maxLen = 35;
+                finalCtx.fillText(unitStr.length > maxLen ? unitStr.substring(0, maxLen) + '..}' : unitStr, legendX + 15, yPos);
+                yPos += lineHeight;
+            }
+            yPos += sectionGap;
+            
+            // Canvas-specific metrics
+            if (canvasId === 'grid') {
+                // Zero divisors
+                finalCtx.font = 'bold 46px Arial';
+                finalCtx.fillStyle = '#667eea';
+                finalCtx.fillText('Zero Divisors', legendX, yPos);
+                yPos += lineHeight + 8;
+                
+                finalCtx.font = mediumFont;
+                finalCtx.fillStyle = '#2d3748';
+                finalCtx.fillText(`Count: ${zeroDivisors.length}`, legendX, yPos);
+                yPos += lineHeight;
+                
+                finalCtx.font = smallFont;
+                finalCtx.fillStyle = '#4a5568';
+                finalCtx.fillText(`Density: ${(zeroDivisors.length/m).toFixed(4)}`, legendX + 15, yPos);
+                yPos += lineHeight + sectionGap;
+                
+                // Idempotents
+                finalCtx.font = 'bold 46px Arial';
+                finalCtx.fillStyle = '#667eea';
+                finalCtx.fillText('Idempotents', legendX, yPos);
+                yPos += lineHeight + 8;
+                
+                finalCtx.font = mediumFont;
+                finalCtx.fillStyle = '#2d3748';
+                finalCtx.fillText(`Count: ${idempotents.length}`, legendX, yPos);
+                yPos += lineHeight;
+                
+                finalCtx.font = smallFont;
+                finalCtx.fillStyle = '#4a5568';
+                if (idempotents.length <= 12) {
+                    finalCtx.fillText(`{${idempotents.join(',')}}`, legendX + 15, yPos);
+                    yPos += lineHeight;
+                }
+                yPos += sectionGap;
+                
+                // Table info
+                finalCtx.font = 'bold 46px Arial';
+                finalCtx.fillStyle = '#667eea';
+                finalCtx.fillText('Table Type', legendX, yPos);
+                yPos += lineHeight + 8;
+                
+                finalCtx.font = mediumFont;
+                finalCtx.fillStyle = '#2d3748';
+                finalCtx.fillText(tableType, legendX, yPos);
+                yPos += lineHeight;
+                
+                finalCtx.font = smallFont;
+                finalCtx.fillStyle = '#4a5568';
+                finalCtx.fillText(`Colors: ${colorScheme}`, legendX + 15, yPos);
+                yPos += lineHeight;
+                
+            } else if (canvasId === 'circle') {
+                // Phase rotation
+                finalCtx.font = 'bold 46px Arial';
+                finalCtx.fillStyle = '#667eea';
+                finalCtx.fillText('Phase Rotation', legendX, yPos);
+                yPos += lineHeight + 8;
+                
+                finalCtx.font = mediumFont;
+                finalCtx.fillStyle = '#2d3748';
+                finalCtx.fillText(`r/m = ${phaseR}/${phaseM}`, legendX, yPos);
+                yPos += lineHeight;
+                
+                finalCtx.font = smallFont;
+                finalCtx.fillStyle = '#4a5568';
+                finalCtx.fillText(`${phaseAngleDeg.toFixed(6)}°`, legendX + 15, yPos);
+                yPos += lineHeight + sectionGap;
+                
+                // Residue layers
+                finalCtx.font = 'bold 46px Arial';
+                finalCtx.fillStyle = '#667eea';
+                finalCtx.fillText('Residue Layers', legendX, yPos);
+                yPos += lineHeight + 8;
+                
+                finalCtx.font = mediumFont;
+                finalCtx.fillStyle = '#2d3748';
+                finalCtx.fillText(`Total: ${totalResidues}`, legendX, yPos);
+                yPos += lineHeight;
+                
+                finalCtx.font = smallFont;
+                finalCtx.fillStyle = '#4a5568';
+                finalCtx.fillText(`Layers: 1 to ${m}`, legendX + 15, yPos);
+                yPos += lineHeight;
+                finalCtx.fillText(`m(m+1)/2`, legendX + 15, yPos);
+                yPos += lineHeight;
+                
+            } else if (canvasId === 'gcd') {
+                // 3D View settings
+                const rotX = document.getElementById('rotationX')?.value || 45;
+                const rotY = document.getElementById('rotationY')?.value || 45;
+                const zoom = document.getElementById('zoomLevel')?.value || 100;
+                
+                finalCtx.font = 'bold 46px Arial';
+                finalCtx.fillStyle = '#667eea';
+                finalCtx.fillText('3D View', legendX, yPos);
+                yPos += lineHeight + 8;
+                
+                finalCtx.font = mediumFont;
+                finalCtx.fillStyle = '#2d3748';
+                finalCtx.fillText(`X-axis: ${rotX}°`, legendX, yPos);
+                yPos += lineHeight;
+                finalCtx.fillText(`Y-axis: ${rotY}°`, legendX, yPos);
+                yPos += lineHeight;
+                finalCtx.fillText(`Zoom: ${zoom}%`, legendX, yPos);
+                yPos += lineHeight + sectionGap;
+                
+                // Coprime pairs
+                finalCtx.font = 'bold 46px Arial';
+                finalCtx.fillStyle = '#667eea';
+                finalCtx.fillText('Coprime Pairs', legendX, yPos);
+                yPos += lineHeight + 8;
+                
+                finalCtx.font = mediumFont;
+                finalCtx.fillStyle = '#2d3748';
+                finalCtx.fillText(`Count: ${coprimePairs}`, legendX, yPos);
+                yPos += lineHeight;
+                
+                finalCtx.font = smallFont;
+                finalCtx.fillStyle = '#4a5568';
+                const totalPairs = m * (m - 1) / 2;
+                finalCtx.fillText(`Of ${totalPairs} pairs`, legendX + 15, yPos);
+                yPos += lineHeight;
+                finalCtx.fillText(`${(coprimePairs/totalPairs*100).toFixed(2)}%`, legendX + 15, yPos);
+                yPos += lineHeight;
+                
+            } else if (canvasId === 'density') {
+                // Basel connection
+                finalCtx.font = 'bold 46px Arial';
+                finalCtx.fillStyle = '#667eea';
+                finalCtx.fillText('Basel Problem', legendX, yPos);
+                yPos += lineHeight + 8;
+                
+                finalCtx.font = mediumFont;
+                finalCtx.fillStyle = '#2d3748';
+                finalCtx.fillText(`6/π² ≈ 0.608`, legendX, yPos);
+                yPos += lineHeight;
+                
+                finalCtx.font = smallFont;
+                finalCtx.fillStyle = '#4a5568';
+                const baselRatio = density / baselLimit;
+                finalCtx.fillText(`Ratio: ${baselRatio.toFixed(4)}×`, legendX + 15, yPos);
+                yPos += lineHeight;
+                finalCtx.fillText(`Probability coprime`, legendX + 15, yPos);
+                yPos += lineHeight + sectionGap;
+                
+                // Data range
+                finalCtx.font = 'bold 46px Arial';
+                finalCtx.fillStyle = '#667eea';
+                finalCtx.fillText('Data Points', legendX, yPos);
+                yPos += lineHeight + 8;
+                
+                finalCtx.font = mediumFont;
+                finalCtx.fillStyle = '#2d3748';
+                finalCtx.fillText(`n = 2 to ${m}`, legendX, yPos);
+                yPos += lineHeight;
+                
+                finalCtx.font = smallFont;
+                finalCtx.fillStyle = '#4a5568';
+                finalCtx.fillText(`${m - 1} values`, legendX + 15, yPos);
+                yPos += lineHeight;
+            }
+            
+            // Footer on final canvas
+            finalCtx.fillStyle = '#718096';
+            finalCtx.font = '36px Arial';
+            finalCtx.textAlign = 'center';
+            finalCtx.fillText('Wessen Getachew | github.com/wessengetachew | @7dview', finalCanvas.width / 2, finalCanvas.height - 50);
+            finalCtx.font = '32px Arial';
+            finalCtx.fillText(new Date().toLocaleDateString(), finalCanvas.width / 2, finalCanvas.height - 15);
+            
+            finalCanvas.toBlob(blob => {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `modular_${canvasId}_m${m}_annotated.png`;
+                a.download = `modular_${canvasId}_m${m}_with_legend.png`;
                 a.click();
                 URL.revokeObjectURL(url);
             });
             
-            showNotification('Export Complete', `${info.title} exported with detailed metrics`);
+            showNotification('Export Complete', `${info.title} exported with comprehensive legend`);
         }
 
         function exportAllCanvases() {
             const m = parseInt(document.getElementById('modulusInput').value);
             const units = findUnits(m);
+            const zeroDivisors = findZeroDivisors(m);
+            const idempotents = findIdempotents(m);
             const phaseR = parseInt(document.getElementById('phaseNumerator').value) || 0;
             const phaseM = parseInt(document.getElementById('phaseDenominator').value) || 1;
             const totalResidues = (m * (m + 1)) / 2;
@@ -2110,19 +2365,24 @@
                 { 
                     id: 'gcdCanvas', 
                     title: '⊚ GCD 3D Sphere',
-                    metrics: `360° rotation · Coprimality network · Density ${coprimeDensity.toFixed(4)}`
+                    metrics: `360° rotation · Density ${coprimeDensity.toFixed(4)}`
                 },
                 { 
                     id: 'densityCanvas', 
                     title: '◬ Coprime Density',
-                    metrics: `φ(m)/m trend · Basel limit 6/π²`
+                    metrics: `φ(m)/m trend · Basel 6/π²`
                 }
             ];
             
-            const exportCanvas = document.createElement('canvas');
+            // Create wider canvas to include legend
             const margin = 250;
-            exportCanvas.width = 3840 * 2;
-            exportCanvas.height = 3840 * 2 + margin;
+            const legendWidth = 900;
+            const gridWidth = 3840 * 2;
+            const gridHeight = 3840 * 2;
+            
+            const exportCanvas = document.createElement('canvas');
+            exportCanvas.width = gridWidth + legendWidth;
+            exportCanvas.height = gridHeight + margin;
             const ctx = exportCanvas.getContext('2d', { alpha: false });
             
             // White background
@@ -2133,14 +2393,14 @@
             ctx.fillStyle = '#1a202c';
             ctx.font = 'bold 96px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('Modular Arithmetic Explorer - All 4 Canvases', exportCanvas.width / 2, 100);
+            ctx.fillText('Modular Arithmetic Explorer', gridWidth / 2, 100);
             
             // Subtitle with m and key metrics
             ctx.font = '56px Arial';
             ctx.fillStyle = '#4a5568';
-            ctx.fillText(`m = ${m} · Ring ℤ/${m}ℤ · φ(${m}) = ${units.length} · Prime: ${isPrime(m) ? 'Yes' : 'No'}`, exportCanvas.width / 2, 180);
+            ctx.fillText(`m = ${m} · Ring ℤ/${m}ℤ · φ(${m}) = ${units.length} · Prime: ${isPrime(m) ? 'Yes' : 'No'}`, gridWidth / 2, 180);
             
-            // Draw 2x2 grid
+            // Draw 2x2 grid of canvases
             canvases.forEach((info, idx) => {
                 const canvas = document.getElementById(info.id);
                 const col = idx % 2;
@@ -2173,6 +2433,145 @@
                 ctx.fillText(info.metrics, x + 1920, y + 3760);
             });
             
+            // ========== LEGEND PANEL ON RIGHT ==========
+            const legendX = gridWidth + 50;
+            const legendY = margin + 50;
+            const legendHeight = gridHeight - 100;
+            
+            ctx.fillStyle = '#f7fafc';
+            ctx.fillRect(legendX - 20, legendY - 20, legendWidth - 60, legendHeight + 40);
+            ctx.strokeStyle = '#cbd5e0';
+            ctx.lineWidth = 5;
+            ctx.strokeRect(legendX - 20, legendY - 20, legendWidth - 60, legendHeight + 40);
+            
+            ctx.fillStyle = '#2d3748';
+            ctx.font = 'bold 72px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('Legend', legendX, legendY + 70);
+            
+            let yPos = legendY + 160;
+            const lineHeight = 58;
+            const sectionGap = 75;
+            const smallFont = '42px Arial';
+            const mediumFont = '48px Arial';
+            
+            // Modulus Section
+            ctx.font = 'bold 60px Arial';
+            ctx.fillStyle = '#667eea';
+            ctx.fillText('Modulus', legendX, yPos);
+            yPos += lineHeight + 10;
+            
+            ctx.font = mediumFont;
+            ctx.fillStyle = '#2d3748';
+            ctx.fillText(`m = ${m}`, legendX, yPos);
+            yPos += lineHeight;
+            
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            ctx.fillText(getPrimeFactorization(m), legendX + 20, yPos);
+            yPos += lineHeight;
+            
+            if (isPrime(m)) {
+                ctx.fillStyle = '#48BB78';
+                ctx.font = 'bold ' + smallFont;
+                ctx.fillText('✓ PRIME FIELD', legendX + 20, yPos);
+            } else {
+                ctx.fillStyle = '#718096';
+                ctx.fillText('Composite ring', legendX + 20, yPos);
+            }
+            yPos += sectionGap;
+            
+            // Units Section
+            ctx.font = 'bold 60px Arial';
+            ctx.fillStyle = '#667eea';
+            ctx.fillText('Units (ℤ/mℤ)×', legendX, yPos);
+            yPos += lineHeight + 10;
+            
+            ctx.font = mediumFont;
+            ctx.fillStyle = '#2d3748';
+            ctx.fillText(`φ(${m}) = ${units.length}`, legendX, yPos);
+            yPos += lineHeight;
+            
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            ctx.fillText(`Density: ${coprimeDensity.toFixed(6)}`, legendX + 20, yPos);
+            yPos += lineHeight;
+            
+            const baselLimit = 6 / (Math.PI * Math.PI);
+            ctx.fillText(`Basel: ${baselLimit.toFixed(6)}`, legendX + 20, yPos);
+            yPos += lineHeight;
+            
+            const baselRatio = coprimeDensity / baselLimit;
+            ctx.fillText(`Ratio: ${baselRatio.toFixed(4)}×`, legendX + 20, yPos);
+            yPos += sectionGap;
+            
+            // Special Elements
+            ctx.font = 'bold 60px Arial';
+            ctx.fillStyle = '#667eea';
+            ctx.fillText('Special Elements', legendX, yPos);
+            yPos += lineHeight + 10;
+            
+            ctx.font = mediumFont;
+            ctx.fillStyle = '#2d3748';
+            ctx.fillText(`Zero Divisors: ${zeroDivisors.length}`, legendX, yPos);
+            yPos += lineHeight;
+            
+            ctx.fillText(`Idempotents: ${idempotents.length}`, legendX, yPos);
+            yPos += lineHeight;
+            
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            if (idempotents.length <= 12) {
+                ctx.fillText(`{${idempotents.join(',')}}`, legendX + 20, yPos);
+                yPos += lineHeight;
+            }
+            yPos += sectionGap;
+            
+            // Canvas Details
+            ctx.font = 'bold 60px Arial';
+            ctx.fillStyle = '#667eea';
+            ctx.fillText('Canvas Details', legendX, yPos);
+            yPos += lineHeight + 10;
+            
+            ctx.font = mediumFont;
+            ctx.fillStyle = '#2d3748';
+            ctx.fillText(`Grid: ${units.length} units`, legendX, yPos);
+            yPos += lineHeight;
+            
+            const phaseAngle = (360 * phaseR) / phaseM;
+            ctx.fillText(`Circle: Phase ${phaseAngle.toFixed(1)}°`, legendX, yPos);
+            yPos += lineHeight;
+            
+            const rotX = document.getElementById('rotationX')?.value || 45;
+            const rotY = document.getElementById('rotationY')?.value || 45;
+            ctx.fillText(`GCD: View ${rotX}°×${rotY}°`, legendX, yPos);
+            yPos += lineHeight;
+            
+            ctx.fillText(`Density: ${m-1} points`, legendX, yPos);
+            yPos += lineHeight;
+            
+            yPos += sectionGap;
+            
+            // Summary Stats
+            ctx.font = 'bold 60px Arial';
+            ctx.fillStyle = '#667eea';
+            ctx.fillText('Summary', legendX, yPos);
+            yPos += lineHeight + 10;
+            
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            ctx.fillText(`Total residues: ${totalResidues}`, legendX + 20, yPos);
+            yPos += lineHeight;
+            
+            let coprimePairs = 0;
+            for (let a = 0; a < m; a++) {
+                for (let b = a + 1; b < m; b++) {
+                    if (gcd(a, b) === 1) coprimePairs++;
+                }
+            }
+            ctx.fillText(`Coprime pairs: ${coprimePairs}`, legendX + 20, yPos);
+            yPos += lineHeight;
+            
             // Footer
             ctx.fillStyle = '#718096';
             ctx.font = '48px Arial';
@@ -2185,12 +2584,12 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `modular_all_4_canvases_m${m}_comprehensive.png`;
+                a.download = `modular_all_4_canvases_m${m}_with_legend.png`;
                 a.click();
                 URL.revokeObjectURL(url);
             });
             
-            showNotification('Export Complete', 'All 4 canvases exported with comprehensive metrics');
+            showNotification('Export Complete', 'All 4 canvases exported with comprehensive legend');
         }
 
         function exportWithAnalysis() {
