@@ -684,48 +684,6 @@
                     </div>
 
                     <div class="intro-card">
-                        <h3>◉ Canvas 5: Cayley Graph</h3>
-                        <p>
-                            <strong>What it shows:</strong> The multiplicative structure of unit group (ℤ/mℤ)× as directed graph. 
-                            Nodes=units, arrows=multiply by generator.
-                        </p>
-                        <p>
-                            <strong>Generator:</strong> Element g whose powers generate all units. Primitive root creates single cycle. 
-                            Colors=power sequence. Red=generator, Gold=identity.
-                        </p>
-                        <p>
-                            <strong>Structure:</strong> Cyclic (m=prime) forms loop. Non-cyclic (m=8,12) shows subgroups.
-                        </p>
-                    </div>
-
-
-                    <div class="intro-card">
-                        <h3>◉ Canvas 5: Cayley Graph</h3>
-                        <p>
-                            <strong>What it shows:</strong> The group structure of (ℤ/mℤ)× visualized as a graph. Each unit is a node,
-                            and edges show multiplication by a generator. This reveals the algebraic structure visually.
-                        </p>
-                        <p>
-                            <strong>Generator (gold):</strong> A primitive root g where powers g¹, g², ..., g^φ(m) cycle through all units.
-                            Identity element (pink) is always 1. Other units shown in cyan.
-                        </p>
-                        <p>
-                            <strong>Cyclic groups:</strong> When (ℤ/mℤ)× has a generator, it's cyclic - all elements are powers of g.
-                            This happens for m = 1, 2, 4, p^k, or 2p^k where p is odd prime. The graph forms a single cycle.
-                        </p>
-                        <p>
-                            <strong>Controls:</strong>
-                            <br>• <em>Labels:</em> Show/hide element values
-                            <br>• <em>Highlight Generator:</em> Emphasize primitive root in gold
-                            <br>• <em>Show Subgroups:</em> Display colored regions for cyclic subgroups
-                        </p>
-                        <p>
-                            <strong>Key insight:</strong> Visualizes abstract algebra! See if (ℤ/mℤ)× is cyclic (single loop) or 
-                            has more complex structure (multiple components). Generator arrows show group multiplication.
-                        </p>
-                    </div>
-
-                    <div class="intro-card">
                         <h3>🔢 Mathematical Concepts</h3>
                         <p>
                             <strong>φ(m) - Euler's Totient:</strong> Count of units (invertible elements). For prime p, φ(p) = p-1.
@@ -738,10 +696,6 @@
                         <p>
                             <strong>Idempotents:</strong> Elements satisfying a² ≡ a (mod m). Always includes 0 and 1.
                             By Chinese Remainder Theorem, m = p₁^k₁ × ... × pᵣ^kᵣ has 2^r idempotents.
-                        </p>
-                        <p>
-                            <strong>Primitive Roots (Generators):</strong> Element g where {g, g², g³, ..., g^φ(m)} generates all units.
-                            Exists for m = 1, 2, 4, p^k, 2p^k (p odd prime). Used in Diffie-Hellman key exchange.
                         </p>
                     </div>
 
@@ -873,7 +827,21 @@
                             <span style="color: var(--text-primary);">Connect r to Next mod r</span>
                         </label>
                         <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
-                            <input type="checkbox" id="connectDyadicPo                  <div>
+                            <input type="checkbox" id="connectDyadicPowers" onchange="updateCircleVisualization()">
+                            <span style="color: var(--text-primary);">Dyadic Powers r×2ⁿ</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="highlightPrimeGCD" checked onchange="updateCircleVisualization()">
+                            <span style="color: var(--text-primary);">Highlight Prime GCD Channels</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Canvas 3: GCD Structure 3D Sphere -->
+            <div class="canvas-panel">
+                <div class="panel-header">
+                    <div>
                         <div class="panel-title">⊚ GCD Structure - 3D Sphere</div>
                         <div class="panel-subtitle">Interactive 360° View · Coprimality Network</div>
                     </div>
@@ -935,33 +903,6 @@
                 <canvas id="densityCanvas" width="800" height="800"></canvas>
                 <div class="canvas-info" id="densityInfo">
                     Visualization of Euler's totient function density
-                </div>
-            </div>
-
-            <!-- Canvas 5: Cayley Graph -->
-            <div class="canvas-panel">
-                <div class="panel-header">
-                    <div>
-                        <div class="panel-title">◉ Cayley Graph</div>
-                        <div class="panel-subtitle">Unit Group (ℤ/mℤ)× Structure</div>
-                    </div>
-                </div>
-                <canvas id="cayleyCanvas" width="800" height="800"></canvas>
-                <div class="canvas-info" id="cayleyInfo">
-                    <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 12px;">
-                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
-                            <input type="checkbox" id="showCayleyLabels" checked onchange="updateCayleyVisualization()">
-                            <span style="color: var(--text-primary);">Labels</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
-                            <input type="checkbox" id="highlightGenerator" checked onchange="updateCayleyVisualization()">
-                            <span style="color: var(--text-primary);">Highlight Generator</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
-                            <input type="checkbox" id="showSubgroups" onchange="updateCayleyVisualization()">
-                            <span style="color: var(--text-primary);">Show Subgroups</span>
-                        </label>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1112,8 +1053,6 @@
                     <button class="btn btn-secondary" onclick="exportCanvas('circle')">○ Circle PNG</button>
                     <button class="btn btn-secondary" onclick="exportCanvas('gcd')">⊚ GCD PNG</button>
                     <button class="btn btn-secondary" onclick="exportCanvas('density')">◬ Density PNG</button>
-                    <button class="btn btn-secondary" onclick="exportCanvas('cayley')">◉ Cayley PNG</button>
-                    <button class="btn btn-secondary" onclick="exportCanvas('cayley')">◉ Cayley PNG</button>
                 </div>
             </div>
             
@@ -1366,7 +1305,6 @@
             drawCircleCanvas(m, units, highlightUnits);
             drawGCDCanvas(m);
             drawDensityCanvas(m);
-            drawCayleyCanvas(m);
 
             // Update statistics
             updateStatistics(m, units, zeroDivisors, idempotents);
@@ -2005,31 +1943,6 @@
             ctx.fillText('6/π² ≈ 0.608', canvas.width - padding - 10, refY - 10);
         }
 
-        // Canvas 5: Cayley Graph
-        function findPrimitiveRoot(m) {
-            const units = findUnits(m);
-            const phi = units.length;
-            
-            for (let g of units) {
-                if (g === 1) continue;
-                
-                const seen = new Set();
-                let power = 1;
-                
-                for (let k = 1; k <= phi; k++) {
-                    power = (power * g) % m;
-                    seen.add(power);
-                }
-                
-                if (seen.size === phi) {
-                    return g;
-                }
-            }
-            return units[1] || 1;
-        }
-
-
-
         // Update statistics
         function updateStatistics(m, units, zeroDivisors, idempotents) {
             document.getElementById('statModulus').textContent = m;
@@ -2049,238 +1962,6 @@
             
             document.getElementById('statField').textContent = isPrime(m) ? 'YES' : 'NO';
             document.getElementById('statDensity').textContent = (units.length / m).toFixed(3);
-        }
-
-        // Canvas 5: Cayley Graph - Unit Group Structure
-        function findPrimitiveRoot(m) {
-            const units = findUnits(m);
-            const phi = units.length;
-            
-            for (let g of units) {
-                let powers = new Set();
-                let current = 1;
-                for (let i = 0; i < phi; i++) {
-                    current = (current * g) % m;
-                    powers.add(current);
-                }
-                if (powers.size === phi) {
-                    return g;
-                }
-            }
-            return null;
-        }
-
-        function orderOfElement(a, m) {
-            let current = a;
-            let order = 1;
-            while (current !== 1) {
-                current = (current * a) % m;
-                order++;
-                if (order > m) break; // Safety
-            }
-            return current === 1 ? order : -1;
-        }
-
-        function drawCayleyCanvas(m) {
-            const canvas = document.getElementById('cayleyCanvas');
-            const ctx = canvas.getContext('2d');
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = Math.min(centerX, centerY) * 0.75;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#0a0e1a';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            const units = findUnits(m);
-            const phi = units.length;
-            
-            if (phi === 0) {
-                ctx.fillStyle = '#888';
-                ctx.font = '20px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('No units for m=1', centerX, centerY);
-                return;
-            }
-
-            // Find a generator (primitive root if it exists)
-            const generator = findPrimitiveRoot(m);
-            const showLabels = document.getElementById('showCayleyLabels')?.checked !== false;
-            const highlightGen = document.getElementById('highlightGenerator')?.checked !== false;
-            const showSubgroups = document.getElementById('showSubgroups')?.checked || false;
-
-            // Position nodes in circle
-            const positions = {};
-            units.forEach((unit, idx) => {
-                const angle = (2 * Math.PI * idx) / phi - Math.PI / 2;
-                positions[unit] = {
-                    x: centerX + radius * Math.cos(angle),
-                    y: centerY + radius * Math.sin(angle)
-                };
-            });
-
-            // If generator exists, color by powers
-            let powerMap = {};
-            if (generator) {
-                let power = 1;
-                for (let i = 0; i < phi; i++) {
-                    powerMap[power] = i;
-                    power = (power * generator) % m;
-                }
-            }
-
-            // Draw edges (multiply by generator)
-            if (generator && !showSubgroups) {
-                ctx.strokeStyle = 'rgba(100, 200, 255, 0.3)';
-                ctx.lineWidth = 2;
-                units.forEach(unit => {
-                    const next = (unit * generator) % m;
-                    const from = positions[unit];
-                    const to = positions[next];
-                    
-                    ctx.beginPath();
-                    ctx.moveTo(from.x, from.y);
-                    ctx.lineTo(to.x, to.y);
-                    ctx.stroke();
-                    
-                    // Arrow
-                    const angle = Math.atan2(to.y - from.y, to.x - from.x);
-                    const arrowSize = 10;
-                    ctx.beginPath();
-                    ctx.moveTo(to.x, to.y);
-                    ctx.lineTo(
-                        to.x - arrowSize * Math.cos(angle - Math.PI / 6),
-                        to.y - arrowSize * Math.sin(angle - Math.PI / 6)
-                    );
-                    ctx.moveTo(to.x, to.y);
-                    ctx.lineTo(
-                        to.x - arrowSize * Math.cos(angle + Math.PI / 6),
-                        to.y - arrowSize * Math.sin(angle + Math.PI / 6)
-                    );
-                    ctx.stroke();
-                });
-            }
-
-            // Show subgroup structure
-            if (showSubgroups) {
-                const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DFE6E9'];
-                let colorIdx = 0;
-                
-                const visited = new Set();
-                units.forEach(g => {
-                    if (visited.has(g)) return;
-                    
-                    const subgroup = [];
-                    let current = 1;
-                    do {
-                        subgroup.push(current);
-                        visited.add(current);
-                        current = (current * g) % m;
-                    } while (current !== 1 && subgroup.length < phi);
-                    
-                    if (subgroup.length > 1) {
-                        const color = colors[colorIdx % colors.length];
-                        ctx.strokeStyle = color;
-                        ctx.lineWidth = 2;
-                        
-                        for (let i = 0; i < subgroup.length; i++) {
-                            const from = positions[subgroup[i]];
-                            const to = positions[subgroup[(i + 1) % subgroup.length]];
-                            
-                            ctx.beginPath();
-                            ctx.moveTo(from.x, from.y);
-                            ctx.lineTo(to.x, to.y);
-                            ctx.stroke();
-                        }
-                        colorIdx++;
-                    }
-                });
-            }
-
-            // Draw nodes
-            units.forEach(unit => {
-                const pos = positions[unit];
-                const isGenerator = unit === generator;
-                const order = orderOfElement(unit, m);
-                
-                // Color by order or power
-                let hue = 200;
-                if (generator && powerMap[unit] !== undefined) {
-                    hue = (powerMap[unit] / phi) * 360;
-                } else {
-                    hue = (order / phi) * 270;
-                }
-                
-                const isIdentity = unit === 1;
-                const nodeSize = isIdentity ? 12 : (isGenerator && highlightGen ? 10 : 8);
-                
-                ctx.fillStyle = isIdentity ? '#FFD700' : 
-                                (isGenerator && highlightGen ? '#FF6B6B' : 
-                                `hsl(${hue}, 70%, 60%)`);
-                
-                ctx.beginPath();
-                ctx.arc(pos.x, pos.y, nodeSize, 0, 2 * Math.PI);
-                ctx.fill();
-                
-                // Border for special nodes
-                if (isIdentity || (isGenerator && highlightGen)) {
-                    ctx.strokeStyle = '#fff';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                }
-                
-                // Labels
-                if (showLabels) {
-                    ctx.fillStyle = '#fff';
-                    ctx.font = isIdentity || isGenerator ? 'bold 14px Arial' : '12px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    
-                    const labelOffset = 20;
-                    const angle = Math.atan2(pos.y - centerY, pos.x - centerX);
-                    const labelX = pos.x + labelOffset * Math.cos(angle);
-                    const labelY = pos.y + labelOffset * Math.sin(angle);
-                    
-                    ctx.fillText(unit.toString(), labelX, labelY);
-                    
-                    if (isGenerator && highlightGen) {
-                        ctx.font = '10px Arial';
-                        ctx.fillStyle = '#FF6B6B';
-                        ctx.fillText('gen', labelX, labelY + 12);
-                    }
-                }
-            });
-
-            // Legend
-            ctx.fillStyle = '#fff';
-            ctx.font = 'bold 16px Arial';
-            ctx.textAlign = 'left';
-            let legendY = 30;
-            ctx.fillText(`(ℤ/${m}ℤ)× - Order ${phi}`, 20, legendY);
-            legendY += 25;
-            
-            ctx.font = '14px Arial';
-            if (generator) {
-                ctx.fillStyle = '#FF6B6B';
-                ctx.fillText(`● Generator: ${generator}`, 20, legendY);
-                legendY += 20;
-                ctx.fillStyle = '#FFD700';
-                ctx.fillText(`● Identity: 1`, 20, legendY);
-                legendY += 20;
-                ctx.fillStyle = '#4ECDC4';
-                ctx.fillText(`● Cyclic`, 20, legendY);
-            } else {
-                ctx.fillStyle = '#FFD700';
-                ctx.fillText(`● Identity: 1`, 20, legendY);
-                legendY += 20;
-                ctx.fillStyle = '#888';
-                ctx.fillText(`Not cyclic`, 20, legendY);
-            }
-        }
-
-        function updateCayleyVisualization() {
-            const m = parseInt(document.getElementById('modulusInput').value);
-            drawCayleyCanvas(m);
         }
 
         // Export functions with titles and descriptions
@@ -2328,11 +2009,6 @@
                     id: 'densityCanvas', 
                     title: '◬ Coprime Density Analysis',
                     subtitle: `m=${m} · φ(m)/m = ${(units.length/m).toFixed(6)} · Basel limit 6/π² ≈ 0.6079 · ${m} data points`
-                },
-                'cayley': {
-                    id: 'cayleyCanvas',
-                    title: '◉ Cayley Graph - Group Structure',
-                    subtitle: `m=${m} · Group (ℤ/${m}ℤ)× · Order φ(${m})=${units.length} · Generator g=${findPrimitiveRoot(m)} · ${isPrime(m) || [2,4].includes(m) || (m % 2 === 0 && isPrime(m/2)) || (() => { let t = m; for (let p = 3; p * p <= t; p += 2) if (t % p === 0) { let c = 0; while (t % p === 0) { c++; t /= p; } if (c > 0 && t === 1) return true; } return t > 1 && m === Math.pow(t, Math.floor(Math.log(m) / Math.log(t))); })() ? 'Cyclic' : 'Not cyclic'}`
                 }
             };
             
@@ -2643,45 +2319,6 @@
                 finalCtx.fillStyle = '#4a5568';
                 finalCtx.fillText(`${m - 1} values`, legendX + 15, yPos);
                 yPos += lineHeight;
-            } else if (canvasId === 'cayley') {
-                // Group structure
-                const generator = findPrimitiveRoot(m);
-                
-                finalCtx.font = 'bold 46px Arial';
-                finalCtx.fillStyle = '#667eea';
-                finalCtx.fillText('Group Structure', legendX, yPos);
-                yPos += lineHeight + 8;
-                
-                finalCtx.font = mediumFont;
-                finalCtx.fillStyle = '#2d3748';
-                finalCtx.fillText(`(ℤ/${m}ℤ)×`, legendX, yPos);
-                yPos += lineHeight;
-                finalCtx.fillText(`Order: ${units.length}`, legendX, yPos);
-                yPos += lineHeight;
-                
-                finalCtx.font = smallFont;
-                finalCtx.fillStyle = '#4a5568';
-                finalCtx.fillText(`Generator: g = ${generator}`, legendX + 15, yPos);
-                yPos += lineHeight + sectionGap;
-                
-                // Cyclicity check
-                finalCtx.font = 'bold 46px Arial';
-                finalCtx.fillStyle = '#667eea';
-                finalCtx.fillText('Properties', legendX, yPos);
-                yPos += lineHeight + 8;
-                
-                const isCyclic = generator !== 1 && units.length > 1;
-                finalCtx.font = mediumFont;
-                finalCtx.fillStyle = isCyclic ? '#48BB78' : '#718096';
-                finalCtx.fillText(isCyclic ? '✓ Cyclic group' : 'Not cyclic', legendX, yPos);
-                yPos += lineHeight;
-                
-                if (isCyclic) {
-                    finalCtx.font = smallFont;
-                    finalCtx.fillStyle = '#4a5568';
-                    finalCtx.fillText(`All units = powers of ${generator}`, legendX + 15, yPos);
-                    yPos += lineHeight;
-                }
             }
             
             // Footer on final canvas
@@ -3430,4 +3067,4 @@
         };
     </script>
 </body>
-</html>
+    </html>
