@@ -605,18 +605,32 @@
                     </div>
 
                     <div class="intro-card">
-                        <h3>○ Canvas 2: Unit Circle</h3>
+                        <h3>○ Canvas 2: Unit Circle - Farey Channels</h3>
                         <p>
-                            <strong>What it shows:</strong> Elements of ℤ/mℤ mapped to the mth roots of unity on the complex unit circle.
-                            Element k maps to e^(2πik/m).
+                            <strong>What it shows:</strong> Comprehensive visualization of all residues r/m for every modulus from 1 to m, 
+                            mapped to concentric rings inside the unit circle. Each ring represents a different modulus, with points at 
+                            angles ±2πr/m showing both positive and negative rotations.
                         </p>
                         <p>
-                            <strong>Units highlighted:</strong> Elements coprime to m (where gcd(k,m) = 1) form the unit group (ℤ/mℤ)×.
-                            These are the invertible elements under multiplication.
+                            <strong>Phase Rotation (r/m):</strong> Control global rotation with fraction r/m, displayed to 17 decimal places.
+                            For example, r=1, m=2 gives 180° rotation; r=1, m=8 gives 45°. This reveals rotational symmetries in the modular structure.
                         </p>
                         <p>
-                            <strong>Key insight:</strong> Geometric representation shows rotational symmetry. Units correspond to 
-                            generators of cyclic subgroups.
+                            <strong>Residue Layers:</strong> Concentric rings from center (m=1) to outer edge (m=your_limit). 
+                            Ring radius = m/M × maxRadius. Points colored by gcd(r,m): Gold for coprime (gcd=1), 
+                            Cyan for prime GCD, gradient for composite.
+                        </p>
+                        <p>
+                            <strong>Connection Modes:</strong>
+                            <br>• <em>Connect r in Each m:</em> Forms polygons on each ring
+                            <br>• <em>Connect r to Next mod r:</em> Radial lines showing how residues project through modular hierarchy
+                            <br>• <em>Dyadic Powers r×2ⁿ:</em> Creates cardioid patterns by connecting r, 2r, 4r, 8r, 16r... (only coprime points)
+                            <br>• <em>Highlight Prime GCD:</em> Cyan coloring for points where gcd(r,m) is prime
+                        </p>
+                        <p>
+                            <strong>Key insight:</strong> Visualizes the complete modular lattice structure, showing how residue classes 
+                            relate across different moduli. Dyadic connections reveal multiplication by 2 patterns (like times table cardioids). 
+                            Phase rotation exposes hidden symmetries. The center represents gcd=1 (coprimality), with φ(m) gold points on each ring.
                         </p>
                     </div>
 
@@ -679,12 +693,21 @@
                             <br>• <em>Addition:</em> Addition table structure
                         </p>
                         <p>
-                            <strong>3. Explore presets:</strong> Basel Problem (m=6), Highly Composite (m=60), 
-                            Prime Fields (m=17), etc. Each preset demonstrates special properties.
+                            <strong>3. Explore Farey Channels (Canvas 2):</strong>
+                            <br>• <em>Phase Rotation:</em> Enter r/m fraction to rotate structure (17-decimal precision)
+                            <br>• <em>Connection Modes:</em> Toggle connections to reveal patterns
+                            <br>• <em>Dyadic Powers:</em> Enable for cardioid patterns (like times tables)
+                            <br>• <em>Residue Layers:</em> See all moduli from 1 to m simultaneously
                         </p>
                         <p>
-                            <strong>4. Export:</strong> Save individual canvases with titles, export all 4 together, 
-                            or download CSV data for analysis.
+                            <strong>4. Explore presets:</strong> Basel Problem (m=6), Highly Composite (m=60), 
+                            Prime Fields (m=17), etc. Each preset demonstrates special properties. After loading a preset, 
+                            experiment with Farey channel settings for deeper insights.
+                        </p>
+                        <p>
+                            <strong>5. Export:</strong> Save individual canvases with titles (including phase rotation info), 
+                            export all 4 together, or download CSV data for analysis. Circle CSV now includes all residue 
+                            layers with GCD values and ring positions.
                         </p>
                     </div>
 
@@ -692,19 +715,29 @@
                         <h3>💡 Interesting Examples</h3>
                         <p>
                             <strong>m = 6 (Basel Problem):</strong> φ(6) = 2. Only 1 and 5 are units. 
-                            Related to ζ(2) = π²/6 and coprime probability.
+                            Related to ζ(2) = π²/6 and coprime probability. Try phase r=1, m=6 for 60° rotation showing 6-fold symmetry.
                         </p>
                         <p>
                             <strong>m = 12:</strong> φ(12) = 4. Units are {1,5,7,11}. Rich idempotent structure 
-                            with {0,1,4,9} as idempotents.
+                            with {0,1,4,9} as idempotents. Enable "Connect r in Each m" to see dodecagonal patterns. 
+                            Phase r=1, m=2 (180°) reveals binary structure.
                         </p>
                         <p>
                             <strong>m = 17 (Prime):</strong> φ(17) = 16. All non-zero elements are units. 
-                            Forms a field - no zero divisors.
+                            Forms a field - no zero divisors. Farey channels show perfect symmetry with all rings having coprime structure.
                         </p>
                         <p>
                             <strong>m = 60 (Highly Composite):</strong> φ(60) = 16. Has 60 = 2²×3×5, 
-                            showing rich factorization structure with many zero divisors.
+                            showing rich factorization structure with many zero divisors. Enable "Dyadic Powers r×2ⁿ" to see beautiful 
+                            cardioid patterns emerging from multiplication by powers of 2.
+                        </p>
+                        <p>
+                            <strong>Dyadic Cardioids:</strong> Set any m ≥ 30, enable "Dyadic Powers r×2ⁿ". Watch how doubling 
+                            creates patterns identical to times table visualizations. Try m=100 for stunning complexity.
+                        </p>
+                        <p>
+                            <strong>Phase Exploration:</strong> Try m=8 with phase r=1, m=8 (45°) to see octagonal symmetry. 
+                            Or m=12 with r=1, m=3 (120°) for triangular symmetry. The 17-decimal display shows exact rotation angles.
                         </p>
                     </div>
                 </div>
@@ -1680,8 +1713,8 @@
                 },
                 'circle': { 
                     id: 'circleCanvas', 
-                    title: '○ Unit Circle Representation',
-                    subtitle: `Elements as ${m}th roots of unity · φ(${m}) = ${euler_phi(m)}`
+                    title: '○ Unit Circle - Farey Channels',
+                    subtitle: `Residue layers m=1 to ${m} · Phase: ${document.getElementById('phaseNumerator').value}/${document.getElementById('phaseDenominator').value} · φ(${m}) = ${euler_phi(m)}`
                 },
                 'gcd': { 
                     id: 'gcdCanvas', 
@@ -1751,7 +1784,7 @@
             const m = parseInt(document.getElementById('modulusInput').value);
             const canvases = [
                 { id: 'gridCanvas', title: '⊗ Multiplication Table' },
-                { id: 'circleCanvas', title: '○ Unit Circle' },
+                { id: 'circleCanvas', title: '○ Farey Channels' },
                 { id: 'gcdCanvas', title: '⊚ GCD Structure' },
                 { id: 'densityCanvas', title: '◬ Coprime Density' }
             ];
@@ -2008,18 +2041,30 @@
             }
             
             if (dataType === 'circle' || dataType === 'all') {
-                csv += '# Unit Circle Representation\n';
-                csv += '# Elements as roots of unity: e^(2πik/m)\n';
-                csv += 'element,angle_degrees,angle_radians,real,imaginary,is_unit\n';
+                const phaseR = parseInt(document.getElementById('phaseNumerator').value) || 0;
+                const phaseM = parseInt(document.getElementById('phaseDenominator').value) || 1;
+                const phaseAngle = (2 * Math.PI * phaseR) / phaseM;
+                const phaseAngleDeg = (360 * phaseR) / phaseM;
                 
-                const units = findUnits(m);
-                for (let k = 0; k < m; k++) {
-                    const angle = (2 * Math.PI * k) / m;
-                    const angleDeg = (360 * k) / m;
-                    const real = Math.cos(angle);
-                    const imag = Math.sin(angle);
-                    const isUnit = units.includes(k) ? 'TRUE' : 'FALSE';
-                    csv += `${k},${angleDeg.toFixed(2)},${angle.toFixed(6)},${real.toFixed(6)},${imag.toFixed(6)},${isUnit}\n`;
+                csv += '# Farey Channel Representation - Unit Circle\n';
+                csv += '# All residues r/mod for moduli from 1 to m\n';
+                csv += `# Phase rotation: ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(17)} degrees\n`;
+                csv += 'modulus,residue,fraction,angle_degrees,angle_radians,real,imaginary,gcd_value,is_unit,ring_radius\n';
+                
+                for (let mod = 1; mod <= m; mod++) {
+                    const ringRadius = mod / m;
+                    
+                    for (let r = 0; r < mod; r++) {
+                        const gcdVal = gcd(r, mod);
+                        const angle = (2 * Math.PI * r) / mod + phaseAngle;
+                        const angleDeg = (360 * r) / mod + phaseAngleDeg;
+                        const real = Math.cos(angle);
+                        const imag = Math.sin(angle);
+                        const isUnit = gcdVal === 1 ? 'TRUE' : 'FALSE';
+                        const fraction = `${r}/${mod}`;
+                        
+                        csv += `${mod},${r},${fraction},${angleDeg.toFixed(6)},${angle.toFixed(6)},${real.toFixed(6)},${imag.toFixed(6)},${gcdVal},${isUnit},${ringRadius.toFixed(6)}\n`;
+                    }
                 }
                 csv += '\n';
             }
