@@ -731,13 +731,58 @@
             <div class="canvas-panel">
                 <div class="panel-header">
                     <div>
-                        <div class="panel-title">○ Unit Circle</div>
-                        <div class="panel-subtitle">Elements as Roots of Unity</div>
+                        <div class="panel-title">○ Unit Circle - Farey Channels</div>
+                        <div class="panel-subtitle">Modular Residue Channels · Phase Rotation · Dyadic Lifting</div>
                     </div>
                 </div>
-                <canvas id="circleCanvas" width="800" height="800"></canvas>
+                <canvas id="circleCanvas" width="1000" height="1000"></canvas>
                 <div class="canvas-info" id="circleInfo">
-                    Elements mapped to e^(2πik/m) on the unit circle
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
+                        <div style="flex: 1; min-width: 200px;">
+                            <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 5px;">
+                                Phase Rotation (r/m):
+                            </label>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <input type="number" id="phaseNumerator" value="0" min="0" 
+                                       style="width: 80px; padding: 8px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 6px; color: var(--text-primary);"
+                                       onchange="updateCircleVisualization()">
+                                <span style="color: var(--gold); font-size: 1.3em; font-weight: 700;">/</span>
+                                <input type="number" id="phaseDenominator" value="1" min="1" 
+                                       style="width: 80px; padding: 8px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 6px; color: var(--text-primary);"
+                                       onchange="updateCircleVisualization()">
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 200px;">
+                            <label style="color: var(--gold); font-weight: 600; display: block; margin-bottom: 5px;">
+                                Rotation Angle (17 decimals):
+                            </label>
+                            <div id="phaseAngleDisplay" style="font-family: 'Courier New', monospace; color: var(--text-primary); font-size: 1.1em; background: var(--bg-panel); padding: 8px; border-radius: 6px; border: 1px solid var(--border);">
+                                0.00000000000000000°
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showResidueLayers" checked onchange="updateCircleVisualization()">
+                            <span style="color: var(--text-primary);">Show Residue Layers</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="connectByR" onchange="updateCircleVisualization()">
+                            <span style="color: var(--text-primary);">Connect r in Each m</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="connectToNextMod" onchange="updateCircleVisualization()">
+                            <span style="color: var(--text-primary);">Connect r to Next mod r</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="connectDyadicPowers" onchange="updateCircleVisualization()">
+                            <span style="color: var(--text-primary);">Dyadic Powers r×2ⁿ</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="highlightPrimeGCD" checked onchange="updateCircleVisualization()">
+                            <span style="color: var(--text-primary);">Highlight Prime GCD Channels</span>
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -1240,56 +1285,252 @@
             }
         }
 
-        // Canvas 2: Unit Circle
+        // Canvas 2: Unit Circle with Farey Channels
         function drawCircleCanvas(m, units, highlightUnits) {
             const canvas = document.getElementById('circleCanvas');
             const ctx = canvas.getContext('2d');
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const radius = Math.min(centerX, centerY) * 0.8;
+            const maxRadius = Math.min(centerX, centerY) * 0.85;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#0a0e1a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw circle
-            ctx.strokeStyle = '#FFD700';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-            ctx.stroke();
+            // Get phase rotation parameters
+            const phaseR = parseInt(document.getElementById('phaseNumerator').value) || 0;
+            const phaseM = parseInt(document.getElementById('phaseDenominator').value) || 1;
+            const phaseAngle = (2 * Math.PI * phaseR) / phaseM;
+            const phaseAngleDegrees = (360 * phaseR) / phaseM;
+            
+            // Update angle display with 17 decimal places
+            document.getElementById('phaseAngleDisplay').textContent = 
+                phaseAngleDegrees.toFixed(17) + '°';
 
-            // Draw elements
-            for (let k = 0; k < m; k++) {
-                const angle = (2 * Math.PI * k) / m - Math.PI / 2;
-                const x = centerX + radius * Math.cos(angle);
-                const y = centerY + radius * Math.sin(angle);
+            // Get visualization options
+            const showResidueLayers = document.getElementById('showResidueLayers').checked;
+            const connectByR = document.getElementById('connectByR').checked;
+            const connectToNextMod = document.getElementById('connectToNextMod').checked;
+            const connectDyadicPowers = document.getElementById('connectDyadicPowers').checked;
+            const highlightPrimeGCD = document.getElementById('highlightPrimeGCD').checked;
 
-                const isUnit = units.includes(k);
-                
-                ctx.fillStyle = highlightUnits && isUnit ? '#FFD700' : '#00FFFF';
-                ctx.beginPath();
-                ctx.arc(x, y, isUnit ? 6 : 4, 0, 2 * Math.PI);
-                ctx.fill();
+            // Store all points for connections
+            const pointsByModulus = new Map(); // mod -> [{r, angle, x, y, gcdVal}]
+            const pointsByResidue = new Map(); // r -> [{mod, angle, x, y, gcdVal}]
 
-                // Label
-                const labelRadius = radius * 1.15;
-                const labelX = centerX + labelRadius * Math.cos(angle);
-                const labelY = centerY + labelRadius * Math.sin(angle);
-                
-                ctx.fillStyle = isUnit ? '#FFD700' : '#00FFFF';
-                ctx.font = 'bold 14px Arial';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(k, labelX, labelY);
+            // Draw concentric rings for each modulus from 1 to m
+            if (showResidueLayers) {
+                for (let mod = 1; mod <= m; mod++) {
+                    const ringRadius = (mod / m) * maxRadius;
+                    
+                    // Draw ring
+                    ctx.strokeStyle = `hsla(${(mod / m) * 360}, 60%, 50%, 0.3)`;
+                    ctx.lineWidth = 1;
+                    ctx.setLineDash([3, 3]);
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, ringRadius, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    
+                    // Label modulus
+                    if (mod % Math.max(1, Math.floor(m / 10)) === 0 || mod === 1 || mod === m) {
+                        ctx.fillStyle = '#718096';
+                        ctx.font = 'bold 11px Arial';
+                        ctx.textAlign = 'left';
+                        ctx.fillText(`m=${mod}`, centerX + ringRadius + 5, centerY);
+                    }
+                }
             }
 
-            // Center
+            // Draw all residues r/mod for each modulus
+            for (let mod = 1; mod <= m; mod++) {
+                const ringRadius = (mod / m) * maxRadius;
+                
+                if (!pointsByModulus.has(mod)) {
+                    pointsByModulus.set(mod, []);
+                }
+                
+                for (let r = 0; r < mod; r++) {
+                    const gcdVal = gcd(r, mod);
+                    
+                    // Calculate angle: 2πr/mod + phase rotation
+                    let angle = (2 * Math.PI * r) / mod + phaseAngle;
+                    // Also map -2πr/mod
+                    let angleNeg = -(2 * Math.PI * r) / mod + phaseAngle;
+                    
+                    // Normalize to [0, 2π)
+                    angle = ((angle % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI);
+                    angleNeg = ((angleNeg % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI);
+                    
+                    // Position on ring
+                    const x = centerX + ringRadius * Math.cos(angle - Math.PI / 2);
+                    const y = centerY + ringRadius * Math.sin(angle - Math.PI / 2);
+                    
+                    const xNeg = centerX + ringRadius * Math.cos(angleNeg - Math.PI / 2);
+                    const yNeg = centerY + ringRadius * Math.sin(angleNeg - Math.PI / 2);
+                    
+                    // Determine color based on GCD
+                    let color;
+                    if (gcdVal === 1) {
+                        color = '#FFD700'; // Gold for coprime (units)
+                    } else if (isPrime(gcdVal) && highlightPrimeGCD) {
+                        color = '#00FFFF'; // Cyan for prime GCD
+                    } else {
+                        const hue = (gcdVal / mod) * 360;
+                        color = `hsl(${hue}, 70%, 60%)`;
+                    }
+                    
+                    // Draw point for +2πr/mod
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    const pointSize = gcdVal === 1 ? 4 : 3;
+                    ctx.arc(x, y, pointSize, 0, 2 * Math.PI);
+                    ctx.fill();
+                    
+                    // Draw point for -2πr/mod (if r > 0)
+                    if (r > 0) {
+                        ctx.globalAlpha = 0.5;
+                        ctx.beginPath();
+                        ctx.arc(xNeg, yNeg, pointSize * 0.8, 0, 2 * Math.PI);
+                        ctx.fill();
+                        ctx.globalAlpha = 1.0;
+                    }
+                    
+                    // Store point data
+                    const pointData = { r, angle, x, y, gcdVal, mod };
+                    pointsByModulus.get(mod).push(pointData);
+                    
+                    if (!pointsByResidue.has(r)) {
+                        pointsByResidue.set(r, []);
+                    }
+                    pointsByResidue.get(r).push(pointData);
+                    
+                    // Label important points
+                    if (mod === m && gcdVal === 1) {
+                        const labelRadius = ringRadius * 1.08;
+                        const labelX = centerX + labelRadius * Math.cos(angle - Math.PI / 2);
+                        const labelY = centerY + labelRadius * Math.sin(angle - Math.PI / 2);
+                        
+                        ctx.fillStyle = '#FFD700';
+                        ctx.font = 'bold 10px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(`${r}/${mod}`, labelX, labelY);
+                    }
+                }
+            }
+
+            // Connect r in each modulus
+            if (connectByR) {
+                pointsByModulus.forEach((points, mod) => {
+                    points.sort((a, b) => a.r - b.r);
+                    ctx.strokeStyle = `hsla(${(mod / m) * 360}, 60%, 50%, 0.3)`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    for (let i = 0; i < points.length; i++) {
+                        const p = points[i];
+                        if (i === 0) {
+                            ctx.moveTo(p.x, p.y);
+                        } else {
+                            ctx.lineTo(p.x, p.y);
+                        }
+                    }
+                    // Close the loop
+                    if (points.length > 0) {
+                        ctx.lineTo(points[0].x, points[0].y);
+                    }
+                    ctx.stroke();
+                });
+            }
+
+            // Connect same residue r across different moduli
+            if (connectToNextMod) {
+                pointsByResidue.forEach((points, r) => {
+                    if (r === 0) return; // Skip r=0
+                    
+                    points.sort((a, b) => a.mod - b.mod);
+                    
+                    const hue = (r / m) * 360;
+                    ctx.strokeStyle = `hsla(${hue}, 80%, 60%, 0.4)`;
+                    ctx.lineWidth = 1.5;
+                    
+                    ctx.beginPath();
+                    for (let i = 0; i < points.length; i++) {
+                        const p = points[i];
+                        if (i === 0) {
+                            ctx.moveTo(p.x, p.y);
+                        } else {
+                            ctx.lineTo(p.x, p.y);
+                        }
+                    }
+                    ctx.stroke();
+                });
+            }
+
+            // Connect dyadic powers r, 2r, 4r, 8r, ... (mod appropriate moduli)
+            if (connectDyadicPowers) {
+                for (let baseR = 1; baseR < m; baseR++) {
+                    const dyadicPoints = [];
+                    
+                    // Find all points r×2^n for various n and moduli
+                    for (let mod = 1; mod <= m; mod++) {
+                        for (let n = 0; n <= 10; n++) { // Up to 2^10
+                            const r = (baseR * Math.pow(2, n)) % mod;
+                            
+                            if (pointsByModulus.has(mod)) {
+                                const points = pointsByModulus.get(mod);
+                                const match = points.find(p => p.r === r);
+                                if (match && gcd(r, mod) === 1) {
+                                    dyadicPoints.push(match);
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Draw connections
+                    if (dyadicPoints.length > 1) {
+                        const hue = (baseR / m) * 360;
+                        ctx.strokeStyle = `hsla(${hue}, 100%, 70%, 0.3)`;
+                        ctx.lineWidth = 2;
+                        
+                        ctx.beginPath();
+                        for (let i = 0; i < dyadicPoints.length - 1; i++) {
+                            ctx.moveTo(dyadicPoints[i].x, dyadicPoints[i].y);
+                            ctx.lineTo(dyadicPoints[i + 1].x, dyadicPoints[i + 1].y);
+                        }
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Draw outer circle (m-ring)
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, maxRadius, 0, 2 * Math.PI);
+            ctx.stroke();
+
+            // Center point
             ctx.fillStyle = '#FFD700';
             ctx.beginPath();
-            ctx.arc(centerX, centerY, 4, 0, 2 * Math.PI);
+            ctx.arc(centerX, centerY, 5, 0, 2 * Math.PI);
             ctx.fill();
+            
+            // Center label
+            ctx.fillStyle = '#FFD700';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('GCD=1', centerX, centerY - 12);
         }
+
+        // Separate function to update just the circle canvas
+        function updateCircleVisualization() {
+            const m = parseInt(document.getElementById('modulusInput').value);
+            const units = findUnits(m);
+            const highlightUnits = document.getElementById('highlightUnits')?.checked || false;
+            drawCircleCanvas(m, units, highlightUnits);
+        }
+
 
         // Canvas 3: GCD Structure
         function drawGCDCanvas(m) {
