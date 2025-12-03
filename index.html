@@ -869,7 +869,7 @@
 
         // Preset configurations
         function applyPreset(presetName) {
-            let m, tableType, colorScheme, labelType, title, message;
+            let m, tableType, colorScheme, labelType;
             
             switch(presetName) {
                 case 'basel':
@@ -878,8 +878,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'zeroDivisors';
                     labelType = 'result';
-                    title = 'Basel Problem (ζ(2))';
-                    message = 'Modulus 6: Related to Euler\'s Basel problem. The probability that two random integers are coprime is 6/π² ≈ 0.6079. φ(6) = 2.';
+                    showInfo('Basel Problem (ζ(2))', 'Modulus 6: Related to Euler\'s Basel problem. The probability that two random integers are coprime is 6/π² ≈ 0.6079. φ(6) = 2.');
                     break;
                     
                 case 'totient12':
@@ -888,8 +887,7 @@
                     tableType = 'cayley';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'φ(12) = 4';
-                    message = 'The group of units (ℤ/12ℤ)× has 4 elements: {1, 5, 7, 11}. This is the classic coprime density example.';
+                    showInfo('φ(12) = 4', 'The group of units (ℤ/12ℤ)× has 4 elements: {1, 5, 7, 11}. This is the classic coprime density example.');
                     break;
                     
                 case 'prime':
@@ -898,8 +896,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'Prime Field ℤ/17ℤ';
-                    message = 'A prime modulus creates a field. Every non-zero element is a unit. φ(17) = 16. No zero divisors.';
+                    showInfo('Prime Field ℤ/17ℤ', 'A prime modulus creates a field. Every non-zero element is a unit. φ(17) = 16. No zero divisors.');
                     break;
                     
                 case 'highly_composite':
@@ -908,8 +905,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'divisibility';
                     labelType = 'result';
-                    title = 'Highly Composite: 60';
-                    message = '60 = 2²×3×5 has many divisors. φ(60) = 16. Rich algebraic structure with many zero divisors.';
+                    showInfo('Highly Composite: 60', '60 = 2²×3×5 has many divisors. φ(60) = 16. Rich algebraic structure with many zero divisors.');
                     break;
                     
                 case 'power_of_2':
@@ -918,8 +914,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'idempotents';
                     labelType = 'result';
-                    title = 'Power of 2: m=32';
-                    message = '32 = 2⁵. φ(32) = 16. Half the elements are units. Special structure in powers of 2.';
+                    showInfo('Power of 2: m=32', '32 = 2⁵. φ(32) = 16. Half the elements are units. Special structure in powers of 2.');
                     break;
                     
                 case 'fibonacci':
@@ -928,8 +923,7 @@
                     tableType = 'cayley';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'Fibonacci Prime: F₁₁ = 89';
-                    message = '89 is the 11th Fibonacci number and a prime. Forms a field. φ(89) = 88.';
+                    showInfo('Fibonacci Prime: F₁₁ = 89', '89 is the 11th Fibonacci number and a prime. Forms a field. φ(89) = 88.');
                     break;
                     
                 case 'mersenne':
@@ -938,8 +932,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'Mersenne Prime: 2⁵-1 = 31';
-                    message = '31 = 2⁵ - 1 is a Mersenne prime. Forms a field. φ(31) = 30.';
+                    showInfo('Mersenne Prime: 2⁵-1 = 31', '31 = 2⁵ - 1 is a Mersenne prime. Forms a field. φ(31) = 30.');
                     break;
                     
                 case 'perfect':
@@ -948,8 +941,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'divisibility';
                     labelType = 'result';
-                    title = 'Perfect Number: 28';
-                    message = '28 = 1+2+4+7+14 is the 2nd perfect number. 28 = 2²×7. φ(28) = 12.';
+                    showInfo('Perfect Number: 28', '28 = 1+2+4+7+14 is the 2nd perfect number. 28 = 2²×7. φ(28) = 12.');
                     break;
                     
                 case 'euler_constant':
@@ -958,8 +950,7 @@
                     tableType = 'cayley';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'Euler\'s e: m≈271';
-                    message = '271 is prime and ≈100e. Forms a field with φ(271) = 270 units.';
+                    showInfo('Euler\'s e: m≈271', '271 is prime and ≈100e. Forms a field with φ(271) = 270 units.');
                     break;
                     
                 case 'golden_ratio':
@@ -968,8 +959,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'zeroDivisors';
                     labelType = 'result';
-                    title = 'Golden Ratio: m≈161';
-                    message = '161 ≈ 100φ where φ = (1+√5)/2. 161 = 7×23 (semiprime). φ(161) = 132.';
+                    showInfo('Golden Ratio: m≈161', '161 ≈ 100φ where φ = (1+√5)/2. 161 = 7×23 (semiprime). φ(161) = 132.');
                     break;
                     
                 case 'ramanujan':
@@ -978,8 +968,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'divisibility';
                     labelType = 'result';
-                    title = 'Ramanujan τ: m=24';
-                    message = '24 appears in Ramanujan\'s tau function τ(n). 24 = 2³×3. φ(24) = 8. Related to modular forms.';
+                    showInfo('Ramanujan τ: m=24', '24 appears in Ramanujan\'s tau function τ(n). 24 = 2³×3. φ(24) = 8. Related to modular forms.');
                     break;
                     
                 case 'catalan':
@@ -988,8 +977,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'Catalan Numbers: m=42';
-                    message = '42 = 2×3×7 appears in Catalan number sequences. φ(42) = 12. Answer to everything!';
+                    showInfo('Catalan Numbers: m=42', '42 = 2×3×7 appears in Catalan number sequences. φ(42) = 12. Answer to everything!');
                     break;
                     
                 case 'coprime_density':
@@ -998,8 +986,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'zeroDivisors';
                     labelType = 'result';
-                    title = 'Coprime Density: 6/π²';
-                    message = '61 is prime. 61/100 ≈ 6/π² (coprime pair density). φ(61) = 60. Forms a field.';
+                    showInfo('Coprime Density: 6/π²', '61 is prime. 61/100 ≈ 6/π² (coprime pair density). φ(61) = 60. Forms a field.');
                     break;
                     
                 case 'harmonic':
@@ -1008,8 +995,7 @@
                     tableType = 'cayley';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'Harmonic: m=100';
-                    message = '100 = 2²×5². φ(100) = 40. Visualizes unit structure. Related to harmonic analysis mod 100.';
+                    showInfo('Harmonic: m=100', '100 = 2²×5². φ(100) = 40. Visualizes unit structure. Related to harmonic analysis mod 100.');
                     break;
                     
                 case 'twin_primes':
@@ -1018,17 +1004,8 @@
                     tableType = 'multiplication';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'Twin Primes: 71 & 73';
-                    message = '71 is prime (twin with 73). Both form fields. φ(71) = 70. Prime gaps and density.';
+                    showInfo('Twin Primes: 71 & 73', '71 is prime (twin with 73). Both form fields. φ(71) = 70. Prime gaps and density.');
                     break;
-                    
-                default:
-                    m = 12;
-                    tableType = 'multiplication';
-                    colorScheme = 'rainbow';
-                    labelType = 'result';
-                    title = 'Default';
-                    message = 'Select a preset to explore.';
             }
             
             // Apply settings
@@ -1042,15 +1019,8 @@
             document.querySelector(`input[name="labelType"][value="${labelType}"]`).checked = true;
             
             // Update preset info panel
-            const presetInfoEl = document.getElementById('presetInfo');
-            if (presetInfoEl) {
-                presetInfoEl.innerHTML = `<strong>${title}:</strong> ${message}`;
-            }
+            document.getElementById('presetInfo').innerHTML = `<strong>${title}:</strong> ${message}`;
             
-            // Show notification
-            showInfo(title, message);
-            
-            // Trigger visualization update
             updateVisualization();
         }
         
@@ -1686,4 +1656,4 @@
         };
     </script>
 </body>
-</html>
+    </html>
