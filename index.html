@@ -441,15 +441,8 @@
                 
                 <div class="control-group">
                     <label>Or enter directly:</label>
-                    <input type="number" id="modulusInput" min="2" max="5000" value="12" onchange="updateModulusFromInput()">
-                    <div style="font-size: 0.85em; color: #718096; margin-top: 5px;">
-                        Max: 5000 (use quality controls for large values)
-                    </div>
+                    <input type="number" id="modulusInput" min="2" max="1000" value="12" onchange="updateModulusFromInput()">
                 </div>
-            </div>
-            
-            <div id="performanceInfo" style="background: #e0f2fe; padding: 12px; border-radius: 6px; margin-top: 15px; color: #0c4a6e; font-size: 0.9em; text-align: center;">
-                Current Grid: 12×12 = 144 cells | Cell size: 100px | Quality: Auto
             </div>
 
             <div class="control-row">
@@ -589,70 +582,11 @@
         </div>
 
         <div class="canvas-container">
-            <canvas id="gridCanvas" width="1200" height="1200"></canvas>
-        </div>
-
-        <div class="controls-section" style="background: #fff3cd; border: 2px solid #ffc107;">
-            <h3 style="color: #856404; margin-bottom: 15px;">Performance & Quality Controls</h3>
-            
-            <div class="control-row">
-                <div class="control-group">
-                    <label>Canvas Resolution: <span class="value-display" id="resolutionDisplay">1200px</span></label>
-                    <input type="range" id="resolutionSlider" min="800" max="2400" value="1200" step="200" oninput="updateCanvasResolution()">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85em; color: #718096; margin-top: 5px;">
-                        <span>800px</span>
-                        <span>2400px (4K-ready)</span>
-                    </div>
-                </div>
-                
-                <div class="control-group">
-                    <label>Rendering Quality:</label>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="radio" name="quality" value="adaptive" checked onchange="updateVisualization()">
-                            <span>Adaptive (Auto)</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="quality" value="high" onchange="updateVisualization()">
-                            <span>High Quality</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="quality" value="fast" onchange="updateVisualization()">
-                            <span>Fast (Large m)</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="control-row">
-                <div class="control-group">
-                    <label style="display: flex; align-items: center; gap: 10px;">
-                        <input type="checkbox" id="antialiasing" checked onchange="updateVisualization()">
-                        <span>Enable Antialiasing (smoother text)</span>
-                    </label>
-                </div>
-                <div class="control-group">
-                    <label style="display: flex; align-items: center; gap: 10px;">
-                        <input type="checkbox" id="highDPI" checked onchange="updateVisualization()">
-                        <span>High DPI Rendering (retina displays)</span>
-                    </label>
-                </div>
-            </div>
-            
-            <div style="background: #fff; padding: 15px; border-radius: 6px; margin-top: 15px;">
-                <div style="font-weight: 600; color: #856404; margin-bottom: 8px;">Performance Tips:</div>
-                <ul style="margin-left: 20px; color: #856404; font-size: 0.9em; line-height: 1.6;">
-                    <li><strong>m > 100:</strong> Use "Fast" quality or disable labels for better performance</li>
-                    <li><strong>m > 200:</strong> Consider "No Labels" mode and increase canvas resolution</li>
-                    <li><strong>Export:</strong> Always use "High Quality" before exporting for publications</li>
-                    <li><strong>Zoom:</strong> Increase canvas resolution to see fine details in large grids</li>
-                </ul>
-            </div>
+            <canvas id="gridCanvas" width="800" height="800"></canvas>
         </div>
 
         <div class="export-section">
-            <button onclick="exportCanvas()">Export with Analysis Panel</button>
-            <button onclick="exportGridOnly()">Export Grid Only (4K+)</button>
+            <button onclick="exportCanvas()">Export as 4K PNG</button>
             <button onclick="exportData()">Export Data as CSV</button>
         </div>
 
@@ -782,120 +716,53 @@
             return true;
         }
 
-        // Cache for expensive computations
-        const computationCache = {
-            units: {},
-            zeroDivisors: {},
-            idempotents: {},
-            nilpotents: {},
-            phi: {}
-        };
-        
-        // Cached euler_phi with memoization
-        function euler_phi(n) {
-            if (computationCache.phi[n]) {
-                return computationCache.phi[n];
-            }
-            
-            if (n === 1) return 1;
-            let result = n;
-            let p = 2;
-            let temp = n;
-            while (p * p <= temp) {
-                if (temp % p === 0) {
-                    while (temp % p === 0) temp /= p;
-                    result -= result / p;
-                }
-                p++;
-            }
-            if (temp > 1) result -= result / temp;
-            
-            const rounded = Math.round(result);
-            computationCache.phi[n] = rounded;
-            return rounded;
-        }
-
-        // Find units (invertible elements) - with caching
+        // Find units (invertible elements)
         function findUnits(m) {
-            if (computationCache.units[m]) {
-                return computationCache.units[m];
-            }
-            
             const units = [];
             for (let a = 1; a < m; a++) {
                 if (gcd(a, m) === 1) units.push(a);
             }
-            
-            computationCache.units[m] = units;
             return units;
         }
 
-        // Find zero divisors - OPTIMIZED with caching and early termination
+        // Find zero divisors
         function findZeroDivisors(m) {
-            if (computationCache.zeroDivisors[m]) {
-                return computationCache.zeroDivisors[m];
-            }
-            
-            // If m is prime, no zero divisors except 0
-            if (isPrime(m)) {
-                computationCache.zeroDivisors[m] = [];
-                return [];
-            }
-            
-            // Optimized: a is a zero divisor if gcd(a,m) > 1 and a != 0
-            const zeroDivisors = [];
+            const zeroDivisors = new Set();
             for (let a = 1; a < m; a++) {
-                if (gcd(a, m) > 1) {
-                    zeroDivisors.push(a);
+                for (let b = 1; b < m; b++) {
+                    if ((a * b) % m === 0) {
+                        zeroDivisors.add(a);
+                        zeroDivisors.add(b);
+                    }
                 }
             }
-            
-            computationCache.zeroDivisors[m] = zeroDivisors;
-            return zeroDivisors;
+            return Array.from(zeroDivisors).sort((a, b) => a - b);
         }
 
-        // Find idempotents - with caching
+        // Find idempotents
         function findIdempotents(m) {
-            if (computationCache.idempotents[m]) {
-                return computationCache.idempotents[m];
-            }
-            
             const idempotents = [];
             for (let a = 0; a < m; a++) {
                 if ((a * a) % m === a) idempotents.push(a);
             }
-            
-            computationCache.idempotents[m] = idempotents;
             return idempotents;
         }
 
-        // Find nilpotents - with caching and optimization
+        // Find nilpotents
         function findNilpotents(m) {
-            if (computationCache.nilpotents[m]) {
-                return computationCache.nilpotents[m];
-            }
-            
-            // If m is prime or square-free, no nilpotents except 0
-            if (isPrime(m) || isSquareFree(m)) {
-                computationCache.nilpotents[m] = [];
-                return [];
-            }
-            
             const nilpotents = [];
-            const maxPower = Math.ceil(Math.log2(m)) + 5; // Reasonable upper bound
-            
-            for (let a = 1; a < m; a++) {
+            for (let a = 0; a < m; a++) {
                 let power = a;
-                for (let k = 1; k <= maxPower; k++) {
-                    if (power % m === 0) {
-                        nilpotents.push(a);
+                let isNilpotent = false;
+                for (let k = 1; k <= 20; k++) {
+                    if (power % m === 0 && k > 1) {
+                        isNilpotent = true;
                         break;
                     }
                     power = (power * a) % m;
                 }
+                if (isNilpotent && a !== 0) nilpotents.push(a);
             }
-            
-            computationCache.nilpotents[m] = nilpotents;
             return nilpotents;
         }
 
@@ -937,7 +804,7 @@
 
         // Preset configurations
         function applyPreset(presetName) {
-            let m, tableType, colorScheme, labelType, title, message;
+            let m, tableType, colorScheme, labelType;
             
             switch(presetName) {
                 case 'basel':
@@ -946,8 +813,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'zeroDivisors';
                     labelType = 'result';
-                    title = 'Basel Problem (ζ(2))';
-                    message = 'Modulus 6: Related to Euler\'s Basel problem. The probability that two random integers are coprime is 6/π² ≈ 0.6079. φ(6) = 2.';
+                    showInfo('Basel Problem (ζ(2))', 'Modulus 6: Related to Euler\'s Basel problem. The probability that two random integers are coprime is 6/π² ≈ 0.6079. φ(6) = 2.');
                     break;
                     
                 case 'totient12':
@@ -956,8 +822,7 @@
                     tableType = 'cayley';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'φ(12) = 4';
-                    message = 'The group of units (ℤ/12ℤ)× has 4 elements: {1, 5, 7, 11}. This is the classic coprime density example.';
+                    showInfo('φ(12) = 4', 'The group of units (ℤ/12ℤ)× has 4 elements: {1, 5, 7, 11}. This is the classic coprime density example.');
                     break;
                     
                 case 'prime':
@@ -966,8 +831,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'Prime Field ℤ/17ℤ';
-                    message = 'A prime modulus creates a field. Every non-zero element is a unit. φ(17) = 16. No zero divisors.';
+                    showInfo('Prime Field ℤ/17ℤ', 'A prime modulus creates a field. Every non-zero element is a unit. φ(17) = 16. No zero divisors.');
                     break;
                     
                 case 'highly_composite':
@@ -976,8 +840,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'divisibility';
                     labelType = 'result';
-                    title = 'Highly Composite: 60';
-                    message = '60 = 2²×3×5 has many divisors. φ(60) = 16. Rich algebraic structure with many zero divisors.';
+                    showInfo('Highly Composite: 60', '60 = 2²×3×5 has many divisors. φ(60) = 16. Rich algebraic structure with many zero divisors.');
                     break;
                     
                 case 'power_of_2':
@@ -986,8 +849,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'idempotents';
                     labelType = 'result';
-                    title = 'Power of 2: m=32';
-                    message = '32 = 2⁵. φ(32) = 16. Half the elements are units. Special structure in powers of 2.';
+                    showInfo('Power of 2: m=32', '32 = 2⁵. φ(32) = 16. Half the elements are units. Special structure in powers of 2.');
                     break;
                     
                 case 'fibonacci':
@@ -996,8 +858,7 @@
                     tableType = 'cayley';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'Fibonacci Prime: F₁₁ = 89';
-                    message = '89 is the 11th Fibonacci number and a prime. Forms a field. φ(89) = 88.';
+                    showInfo('Fibonacci Prime: F₁₁ = 89', '89 is the 11th Fibonacci number and a prime. Forms a field. φ(89) = 88.');
                     break;
                     
                 case 'mersenne':
@@ -1006,8 +867,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'Mersenne Prime: 2⁵-1 = 31';
-                    message = '31 = 2⁵ - 1 is a Mersenne prime. Forms a field. φ(31) = 30.';
+                    showInfo('Mersenne Prime: 2⁵-1 = 31', '31 = 2⁵ - 1 is a Mersenne prime. Forms a field. φ(31) = 30.');
                     break;
                     
                 case 'perfect':
@@ -1016,8 +876,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'divisibility';
                     labelType = 'result';
-                    title = 'Perfect Number: 28';
-                    message = '28 = 1+2+4+7+14 is the 2nd perfect number. 28 = 2²×7. φ(28) = 12.';
+                    showInfo('Perfect Number: 28', '28 = 1+2+4+7+14 is the 2nd perfect number. 28 = 2²×7. φ(28) = 12.');
                     break;
                     
                 case 'euler_constant':
@@ -1026,8 +885,7 @@
                     tableType = 'cayley';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'Euler\'s e: m≈271';
-                    message = '271 is prime and ≈100e. Forms a field with φ(271) = 270 units.';
+                    showInfo('Euler\'s e: m≈271', '271 is prime and ≈100e. Forms a field with φ(271) = 270 units.');
                     break;
                     
                 case 'golden_ratio':
@@ -1036,8 +894,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'zeroDivisors';
                     labelType = 'result';
-                    title = 'Golden Ratio: m≈161';
-                    message = '161 ≈ 100φ where φ = (1+√5)/2. 161 = 7×23 (semiprime). φ(161) = 132.';
+                    showInfo('Golden Ratio: m≈161', '161 ≈ 100φ where φ = (1+√5)/2. 161 = 7×23 (semiprime). φ(161) = 132.');
                     break;
                     
                 case 'ramanujan':
@@ -1046,8 +903,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'divisibility';
                     labelType = 'result';
-                    title = 'Ramanujan τ: m=24';
-                    message = '24 appears in Ramanujan\'s tau function τ(n). 24 = 2³×3. φ(24) = 8. Related to modular forms.';
+                    showInfo('Ramanujan τ: m=24', '24 appears in Ramanujan\'s tau function τ(n). 24 = 2³×3. φ(24) = 8. Related to modular forms.');
                     break;
                     
                 case 'catalan':
@@ -1056,8 +912,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'Catalan Numbers: m=42';
-                    message = '42 = 2×3×7 appears in Catalan number sequences. φ(42) = 12. Answer to everything!';
+                    showInfo('Catalan Numbers: m=42', '42 = 2×3×7 appears in Catalan number sequences. φ(42) = 12. Answer to everything!');
                     break;
                     
                 case 'coprime_density':
@@ -1066,8 +921,7 @@
                     tableType = 'multiplication';
                     colorScheme = 'zeroDivisors';
                     labelType = 'result';
-                    title = 'Coprime Density: 6/π²';
-                    message = '61 is prime. 61/100 ≈ 6/π² (coprime pair density). φ(61) = 60. Forms a field.';
+                    showInfo('Coprime Density: 6/π²', '61 is prime. 61/100 ≈ 6/π² (coprime pair density). φ(61) = 60. Forms a field.');
                     break;
                     
                 case 'harmonic':
@@ -1076,8 +930,7 @@
                     tableType = 'cayley';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'Harmonic: m=100';
-                    message = '100 = 2²×5². φ(100) = 40. Visualizes unit structure. Related to harmonic analysis mod 100.';
+                    showInfo('Harmonic: m=100', '100 = 2²×5². φ(100) = 40. Visualizes unit structure. Related to harmonic analysis mod 100.');
                     break;
                     
                 case 'twin_primes':
@@ -1086,17 +939,8 @@
                     tableType = 'multiplication';
                     colorScheme = 'rainbow';
                     labelType = 'result';
-                    title = 'Twin Primes: 71 & 73';
-                    message = '71 is prime (twin with 73). Both form fields. φ(71) = 70. Prime gaps and density.';
+                    showInfo('Twin Primes: 71 & 73', '71 is prime (twin with 73). Both form fields. φ(71) = 70. Prime gaps and density.');
                     break;
-                    
-                default:
-                    m = 12;
-                    tableType = 'multiplication';
-                    colorScheme = 'rainbow';
-                    labelType = 'result';
-                    title = 'Default';
-                    message = 'Select a preset to explore.';
             }
             
             // Apply settings
@@ -1110,15 +954,8 @@
             document.querySelector(`input[name="labelType"][value="${labelType}"]`).checked = true;
             
             // Update preset info panel
-            const presetInfoEl = document.getElementById('presetInfo');
-            if (presetInfoEl) {
-                presetInfoEl.innerHTML = `<strong>${title}:</strong> ${message}`;
-            }
+            document.getElementById('presetInfo').innerHTML = `<strong>${title}:</strong> ${message}`;
             
-            // Show notification
-            showInfo(title, message);
-            
-            // Trigger visualization update
             updateVisualization();
         }
         
@@ -1164,90 +1001,31 @@
         `;
         document.head.appendChild(style);
 
-        // Debounce function to prevent excessive re-renders
-        let debounceTimer = null;
-        let isRendering = false;
-        
-        function debounce(func, delay) {
-            return function(...args) {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(() => func.apply(this, args), delay);
-            };
-        }
-
         // Update functions
         function updateModulus() {
             const value = document.getElementById('modulusSlider').value;
             document.getElementById('modulusDisplay').textContent = value;
             document.getElementById('modulusInput').value = value;
-            
-            // Use debounced update for slider
-            debouncedVisualizationUpdate();
+            updateVisualization();
         }
 
         function updateModulusFromInput() {
             const value = parseInt(document.getElementById('modulusInput').value);
-            if (value >= 2 && value <= 5000) {
+            if (value >= 2 && value <= 1000) {
                 document.getElementById('modulusSlider').value = Math.min(value, 100);
                 document.getElementById('modulusDisplay').textContent = Math.min(value, 100);
-                
-                // Warn about large values
-                if (value > 500) {
-                    showInfo('Large Modulus', `m=${value} will create ${value}×${value} = ${(value*value).toLocaleString()} cells. Consider using "Fast" quality mode or "No Labels" for better performance.`);
-                }
-                
-                // For direct input, update immediately but check if already rendering
-                if (!isRendering) {
-                    updateVisualization();
-                }
-            } else {
-                alert('Please enter a modulus between 2 and 5000');
+                updateVisualization();
             }
         }
 
         function updateFontSize() {
             const value = document.getElementById('fontSizeSlider').value;
             document.getElementById('fontSizeDisplay').textContent = value === '0' ? 'Auto' : value + 'px';
-            debouncedVisualizationUpdate();
+            updateVisualization();
         }
 
-        function updateCanvasResolution() {
-            const resolution = parseInt(document.getElementById('resolutionSlider').value);
-            document.getElementById('resolutionDisplay').textContent = resolution + 'px';
-            
-            const canvas = document.getElementById('gridCanvas');
-            canvas.width = resolution;
-            canvas.height = resolution;
-            
-            debouncedVisualizationUpdate();
-        }
-        
-        // Debounced version for slider changes
-        const debouncedVisualizationUpdate = debounce(function() {
-            if (!isRendering) {
-                updateVisualization();
-            }
-        }, 150); // 150ms delay
-
-        // Main visualization with adaptive quality
+        // Main visualization
         function updateVisualization() {
-            // Prevent concurrent rendering
-            if (isRendering) {
-                return;
-            }
-            isRendering = true;
-            
-            // Use requestAnimationFrame for smooth rendering
-            requestAnimationFrame(() => {
-                try {
-                    renderVisualization();
-                } finally {
-                    isRendering = false;
-                }
-            });
-        }
-        
-        function renderVisualization() {
             const m = parseInt(document.getElementById('modulusInput').value);
             const tableType = document.querySelector('input[name="tableType"]:checked').value;
             const colorScheme = document.querySelector('input[name="colorScheme"]:checked').value;
@@ -1257,64 +1035,24 @@
             const showColLabels = document.getElementById('showColLabels').checked;
             const showGridLines = document.getElementById('showGridLines').checked;
             const fontSizeOverride = parseInt(document.getElementById('fontSizeSlider').value);
-            const quality = document.querySelector('input[name="quality"]:checked').value;
-            const antialiasing = document.getElementById('antialiasing').checked;
-            const highDPI = document.getElementById('highDPI').checked;
 
             const canvas = document.getElementById('gridCanvas');
-            const ctx = canvas.getContext('2d', { alpha: false, willReadFrequently: false });
-            
-            // High DPI support
-            const dpr = (highDPI && window.devicePixelRatio > 1) ? window.devicePixelRatio : 1;
-            const displayWidth = canvas.width;
-            const displayHeight = canvas.height;
-            
-            if (highDPI && dpr > 1) {
-                canvas.width = displayWidth * dpr;
-                canvas.height = displayHeight * dpr;
-                canvas.style.width = displayWidth + 'px';
-                canvas.style.height = displayHeight + 'px';
-                ctx.scale(dpr, dpr);
-            } else {
-                canvas.style.width = displayWidth + 'px';
-                canvas.style.height = displayHeight + 'px';
-            }
-            
-            // Antialiasing control
-            ctx.imageSmoothingEnabled = antialiasing;
-            ctx.imageSmoothingQuality = antialiasing ? 'high' : 'low';
+            const ctx = canvas.getContext('2d');
             
             const size = tableType === 'cayley' ? euler_phi(m) : m;
-            const labelMargin = (showRowLabels || showColLabels) ? 40 : 0;
-            const gridSize = displayWidth - labelMargin;
+            const labelMargin = 40;
+            const gridSize = canvas.width - (showRowLabels || showColLabels ? labelMargin : 0);
             const cellSize = Math.floor(gridSize / size);
-            
-            // Adaptive font sizing based on quality and cell size
-            let fontSize;
-            if (fontSizeOverride === 0) {
-                if (quality === 'adaptive') {
-                    if (size <= 20) fontSize = Math.max(8, Math.min(20, cellSize / 2.5));
-                    else if (size <= 50) fontSize = Math.max(6, Math.min(14, cellSize / 2.8));
-                    else if (size <= 100) fontSize = Math.max(4, Math.min(10, cellSize / 3));
-                    else fontSize = Math.max(3, Math.min(8, cellSize / 3.5));
-                } else if (quality === 'high') {
-                    fontSize = Math.max(6, Math.min(20, cellSize / 2.5));
-                } else { // fast
-                    fontSize = Math.max(4, Math.min(12, cellSize / 3));
-                }
-            } else {
-                fontSize = fontSizeOverride;
-            }
-            
-            const labelFontSize = Math.max(8, Math.min(16, cellSize / 2));
+            const fontSize = fontSizeOverride === 0 ? Math.max(6, Math.min(20, cellSize / 2.5)) : fontSizeOverride;
+            const labelFontSize = Math.max(10, Math.min(16, cellSize / 2));
 
-            ctx.clearRect(0, 0, displayWidth, displayHeight);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             // Set background
             ctx.fillStyle = '#1a202c';
-            ctx.fillRect(0, 0, displayWidth, displayHeight);
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Get special elements (cached for performance)
+            // Get special elements
             const units = findUnits(m);
             const zeroDivisors = findZeroDivisors(m);
             const idempotents = findIdempotents(m);
@@ -1330,112 +1068,145 @@
 
             const offset = (showRowLabels || showColLabels) ? labelMargin : 0;
 
-            // Draw labels with adaptive sampling for large grids
-            const labelSample = (quality === 'fast' && size > 100) ? Math.ceil(size / 50) : (size > 50 ? 2 : 1);
-            
-            if (showColLabels && cellSize > 2) {
+            // Draw column labels
+            if (showColLabels) {
                 ctx.fillStyle = '#ffffff';
                 ctx.font = `bold ${labelFontSize}px Arial`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                for (let j = 0; j < elements.length; j += labelSample) {
+                for (let j = 0; j < elements.length; j++) {
                     ctx.fillText(elements[j], offset + j * cellSize + cellSize / 2, labelMargin / 2);
                 }
             }
 
-            if (showRowLabels && cellSize > 2) {
+            // Draw row labels
+            if (showRowLabels) {
                 ctx.fillStyle = '#ffffff';
                 ctx.font = `bold ${labelFontSize}px Arial`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                for (let i = 0; i < elements.length; i += labelSample) {
+                for (let i = 0; i < elements.length; i++) {
                     ctx.fillText(elements[i], labelMargin / 2, offset + i * cellSize + cellSize / 2);
                 }
             }
 
-            // Performance optimization: batch rendering for large grids
-            const useBatchRendering = (quality === 'fast' && size > 150) || (size > 300);
-            const skipLabels = labelType === 'none' || cellSize < 4 || fontSize < 3;
-            
-            if (useBatchRendering) {
-                // Fast path: render blocks without individual operations
-                for (let i = 0; i < elements.length; i++) {
-                    for (let j = 0; j < elements.length; j++) {
-                        const a = elements[i];
-                        const b = elements[j];
-                        
-                        let value;
-                        if (tableType === 'addition') {
-                            value = (a + b) % m;
-                        } else {
-                            value = (a * b) % m;
-                        }
-
-                        let color = getColor(value, colorScheme, m, zeroDivisors, idempotents);
-                        
-                        const x = offset + j * cellSize;
-                        const y = offset + i * cellSize;
-
-                        ctx.fillStyle = color;
-                        ctx.fillRect(x, y, cellSize, cellSize);
+            // Draw grid
+            for (let i = 0; i < elements.length; i++) {
+                for (let j = 0; j < elements.length; j++) {
+                    const a = elements[i];
+                    const b = elements[j];
+                    
+                    let value;
+                    if (tableType === 'addition') {
+                        value = (a + b) % m;
+                    } else {
+                        value = (a * b) % m;
                     }
-                }
-            } else {
-                // High quality path: individual cells with optional grid lines and labels
-                for (let i = 0; i < elements.length; i++) {
-                    for (let j = 0; j < elements.length; j++) {
-                        const a = elements[i];
-                        const b = elements[j];
+
+                    // Determine cell color
+                    let color;
+                    switch (colorScheme) {
+                        case 'rainbow':
+                            color = getRainbowColor(value, m);
+                            break;
+                        case 'residueClass':
+                            color = getResidueClassColor(value, m);
+                            break;
+                        case 'divisibility':
+                            color = getDivisibilityColor(value, m);
+                            break;
+                        case 'zeroDivisors':
+                            color = getZeroDivisorColor(value, m, zeroDivisors);
+                            break;
+                        case 'idempotents':
+                            color = getIdempotentColor(value, m, idempotents);
+                            break;
+                    }
+
+                    const x = offset + j * cellSize;
+                    const y = offset + i * cellSize;
+
+                    ctx.fillStyle = color;
+                    ctx.fillRect(x, y, cellSize - 1, cellSize - 1);
+
+                    // Draw grid lines if enabled
+                    if (showGridLines) {
+                        ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+                        ctx.lineWidth = 1;
+                        ctx.strokeRect(x, y, cellSize - 1, cellSize - 1);
+                    }
+
+                    // Determine label text
+                    let labelText = '';
+                    switch (labelType) {
+                        case 'result':
+                            labelText = value.toString();
+                            break;
+                        case 'coordinates':
+                            labelText = `(${a},${b})`;
+                            break;
+                        case 'operation':
+                            const op = tableType === 'addition' ? '+' : '×';
+                            labelText = `${a}${op}${b}`;
+                            break;
+                        case 'properties':
+                            if (units.includes(value)) labelText = 'U';
+                            else if (zeroDivisors.includes(value)) labelText = 'Z';
+                            else if (idempotents.includes(value)) labelText = 'I';
+                            else if (value === 0) labelText = '0';
+                            else labelText = value.toString();
+                            break;
+                        case 'gcd':
+                            labelText = `gcd:${gcd(a, b)}`;
+                            break;
+                        case 'none':
+                            labelText = '';
+                            break;
+                    }
+
+                    // Determine label color
+                    let textColor;
+                    switch (labelColor) {
+                        case 'white':
+                            textColor = '#ffffff';
+                            break;
+                        case 'black':
+                            textColor = '#000000';
+                            break;
+                        case 'contrast':
+                            textColor = getContrastColor(color);
+                            break;
+                        case 'byType':
+                            if (units.includes(value)) textColor = '#00ff00';
+                            else if (zeroDivisors.includes(value)) textColor = '#ff0000';
+                            else if (idempotents.includes(value)) textColor = '#ffff00';
+                            else if (value === 0) textColor = '#ffffff';
+                            else textColor = '#ffffff';
+                            break;
+                    }
+
+                    // Draw label
+                    if (labelText !== '') {
+                        ctx.fillStyle = textColor;
+                        ctx.font = `bold ${fontSize}px Arial`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
                         
-                        let value;
-                        if (tableType === 'addition') {
-                            value = (a + b) % m;
-                        } else {
-                            value = (a * b) % m;
+                        // Add text shadow for better readability
+                        if (labelColor !== 'black') {
+                            ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                            ctx.shadowBlur = 3;
+                            ctx.shadowOffsetX = 1;
+                            ctx.shadowOffsetY = 1;
                         }
-
-                        let color = getColor(value, colorScheme, m, zeroDivisors, idempotents);
                         
-                        const x = offset + j * cellSize;
-                        const y = offset + i * cellSize;
-
-                        ctx.fillStyle = color;
-                        ctx.fillRect(x, y, cellSize - 1, cellSize - 1);
-
-                        if (showGridLines && cellSize > 3) {
-                            ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
-                            ctx.lineWidth = 0.5;
-                            ctx.strokeRect(x, y, cellSize - 1, cellSize - 1);
-                        }
-
-                        // Draw labels only if cell is large enough and not skipped
-                        if (!skipLabels && cellSize >= 6) {
-                            let labelText = getLabelText(labelType, a, b, value, tableType, units, zeroDivisors, idempotents);
-                            
-                            if (labelText !== '') {
-                                let textColor = getLabelColor(labelColor, value, color, units, zeroDivisors, idempotents);
-                                
-                                ctx.fillStyle = textColor;
-                                ctx.font = `bold ${fontSize}px Arial`;
-                                ctx.textAlign = 'center';
-                                ctx.textBaseline = 'middle';
-                                
-                                // Text shadow for readability (only for larger cells)
-                                if (antialiasing && labelColor !== 'black' && cellSize > 8) {
-                                    ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-                                    ctx.shadowBlur = 2;
-                                    ctx.shadowOffsetX = 0.5;
-                                    ctx.shadowOffsetY = 0.5;
-                                }
-                                
-                                ctx.fillText(labelText, x + cellSize / 2, y + cellSize / 2);
-                                
-                                ctx.shadowColor = 'transparent';
-                                ctx.shadowBlur = 0;
-                                ctx.shadowOffsetX = 0;
-                                ctx.shadowOffsetY = 0;
-                            }
-                        }
+                        ctx.fillText(labelText, x + cellSize / 2, y + cellSize / 2);
+                        
+                        // Reset shadow
+                        ctx.shadowColor = 'transparent';
+                        ctx.shadowBlur = 0;
+                        ctx.shadowOffsetX = 0;
+                        ctx.shadowOffsetY = 0;
                     }
                 }
             }
@@ -1445,76 +1216,6 @@
             
             // Update legend
             updateLegend(colorScheme, labelType, labelColor, m, units, zeroDivisors, idempotents);
-            
-            // Update performance info
-            updatePerformanceInfo(m, size, cellSize, quality);
-        }
-
-        // Helper function to get color (consolidated)
-        function getColor(value, colorScheme, m, zeroDivisors, idempotents) {
-            switch (colorScheme) {
-                case 'rainbow': return getRainbowColor(value, m);
-                case 'residueClass': return getResidueClassColor(value, m);
-                case 'divisibility': return getDivisibilityColor(value, m);
-                case 'zeroDivisors': return getZeroDivisorColor(value, m, zeroDivisors);
-                case 'idempotents': return getIdempotentColor(value, m, idempotents);
-                default: return getRainbowColor(value, m);
-            }
-        }
-
-        // Helper function to get label text
-        function getLabelText(labelType, a, b, value, tableType, units, zeroDivisors, idempotents) {
-            switch (labelType) {
-                case 'result':
-                    return value.toString();
-                case 'coordinates':
-                    return `(${a},${b})`;
-                case 'operation':
-                    const op = tableType === 'addition' ? '+' : '×';
-                    return `${a}${op}${b}`;
-                case 'properties':
-                    if (units.includes(value)) return 'U';
-                    if (zeroDivisors.includes(value)) return 'Z';
-                    if (idempotents.includes(value)) return 'I';
-                    if (value === 0) return '0';
-                    return value.toString();
-                case 'gcd':
-                    return gcd(a, b).toString();
-                case 'none':
-                    return '';
-                default:
-                    return value.toString();
-            }
-        }
-
-        // Helper function to get label color
-        function getLabelColor(labelColor, value, bgColor, units, zeroDivisors, idempotents) {
-            switch (labelColor) {
-                case 'white': return '#ffffff';
-                case 'black': return '#000000';
-                case 'contrast': return getContrastColor(bgColor);
-                case 'byType':
-                    if (units.includes(value)) return '#00ff00';
-                    if (zeroDivisors.includes(value)) return '#ff0000';
-                    if (idempotents.includes(value)) return '#ffff00';
-                    return '#ffffff';
-                default: return '#ffffff';
-            }
-        }
-
-        // Performance info display
-        function updatePerformanceInfo(m, size, cellSize, quality) {
-            const info = document.getElementById('performanceInfo');
-            if (!info) return;
-            
-            const totalCells = size * size;
-            const qualityLevel = quality === 'adaptive' ? 'Auto' : quality.charAt(0).toUpperCase() + quality.slice(1);
-            
-            info.innerHTML = `
-                <strong>Current Grid:</strong> ${size}×${size} = ${totalCells.toLocaleString()} cells | 
-                Cell size: ${cellSize}px | 
-                Quality: ${qualityLevel}
-            `;
         }
 
         // Update legend based on current settings
@@ -1729,325 +1430,24 @@
             }
         }
 
-        // Export functions with title and analysis
+        // Export functions
         function exportCanvas() {
-            const m = parseInt(document.getElementById('modulusInput').value);
-            const tableType = document.querySelector('input[name="tableType"]:checked').value;
-            const colorScheme = document.querySelector('input[name="colorScheme"]:checked').value;
-            const labelType = document.querySelector('input[name="labelType"]:checked').value;
-            
-            // Get current statistics
-            const units = findUnits(m);
-            const zeroDivisors = findZeroDivisors(m);
-            const idempotents = findIdempotents(m);
-            const nilpotents = findNilpotents(m);
-            const isIntegral = zeroDivisors.length === 0;
-            const isField = isPrime(m);
-            
-            // Create larger canvas for export with room for annotations
-            const gridCanvas = document.getElementById('gridCanvas');
-            const currentRes = parseInt(document.getElementById('resolutionSlider').value);
-            const exportRes = Math.max(3840, currentRes * 2);
-            const margin = 200; // Space for title and legend
-            const legendWidth = 500;
-            
-            const exportCanvas = document.createElement('canvas');
-            exportCanvas.width = exportRes + legendWidth;
-            exportCanvas.height = exportRes + margin;
-            const ctx = exportCanvas.getContext('2d', { alpha: false });
-            
-            // White background
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
-            
-            // Draw title section
-            ctx.fillStyle = '#1a202c';
-            ctx.font = 'bold 48px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('Modular Arithmetic Grid Explorer', exportCanvas.width / 2, 60);
-            
-            // Draw subtitle
-            ctx.font = '32px Arial';
-            ctx.fillStyle = '#4a5568';
-            let subtitle = '';
-            if (tableType === 'multiplication') subtitle = `Multiplication Table: ℤ/${m}ℤ`;
-            else if (tableType === 'cayley') subtitle = `Cayley Table (Units Only): (ℤ/${m}ℤ)×`;
-            else subtitle = `Addition Table: ℤ/${m}ℤ`;
-            ctx.fillText(subtitle, exportCanvas.width / 2, 110);
-            
-            // Draw main grid
-            ctx.save();
-            ctx.translate(0, margin);
-            ctx.scale(exportRes / currentRes, exportRes / currentRes);
-            ctx.drawImage(gridCanvas, 0, 0);
-            ctx.restore();
-            
-            // Draw legend panel
-            const legendX = exportRes + 20;
-            const legendY = margin;
-            
-            // Legend background
-            ctx.fillStyle = '#f7fafc';
-            ctx.fillRect(legendX - 10, legendY - 10, legendWidth + 20, exportRes + 20);
-            ctx.strokeStyle = '#cbd5e0';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(legendX - 10, legendY - 10, legendWidth + 20, exportRes + 20);
-            
-            // Legend title
-            ctx.fillStyle = '#2d3748';
-            ctx.font = 'bold 36px Arial';
-            ctx.textAlign = 'left';
-            ctx.fillText('Analysis', legendX, legendY + 40);
-            
-            let yPos = legendY + 80;
-            const lineHeight = 40;
-            const sectionGap = 60;
-            
-            // Parameters section
-            ctx.font = 'bold 28px Arial';
-            ctx.fillStyle = '#667eea';
-            ctx.fillText('Parameters', legendX, yPos);
-            yPos += lineHeight;
-            
-            ctx.font = '24px Arial';
-            ctx.fillStyle = '#2d3748';
-            ctx.fillText(`Modulus (m): ${m}`, legendX, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Table Type: ${tableType === 'cayley' ? 'Cayley (Units)' : tableType.charAt(0).toUpperCase() + tableType.slice(1)}`, legendX, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Color Scheme: ${colorScheme.replace(/([A-Z])/g, ' $1').trim()}`, legendX, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Label Type: ${labelType.replace(/([A-Z])/g, ' $1').trim()}`, legendX, yPos);
-            yPos += sectionGap;
-            
-            // Ring Structure section
-            ctx.font = 'bold 28px Arial';
-            ctx.fillStyle = '#667eea';
-            ctx.fillText('Ring Structure', legendX, yPos);
-            yPos += lineHeight;
-            
-            ctx.font = '24px Arial';
-            ctx.fillStyle = '#2d3748';
-            const size = tableType === 'cayley' ? units.length : m;
-            ctx.fillText(`Grid Size: ${size} × ${size}`, legendX, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Total Elements: ${m}`, legendX, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`φ(${m}) = ${euler_phi(m)}`, legendX, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Integral Domain: ${isIntegral ? 'YES' : 'NO'}`, legendX, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Field: ${isField ? 'YES' : 'NO'}`, legendX, yPos);
-            yPos += sectionGap;
-            
-            // Special Elements section
-            ctx.font = 'bold 28px Arial';
-            ctx.fillStyle = '#667eea';
-            ctx.fillText('Special Elements', legendX, yPos);
-            yPos += lineHeight;
-            
-            ctx.font = '24px Arial';
-            ctx.fillStyle = '#2d3748';
-            ctx.fillText(`Units: ${units.length}`, legendX, yPos);
-            yPos += lineHeight;
-            if (units.length <= 20) {
-                ctx.font = '20px Arial';
-                ctx.fillStyle = '#718096';
-                const unitsStr = '{' + units.join(', ') + '}';
-                const maxWidth = legendWidth - 20;
-                wrapText(ctx, unitsStr, legendX + 20, yPos, maxWidth, 30);
-                yPos += Math.ceil(unitsStr.length / 40) * 30 + 10;
-                ctx.font = '24px Arial';
-                ctx.fillStyle = '#2d3748';
-            } else {
-                yPos += lineHeight;
-            }
-            
-            ctx.fillText(`Zero Divisors: ${zeroDivisors.length}`, legendX, yPos);
-            yPos += lineHeight;
-            
-            ctx.fillText(`Idempotents: ${idempotents.length}`, legendX, yPos);
-            yPos += lineHeight;
-            if (idempotents.length <= 15 && idempotents.length > 0) {
-                ctx.font = '20px Arial';
-                ctx.fillStyle = '#718096';
-                ctx.fillText('{' + idempotents.join(', ') + '}', legendX + 20, yPos);
-                yPos += lineHeight;
-                ctx.font = '24px Arial';
-                ctx.fillStyle = '#2d3748';
-            }
-            
-            ctx.fillText(`Nilpotents: ${nilpotents.length}`, legendX, yPos);
-            yPos += sectionGap;
-            
-            // Color Legend section
-            if (colorScheme === 'zeroDivisors' || colorScheme === 'idempotents') {
-                ctx.font = 'bold 28px Arial';
-                ctx.fillStyle = '#667eea';
-                ctx.fillText('Color Legend', legendX, yPos);
-                yPos += lineHeight;
-                
-                ctx.font = '24px Arial';
-                if (colorScheme === 'zeroDivisors') {
-                    // Red box
-                    ctx.fillStyle = '#e74c3c';
-                    ctx.fillRect(legendX, yPos - 20, 30, 30);
-                    ctx.fillStyle = '#2d3748';
-                    ctx.fillText('Zero Divisor', legendX + 40, yPos);
-                    yPos += lineHeight;
-                    
-                    // Blue box
-                    ctx.fillStyle = '#3498db';
-                    ctx.fillRect(legendX, yPos - 20, 30, 30);
-                    ctx.fillStyle = '#2d3748';
-                    ctx.fillText('Not Zero Divisor', legendX + 40, yPos);
-                    yPos += lineHeight;
-                } else if (colorScheme === 'idempotents') {
-                    // Orange box
-                    ctx.fillStyle = '#f39c12';
-                    ctx.fillRect(legendX, yPos - 20, 30, 30);
-                    ctx.fillStyle = '#2d3748';
-                    ctx.fillText('Idempotent', legendX + 40, yPos);
-                    yPos += lineHeight;
-                    
-                    // Gray box
-                    ctx.fillStyle = '#95a5a6';
-                    ctx.fillRect(legendX, yPos - 20, 30, 30);
-                    ctx.fillStyle = '#2d3748';
-                    ctx.fillText('Not Idempotent', legendX + 40, yPos);
-                    yPos += lineHeight;
-                }
-                yPos += 20;
-            }
-            
-            // Mathematical Properties section
-            ctx.font = 'bold 28px Arial';
-            ctx.fillStyle = '#667eea';
-            ctx.fillText('Properties', legendX, yPos);
-            yPos += lineHeight;
-            
-            ctx.font = '24px Arial';
-            ctx.fillStyle = '#2d3748';
-            
-            // Prime factorization
-            const primeFactors = getPrimeFactorization(m);
-            ctx.fillText(`m = ${primeFactors}`, legendX, yPos);
-            yPos += lineHeight;
-            
-            // Divisor count
-            const divisorCount = countDivisors(m);
-            ctx.fillText(`Divisors: ${divisorCount}`, legendX, yPos);
-            yPos += lineHeight;
-            
-            // φ(m)/m ratio
-            const phiRatio = (euler_phi(m) / m).toFixed(4);
-            ctx.fillText(`φ(m)/m ≈ ${phiRatio}`, legendX, yPos);
-            yPos += lineHeight;
-            
-            // Footer
-            ctx.fillStyle = '#718096';
-            ctx.font = '20px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('Wessen Getachew | github.com/wessengetachew | @7dview', exportCanvas.width / 2, exportCanvas.height - 40);
-            ctx.fillText(new Date().toLocaleDateString(), exportCanvas.width / 2, exportCanvas.height - 15);
-            
-            // Export
-            exportCanvas.toBlob(function(blob) {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `modular_grid_m${m}_${tableType}_annotated.png`;
-                a.click();
-                URL.revokeObjectURL(url);
-                
-                showInfo('Export Complete', `Exported ${exportCanvas.width}×${exportCanvas.height} annotated PNG`);
-            });
-        }
-        
-        // Helper function to wrap text
-        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-            const words = text.split(' ');
-            let line = '';
-            let lineCount = 0;
-            
-            for (let n = 0; n < words.length; n++) {
-                const testLine = line + words[n] + ' ';
-                const metrics = ctx.measureText(testLine);
-                const testWidth = metrics.width;
-                
-                if (testWidth > maxWidth && n > 0) {
-                    ctx.fillText(line, x, y + (lineCount * lineHeight));
-                    line = words[n] + ' ';
-                    lineCount++;
-                } else {
-                    line = testLine;
-                }
-            }
-            ctx.fillText(line, x, y + (lineCount * lineHeight));
-        }
-        
-        // Helper function for prime factorization display
-        function getPrimeFactorization(n) {
-            if (n === 1) return '1';
-            if (isPrime(n)) return `${n} (prime)`;
-            
-            const factors = [];
-            let temp = n;
-            let p = 2;
-            
-            while (p * p <= temp) {
-                let count = 0;
-                while (temp % p === 0) {
-                    count++;
-                    temp /= p;
-                }
-                if (count > 0) {
-                    factors.push(count === 1 ? `${p}` : `${p}^${count}`);
-                }
-                p++;
-            }
-            if (temp > 1) factors.push(`${temp}`);
-            
-            return factors.join(' × ');
-        }
-        
-        // Helper function to count divisors
-        function countDivisors(n) {
-            let count = 0;
-            for (let i = 1; i <= Math.sqrt(n); i++) {
-                if (n % i === 0) {
-                    count += (i * i === n) ? 1 : 2;
-                }
-            }
-            return count;
-        }
-        
-        // Export grid only (high resolution)
-        function exportGridOnly() {
             const canvas = document.getElementById('gridCanvas');
-            const currentRes = parseInt(document.getElementById('resolutionSlider').value);
-            const m = parseInt(document.getElementById('modulusInput').value);
-            
-            // For export, always use maximum quality
-            const exportRes = Math.max(3840, currentRes * 2);
             const exportCanvas = document.createElement('canvas');
-            exportCanvas.width = exportRes;
-            exportCanvas.height = exportRes;
-            const ctx = exportCanvas.getContext('2d', { alpha: false });
+            exportCanvas.width = 3840;
+            exportCanvas.height = 3840;
+            const ctx = exportCanvas.getContext('2d');
             
-            // Scale and draw
-            ctx.scale(exportRes / currentRes, exportRes / currentRes);
+            ctx.scale(3840 / canvas.width, 3840 / canvas.height);
             ctx.drawImage(canvas, 0, 0);
             
             exportCanvas.toBlob(function(blob) {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `modular_grid_m${m}_${exportRes}x${exportRes}.png`;
+                a.download = `modular_grid_m${document.getElementById('modulusInput').value}_4k.png`;
                 a.click();
                 URL.revokeObjectURL(url);
-                
-                showInfo('Export Complete', `Exported ${exportRes}×${exportRes} grid-only PNG`);
             });
         }
 
