@@ -3,673 +3,684 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modular Arithmetic Grid Explorer - Interactive Visualization</title>
+    <title>Modular Arithmetic Explorer - Multi-Canvas Visualization Suite</title>
     <style>
+        :root {
+            --bg-deep: #0a0e1a;
+            --bg-card: #141829;
+            --bg-panel: #1a1f35;
+            --gold: #FFD700;
+            --gold-dim: #B8960A;
+            --cyan: #00FFFF;
+            --cyan-dim: #008B8B;
+            --text-primary: #E8E8E8;
+            --text-secondary: #A0A0A0;
+            --border: #2a3150;
+            --accent-purple: #9F7AEA;
+            --accent-green: #48BB78;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.6;
             padding: 20px;
         }
-        
-        .container {
-            max-width: 1400px;
+
+        .main-container {
+            max-width: 2400px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 30px;
         }
-        
+
         header {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #667eea;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-panel));
+            border-radius: 15px;
+            border: 2px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
-        
+
         h1 {
-            color: #2d3748;
-            font-size: 2.2em;
+            font-size: 2.8em;
             margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--gold), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
-        
+
         .subtitle {
-            color: #718096;
+            color: var(--text-secondary);
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        .author {
+            color: var(--gold-dim);
+            margin-top: 15px;
+            font-style: italic;
             font-size: 1.1em;
         }
-        
-        .author {
-            color: #4a5568;
-            margin-top: 10px;
-            font-style: italic;
+
+        /* Canvas Grid */
+        .viz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
         }
-        
-        .controls-section {
-            background: #f7fafc;
-            padding: 25px;
+
+        .canvas-panel {
+            background: var(--bg-card);
             border-radius: 12px;
-            margin-bottom: 30px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
         }
-        
+
+        .canvas-panel:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(255, 215, 0, 0.2);
+            border-color: var(--gold-dim);
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, var(--bg-panel), var(--bg-card));
+            padding: 20px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--gold);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .panel-subtitle {
+            color: var(--cyan-dim);
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: var(--bg-deep);
+        }
+
+        .canvas-info {
+            padding: 15px;
+            background: var(--bg-panel);
+            border-top: 1px solid var(--border);
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        /* Controls Section */
+        .controls-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .controls-header {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .section-header {
+            font-size: 1.3em;
+            color: var(--cyan);
+            margin: 25px 0 15px 0;
+            font-weight: 600;
+        }
+
         .control-row {
             display: flex;
             gap: 20px;
             margin-bottom: 20px;
             flex-wrap: wrap;
-            align-items: center;
         }
-        
-        .control-group {
+
+        .control-item {
             flex: 1;
-            min-width: 200px;
+            min-width: 250px;
         }
-        
-        .control-group label {
-            display: block;
-            font-weight: 600;
-            color: #2d3748;
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 8px;
-            font-size: 0.95em;
+            color: var(--text-primary);
+            font-weight: 600;
         }
-        
+
+        .control-value {
+            color: var(--gold);
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            padding: 4px 12px;
+            background: var(--bg-panel);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
         input[type="range"] {
             width: 100%;
-            height: 6px;
+            height: 8px;
             border-radius: 5px;
-            background: #cbd5e0;
+            background: var(--bg-panel);
             outline: none;
             -webkit-appearance: none;
+            border: 1px solid var(--border);
         }
-        
+
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            appearance: none;
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: #667eea;
+            background: linear-gradient(135deg, var(--gold), var(--cyan));
             cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
-        
+
         input[type="range"]::-moz-range-thumb {
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: #667eea;
+            background: linear-gradient(135deg, var(--gold), var(--cyan));
             cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            border: none;
         }
-        
+
         input[type="number"] {
             width: 100%;
-            padding: 10px;
-            border: 2px solid #cbd5e0;
-            border-radius: 6px;
+            padding: 12px;
+            background: var(--bg-panel);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
             font-size: 1em;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
         }
-        
+
         input[type="number"]:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--gold);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
         }
-        
-        .value-display {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: 700;
-            min-width: 50px;
-            text-align: center;
-        }
-        
+
+        /* Radio and Checkbox Styles */
         .radio-group {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             flex-wrap: wrap;
         }
-        
-        .radio-option {
+
+        .radio-option, .checkbox-option {
             display: flex;
             align-items: center;
             gap: 8px;
             padding: 10px 15px;
-            background: white;
-            border: 2px solid #cbd5e0;
+            background: var(--bg-panel);
+            border: 2px solid var(--border);
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
         }
-        
-        .radio-option:hover {
-            border-color: #667eea;
-            background: #edf2f7;
+
+        .radio-option:hover, .checkbox-option:hover {
+            border-color: var(--gold-dim);
+            background: var(--bg-card);
         }
-        
-        .radio-option input[type="radio"] {
-            cursor: pointer;
-        }
-        
-        .radio-option input[type="radio"]:checked + span {
-            color: #667eea;
+
+        .radio-option input:checked + span,
+        .checkbox-option input:checked + span {
+            color: var(--gold);
             font-weight: 700;
         }
-        
-        .canvas-container {
-            background: #1a202c;
-            padding: 30px;
-            border-radius: 12px;
-            margin: 30px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
-        }
-        
-        canvas {
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
             border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
         }
-        
-        .info-panels {
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+            color: var(--bg-deep);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--cyan-dim), var(--cyan));
+            color: var(--bg-deep);
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Preset Grid */
+        .preset-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
         }
-        
+
+        .preset-btn {
+            padding: 12px;
+            background: var(--bg-panel);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .preset-btn:hover {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-green));
+            border-color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(159, 122, 234, 0.4);
+        }
+
+        /* Info Panel */
         .info-panel {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--bg-panel), var(--bg-card));
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        
-        .info-panel h3 {
-            font-size: 1.3em;
-            margin-bottom: 15px;
-            border-bottom: 2px solid rgba(255,255,255,0.3);
-            padding-bottom: 10px;
-        }
-        
-        .info-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .info-label {
-            font-weight: 500;
-        }
-        
-        .info-value {
-            font-weight: 700;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .structure-panel {
-            background: #edf2f7;
-            padding: 25px;
-            border-radius: 12px;
+            border: 2px solid var(--border);
             margin: 20px 0;
-            border-left: 5px solid #667eea;
         }
-        
-        .structure-panel h3 {
-            color: #2d3748;
-            margin-bottom: 15px;
+
+        .info-title {
             font-size: 1.3em;
+            color: var(--gold);
+            margin-bottom: 15px;
+            font-weight: 700;
         }
-        
-        .structure-item {
-            padding: 10px 0;
-            color: #4a5568;
-            line-height: 1.6;
+
+        .info-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
         }
-        
-        .special-elements {
+
+        .stat-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             margin: 20px 0;
         }
-        
-        .element-card {
-            background: white;
+
+        .stat-card {
+            background: var(--bg-panel);
             padding: 15px;
             border-radius: 8px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid var(--border);
             text-align: center;
         }
-        
-        .element-card .title {
-            font-weight: 700;
-            color: #667eea;
-            margin-bottom: 8px;
+
+        .stat-label {
+            color: var(--cyan);
             font-size: 0.9em;
+            margin-bottom: 8px;
         }
-        
-        .element-card .value {
-            font-size: 1.5em;
+
+        .stat-value {
+            color: var(--gold);
+            font-size: 2em;
             font-weight: 700;
-            color: #2d3748;
+            font-family: 'Courier New', monospace;
         }
-        
-        .element-card .count {
-            color: #718096;
+
+        .stat-details {
+            color: var(--text-secondary);
             font-size: 0.85em;
-            margin-top: 5px;
+            margin-top: 8px;
+            word-wrap: break-word;
         }
-        
-        .explanation-section {
-            background: #fffbeb;
-            padding: 25px;
-            border-radius: 12px;
-            margin: 20px 0;
-            border-left: 5px solid #f59e0b;
-        }
-        
-        .explanation-section h3 {
-            color: #92400e;
-            margin-bottom: 15px;
-        }
-        
-        .explanation-section p {
-            color: #78350f;
-            line-height: 1.7;
-            margin-bottom: 10px;
-        }
-        
-        .legend {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 20px 0;
-            padding: 20px;
-            background: #f7fafc;
-            border-radius: 8px;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .legend-color {
-            width: 30px;
-            height: 30px;
-            border-radius: 4px;
-            border: 2px solid #2d3748;
-        }
-        
+
+        /* Export Section */
         .export-section {
             display: flex;
             gap: 15px;
             justify-content: center;
+            flex-wrap: wrap;
             margin: 30px 0;
+            padding: 25px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 2px solid var(--border);
         }
-        
-        button {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1em;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-        
-        button:hover {
-            background: #5a67d8;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
+
+        /* Footer */
         footer {
             text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 2px solid #e2e8f0;
-            color: #718096;
+            margin-top: 50px;
+            padding: 30px;
+            border-top: 2px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        footer a {
+            color: var(--gold);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: var(--cyan);
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .viz-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .viz-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+
+        /* Notification */
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(400px); opacity: 0; }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--gold), var(--cyan));
+            color: var(--bg-deep);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="main-container">
         <header>
-            <h1>Modular Arithmetic Grid Explorer</h1>
-            <div class="subtitle">Interactive Visualization of Multiplication and Addition Tables in ℤ/mℤ</div>
-            <div class="author">by Wessen Getachew</div>
+            <h1>⟨ Modular Arithmetic Explorer ⟩</h1>
+            <div class="subtitle">Multi-Canvas Visualization Suite · Ring Theory · Number Theory</div>
+            <div class="author">Wessen Getachew · @7dview</div>
         </header>
 
+        <!-- Multi-Canvas Visualization Grid -->
+        <div class="viz-grid">
+            <!-- Canvas 1: Main Multiplication Grid -->
+            <div class="canvas-panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">⊗ Multiplication Table</div>
+                        <div class="panel-subtitle">Ring ℤ/mℤ · Color-coded Structure</div>
+                    </div>
+                </div>
+                <canvas id="gridCanvas" width="800" height="800"></canvas>
+                <div class="canvas-info" id="gridInfo">
+                    Multiplication table visualization with configurable color schemes
+                </div>
+            </div>
+
+            <!-- Canvas 2: Unit Circle Representation -->
+            <div class="canvas-panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">○ Unit Circle</div>
+                        <div class="panel-subtitle">Elements as Roots of Unity</div>
+                    </div>
+                </div>
+                <canvas id="circleCanvas" width="800" height="800"></canvas>
+                <div class="canvas-info" id="circleInfo">
+                    Elements mapped to e^(2πik/m) on the unit circle
+                </div>
+            </div>
+
+            <!-- Canvas 3: GCD Structure -->
+            <div class="canvas-panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">⊚ GCD Structure</div>
+                        <div class="panel-subtitle">Coprimality Network</div>
+                    </div>
+                </div>
+                <canvas id="gcdCanvas" width="800" height="800"></canvas>
+                <div class="canvas-info" id="gcdInfo">
+                    Visual representation of gcd relationships
+                </div>
+            </div>
+
+            <!-- Canvas 4: Coprime Density -->
+            <div class="canvas-panel">
+                <div class="panel-header">
+                    <div>
+                        <div class="panel-title">◬ Coprime Density</div>
+                        <div class="panel-subtitle">φ(m)/m Analysis</div>
+                    </div>
+                </div>
+                <canvas id="densityCanvas" width="800" height="800"></canvas>
+                <div class="canvas-info" id="densityInfo">
+                    Visualization of Euler's totient function density
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Section -->
         <div class="controls-section">
-            <h2 style="margin-bottom: 20px; color: #2d3748;">Configuration</h2>
-            
-            <div class="control-row">
-                <div class="control-group" style="flex: 2;">
-                    <label>Famous Sequence Presets:</label>
-                    <div class="radio-group" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
-                        <button onclick="applyPreset('basel')" style="background: #8b5cf6; padding: 8px 12px; font-size: 0.9em;">
-                            ζ(2) = π²/6 (m=6)
-                        </button>
-                        <button onclick="applyPreset('totient12')" style="background: #8b5cf6; padding: 8px 12px; font-size: 0.9em;">
-                            φ(12) = 4 (m=12)
-                        </button>
-                        <button onclick="applyPreset('prime')" style="background: #8b5cf6; padding: 8px 12px; font-size: 0.9em;">
-                            Prime Field (m=17)
-                        </button>
-                        <button onclick="applyPreset('highly_composite')" style="background: #8b5cf6; padding: 8px 12px; font-size: 0.9em;">
-                            Highly Composite (m=60)
-                        </button>
-                        <button onclick="applyPreset('power_of_2')" style="background: #8b5cf6; padding: 8px 12px; font-size: 0.9em;">
-                            Power of 2 (m=32)
-                        </button>
-                        <button onclick="applyPreset('fibonacci')" style="background: #8b5cf6; padding: 8px 12px; font-size: 0.9em;">
-                            Fibonacci (m=89)
-                        </button>
-                        <button onclick="applyPreset('mersenne')" style="background: #8b5cf6; padding: 8px 12px; font-size: 0.9em;">
-                            Mersenne (m=31)
-                        </button>
-                        <button onclick="applyPreset('perfect')" style="background: #8b5cf6; padding: 8px 12px; font-size: 0.9em;">
-                            Perfect Number (m=28)
-                        </button>
-                        <button onclick="applyPreset('euler_constant')" style="background: #8b5cf6; padding: 8px 12px; font-size: 0.9em;">
-                            Euler's e (m≈271)
-                        </button>
-                        <button onclick="applyPreset('golden_ratio')" style="background: #8b5cf6; padding: 8px 12px; font-size: 0.9em;">
-                            Golden Ratio (m≈161)
-                        </button>
-                        <button onclick="applyPreset('ramanujan')" style="background: #8b5cf6; padding: 8px 12px; font-size: 0.9em;">
-                            Ramanujan τ (m=24)
-                        </button>
-                        <button onclick="applyPreset('catalan')" style="background: #8b5cf6; padding: 8px 12px; font-size: 0.9em;">
-                            Catalan (m=42)
-                        </button>
-                        <button onclick="applyPreset('coprime_density')" style="background: #8b5cf6; padding: 8px 12px; font-size: 0.9em;">
-                            6/π² Density (m=61)
-                        </button>
-                        <button onclick="applyPreset('harmonic')" style="background: #8b5cf6; padding: 8px 12px; font-size: 0.9em;">
-                            Harmonic (m=100)
-                        </button>
-                        <button onclick="applyPreset('twin_primes')" style="background: #8b5cf6; padding: 8px 12px; font-size: 0.9em;">
-                            Twin Primes (m=71,73)
-                        </button>
-                    </div>
-                </div>
+            <div class="controls-header">Configuration & Parameters</div>
+
+            <!-- Presets -->
+            <div class="section-header">Mathematical Presets</div>
+            <div class="preset-grid">
+                <button class="preset-btn" onclick="applyPreset('basel')">ζ(2)=π²/6 (m=6)</button>
+                <button class="preset-btn" onclick="applyPreset('totient12')">φ(12)=4</button>
+                <button class="preset-btn" onclick="applyPreset('prime')">Prime Field (m=17)</button>
+                <button class="preset-btn" onclick="applyPreset('highly_composite')">Highly Composite (m=60)</button>
+                <button class="preset-btn" onclick="applyPreset('power_of_2')">Power of 2 (m=32)</button>
+                <button class="preset-btn" onclick="applyPreset('fibonacci')">Fibonacci Prime (m=89)</button>
+                <button class="preset-btn" onclick="applyPreset('mersenne')">Mersenne Prime (m=31)</button>
+                <button class="preset-btn" onclick="applyPreset('perfect')">Perfect Number (m=28)</button>
+                <button class="preset-btn" onclick="applyPreset('golden')">Golden Ratio (m≈161)</button>
+                <button class="preset-btn" onclick="applyPreset('ramanujan')">Ramanujan τ (m=24)</button>
             </div>
 
-            <div class="control-row" style="background: #e0f2fe; padding: 15px; border-radius: 8px; border-left: 4px solid #0284c7;">
-                <div style="width: 100%;">
-                    <h4 style="margin: 0 0 8px 0; color: #0c4a6e;">Current Preset Info</h4>
-                    <div id="presetInfo" style="color: #0c4a6e; font-size: 0.95em; line-height: 1.5;">
-                        Select a preset above to explore famous mathematical sequences and constants through modular arithmetic.
-                    </div>
-                </div>
-            </div>
-
+            <!-- Modulus Control -->
+            <div class="section-header">Modulus Parameter</div>
             <div class="control-row">
-                <div class="control-group">
-                    <label>Modulus (m): <span class="value-display" id="modulusDisplay">12</span></label>
+                <div class="control-item">
+                    <div class="control-label">
+                        <span>Modulus (m)</span>
+                        <span class="control-value" id="modulusDisplay">12</span>
+                    </div>
                     <input type="range" id="modulusSlider" min="2" max="100" value="12" oninput="updateModulus()">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85em; color: #718096; margin-top: 5px;">
-                        <span>2</span>
-                        <span>100</span>
-                    </div>
                 </div>
-                
-                <div class="control-group">
-                    <label>Or enter directly:</label>
-                    <input type="number" id="modulusInput" min="2" max="1000" value="12" onchange="updateModulusFromInput()">
+                <div class="control-item">
+                    <label class="control-label">
+                        <span>Direct Input</span>
+                    </label>
+                    <input type="number" id="modulusInput" min="2" max="500" value="12" onchange="updateModulusFromInput()">
                 </div>
             </div>
 
-            <div class="control-row">
-                <div class="control-group">
-                    <label>Table Type:</label>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="radio" name="tableType" value="multiplication" checked onchange="updateVisualization()">
-                            <span>Multiplication (× mod m)</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="tableType" value="cayley" onchange="updateVisualization()">
-                            <span>Units Only (Cayley)</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="tableType" value="addition" onchange="updateVisualization()">
-                            <span>Addition (+ mod m)</span>
-                        </label>
-                    </div>
-                </div>
+            <!-- Table Type -->
+            <div class="section-header">Table Type</div>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="tableType" value="multiplication" checked onchange="updateVisualization()">
+                    <span>Multiplication</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="tableType" value="cayley" onchange="updateVisualization()">
+                    <span>Units Only (Cayley)</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="tableType" value="addition" onchange="updateVisualization()">
+                    <span>Addition</span>
+                </label>
             </div>
 
-            <div class="control-row">
-                <div class="control-group">
-                    <label>Color Scheme:</label>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="radio" name="colorScheme" value="rainbow" checked onchange="updateVisualization()">
-                            <span>Rainbow (by value)</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="colorScheme" value="residueClass" onchange="updateVisualization()">
-                            <span>By Residue Class</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="colorScheme" value="divisibility" onchange="updateVisualization()">
-                            <span>By Divisibility</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="colorScheme" value="zeroDivisors" onchange="updateVisualization()">
-                            <span>Highlight Zero Divisors</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="colorScheme" value="idempotents" onchange="updateVisualization()">
-                            <span>Highlight Idempotents</span>
-                        </label>
-                    </div>
-                </div>
+            <!-- Color Scheme -->
+            <div class="section-header">Color Scheme</div>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="colorScheme" value="rainbow" checked onchange="updateVisualization()">
+                    <span>Rainbow</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="colorScheme" value="divisibility" onchange="updateVisualization()">
+                    <span>Divisibility</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="colorScheme" value="zeroDivisors" onchange="updateVisualization()">
+                    <span>Zero Divisors</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="colorScheme" value="idempotents" onchange="updateVisualization()">
+                    <span>Idempotents</span>
+                </label>
             </div>
 
-            <div class="control-row">
-                <div class="control-group">
-                    <label>Cell Labels:</label>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="radio" name="labelType" value="result" checked onchange="updateVisualization()">
-                            <span>Show Result</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="labelType" value="coordinates" onchange="updateVisualization()">
-                            <span>Show (a,b)</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="labelType" value="operation" onchange="updateVisualization()">
-                            <span>Show a⊗b</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="labelType" value="properties" onchange="updateVisualization()">
-                            <span>Show Properties</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="labelType" value="gcd" onchange="updateVisualization()">
-                            <span>Show gcd(a,b)</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="labelType" value="none" onchange="updateVisualization()">
-                            <span>No Labels</span>
-                        </label>
-                    </div>
-                </div>
+            <!-- Display Options -->
+            <div class="section-header">Display Options</div>
+            <div class="radio-group">
+                <label class="checkbox-option">
+                    <input type="checkbox" id="showLabels" checked onchange="updateVisualization()">
+                    <span>Show Labels</span>
+                </label>
+                <label class="checkbox-option">
+                    <input type="checkbox" id="showGridLines" onchange="updateVisualization()">
+                    <span>Grid Lines</span>
+                </label>
+                <label class="checkbox-option">
+                    <input type="checkbox" id="highlightUnits" onchange="updateVisualization()">
+                    <span>Highlight Units</span>
+                </label>
             </div>
+        </div>
 
-            <div class="control-row">
-                <div class="control-group">
-                    <label>Label Color Style:</label>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="radio" name="labelColor" value="white" checked onchange="updateVisualization()">
-                            <span>White</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="labelColor" value="black" onchange="updateVisualization()">
-                            <span>Black</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="labelColor" value="contrast" onchange="updateVisualization()">
-                            <span>Auto Contrast</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="labelColor" value="byType" onchange="updateVisualization()">
-                            <span>By Element Type</span>
-                        </label>
-                    </div>
+        <!-- Statistics Panel -->
+        <div class="info-panel">
+            <div class="info-title">Ring Statistics & Properties</div>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-label">MODULUS</div>
+                    <div class="stat-value" id="statModulus">12</div>
+                    <div class="stat-details" id="statFactorization">2² × 3</div>
                 </div>
-            </div>
-
-            <div class="control-row">
-                <div class="control-group">
-                    <label>Grid Axis Labels:</label>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="checkbox" id="showRowLabels" checked onchange="updateVisualization()">
-                            <span>Show Row Labels</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="checkbox" id="showColLabels" checked onchange="updateVisualization()">
-                            <span>Show Column Labels</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="checkbox" id="showGridLines" onchange="updateVisualization()">
-                            <span>Show Grid Lines</span>
-                        </label>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-label">UNITS φ(m)</div>
+                    <div class="stat-value" id="statPhi">4</div>
+                    <div class="stat-details" id="statUnitsList">{1,5,7,11}</div>
                 </div>
-            </div>
-
-            <div class="control-row">
-                <div class="control-group">
-                    <label>Font Size: <span class="value-display" id="fontSizeDisplay">Auto</span></label>
-                    <input type="range" id="fontSizeSlider" min="0" max="40" value="0" oninput="updateFontSize()">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85em; color: #718096; margin-top: 5px;">
-                        <span>Auto</span>
-                        <span>40px</span>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-label">ZERO DIVISORS</div>
+                    <div class="stat-value" id="statZeroDivisors">7</div>
+                    <div class="stat-details" id="statZDList">Non-invertible elements</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">IDEMPOTENTS</div>
+                    <div class="stat-value" id="statIdempotents">4</div>
+                    <div class="stat-details" id="statIdempList">{0,1,4,9}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">RING TYPE</div>
+                    <div class="stat-value" id="statField">NO</div>
+                    <div class="stat-details">Field Status</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">DENSITY</div>
+                    <div class="stat-value" id="statDensity">0.33</div>
+                    <div class="stat-details">φ(m)/m ratio</div>
                 </div>
             </div>
         </div>
 
-        <div class="canvas-container">
-            <canvas id="gridCanvas" width="800" height="800"></canvas>
-        </div>
-
+        <!-- Export Section -->
         <div class="export-section">
-            <button onclick="exportCanvas()">Export as 4K PNG</button>
-            <button onclick="exportData()">Export Data as CSV</button>
-        </div>
-
-        <div class="legend" id="legendSection" style="display: none;">
-            <h3 style="width: 100%; text-align: center; margin-bottom: 15px; color: #2d3748;">Color Legend</h3>
-            <div id="legendContent" style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;"></div>
-        </div>
-
-        <div class="info-panels">
-            <div class="info-panel">
-                <h3>Grid Statistics</h3>
-                <div class="info-item">
-                    <span class="info-label">Modulus:</span>
-                    <span class="info-value" id="statModulus">12</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Total Elements:</span>
-                    <span class="info-value" id="statTotal">144</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Unique Values:</span>
-                    <span class="info-value" id="statUnique">12</span>
-                </div>
-            </div>
-
-            <div class="info-panel">
-                <h3>Ring Properties</h3>
-                <div class="info-item">
-                    <span class="info-label">φ(m) - Euler Totient:</span>
-                    <span class="info-value" id="statPhi">4</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Is Integral Domain:</span>
-                    <span class="info-value" id="statIntegral">NO</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Is Field:</span>
-                    <span class="info-value" id="statField">NO</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="structure-panel">
-            <h3>Structure Analysis</h3>
-            <div id="structureContent"></div>
-        </div>
-
-        <div class="special-elements" id="specialElements">
-            <div class="element-card">
-                <div class="title">UNITS</div>
-                <div class="value" id="unitsCount">4</div>
-                <div class="count" id="unitsList">{1, 5, 7, 11}</div>
-            </div>
-            <div class="element-card">
-                <div class="title">ZERO DIVISORS</div>
-                <div class="value" id="zeroDivisorsCount">7</div>
-                <div class="count" id="zeroDivisorsList">{2, 3, 4, 6, 8, 9, 10}</div>
-            </div>
-            <div class="element-card">
-                <div class="title">IDEMPOTENTS</div>
-                <div class="value" id="idempotentsCount">4</div>
-                <div class="count" id="idempotentsList">{0, 1, 4, 9}</div>
-            </div>
-            <div class="element-card">
-                <div class="title">NILPOTENTS</div>
-                <div class="value" id="nilpotentsCount">0</div>
-                <div class="count" id="nilpotentsList">{}</div>
-            </div>
-        </div>
-
-        <div class="explanation-section">
-            <h3>Understanding the Grid</h3>
-            <div id="explanationContent"></div>
+            <button class="btn btn-primary" onclick="exportWithAnalysis()">Export with Analysis</button>
+            <button class="btn btn-primary" onclick="exportAllCanvases()">Export All 4 Canvases</button>
+            <button class="btn btn-secondary" onclick="exportCanvas('grid')">Grid Only</button>
+            <button class="btn btn-secondary" onclick="exportCanvas('circle')">Circle Only</button>
+            <button class="btn btn-secondary" onclick="exportCanvas('gcd')">GCD Only</button>
+            <button class="btn btn-secondary" onclick="exportCanvas('density')">Density Only</button>
+            <button class="btn btn-secondary" onclick="exportData()">Export CSV Data</button>
         </div>
 
         <footer>
-            <p>Interactive Mathematical Visualization Tool</p>
-            <p style="margin-top: 10px;">Wessen Getachew | <a href="https://github.com/wessengetachew" style="color: #667eea;">GitHub</a> | <a href="https://twitter.com/7dview" style="color: #667eea;">@7dview</a></p>
+            <p style="font-size: 1.2em; margin-bottom: 15px;">Interactive Mathematical Visualization Tool</p>
+            <p>
+                Wessen Getachew | 
+                <a href="https://github.com/wessengetachew" target="_blank">GitHub</a> | 
+                <a href="https://twitter.com/7dview" target="_blank">@7dview</a>
+            </p>
+            <p style="margin-top: 15px; color: var(--text-secondary); font-size: 0.9em;">
+                Exploring connections between modular arithmetic, ring theory, and geometric representations
+            </p>
         </footer>
     </div>
 
     <script>
-        // Mathematical utilities
+        // Mathematical utility functions
         function gcd(a, b) {
             a = Math.abs(a);
             b = Math.abs(b);
@@ -707,16 +718,6 @@
             return true;
         }
 
-        function isSquareFree(n) {
-            let p = 2;
-            while (p * p <= n) {
-                if (n % (p * p) === 0) return false;
-                p++;
-            }
-            return true;
-        }
-
-        // Find units (invertible elements)
         function findUnits(m) {
             const units = [];
             for (let a = 1; a < m; a++) {
@@ -725,21 +726,16 @@
             return units;
         }
 
-        // Find zero divisors
         function findZeroDivisors(m) {
             const zeroDivisors = new Set();
             for (let a = 1; a < m; a++) {
-                for (let b = 1; b < m; b++) {
-                    if ((a * b) % m === 0) {
-                        zeroDivisors.add(a);
-                        zeroDivisors.add(b);
-                    }
+                if (gcd(a, m) > 1) {
+                    zeroDivisors.add(a);
                 }
             }
             return Array.from(zeroDivisors).sort((a, b) => a - b);
         }
 
-        // Find idempotents
         function findIdempotents(m) {
             const idempotents = [];
             for (let a = 0; a < m; a++) {
@@ -748,22 +744,28 @@
             return idempotents;
         }
 
-        // Find nilpotents
-        function findNilpotents(m) {
-            const nilpotents = [];
-            for (let a = 0; a < m; a++) {
-                let power = a;
-                let isNilpotent = false;
-                for (let k = 1; k <= 20; k++) {
-                    if (power % m === 0 && k > 1) {
-                        isNilpotent = true;
-                        break;
-                    }
-                    power = (power * a) % m;
+        function getPrimeFactorization(n) {
+            if (n === 1) return '1';
+            if (isPrime(n)) return `${n} (prime)`;
+            
+            const factors = [];
+            let temp = n;
+            let p = 2;
+            
+            while (p * p <= temp) {
+                let count = 0;
+                while (temp % p === 0) {
+                    count++;
+                    temp /= p;
                 }
-                if (isNilpotent && a !== 0) nilpotents.push(a);
+                if (count > 0) {
+                    factors.push(count === 1 ? `${p}` : `${p}^${count}`);
+                }
+                p++;
             }
-            return nilpotents;
+            if (temp > 1) factors.push(`${temp}`);
+            
+            return factors.join(' × ');
         }
 
         // Color schemes
@@ -772,22 +774,13 @@
             return `hsl(${hue}, 80%, 60%)`;
         }
 
-        function getResidueClassColor(value, m) {
-            const classes = [
-                '#e74c3c', '#3498db', '#2ecc71', '#f39c12',
-                '#9b59b6', '#1abc9c', '#e67e22', '#34495e',
-                '#95a5a6', '#c0392b', '#2980b9', '#27ae60'
-            ];
-            return classes[value % classes.length];
-        }
-
         function getDivisibilityColor(value, m) {
             if (value === 0) return '#34495e';
             const divisors = [];
             for (let d = 2; d <= m; d++) {
                 if (value % d === 0) divisors.push(d);
             }
-            if (divisors.length === 0) return '#2ecc71'; // No divisors (relatively prime)
+            if (divisors.length === 0) return '#48BB78';
             const hue = 240 - (divisors.length / m) * 180;
             return `hsl(${hue}, 70%, 55%)`;
         }
@@ -799,207 +792,55 @@
 
         function getIdempotentColor(value, m, idempotents) {
             if (value === 0) return '#2c3e50';
-            return idempotents.includes(value) ? '#f39c12' : '#95a5a6';
+            return idempotents.includes(value) ? '#FFD700' : '#95a5a6';
         }
 
         // Preset configurations
         function applyPreset(presetName) {
-            let m, tableType, colorScheme, labelType;
+            const presets = {
+                'basel': { m: 6, table: 'multiplication', color: 'zeroDivisors', title: 'Basel Problem', msg: 'Related to ζ(2) = π²/6' },
+                'totient12': { m: 12, table: 'cayley', color: 'rainbow', title: 'φ(12) = 4', msg: 'Classic totient example' },
+                'prime': { m: 17, table: 'multiplication', color: 'rainbow', title: 'Prime Field', msg: 'Field structure, all non-zero elements are units' },
+                'highly_composite': { m: 60, table: 'multiplication', color: 'divisibility', title: 'Highly Composite', msg: '60 = 2²×3×5 has many divisors' },
+                'power_of_2': { m: 32, table: 'multiplication', color: 'idempotents', title: 'Power of 2', msg: '32 = 2⁵ with special structure' },
+                'fibonacci': { m: 89, table: 'cayley', color: 'rainbow', title: 'Fibonacci Prime', msg: 'F₁₁ = 89 is prime' },
+                'mersenne': { m: 31, table: 'multiplication', color: 'rainbow', title: 'Mersenne Prime', msg: '31 = 2⁵ - 1' },
+                'perfect': { m: 28, table: 'multiplication', color: 'divisibility', title: 'Perfect Number', msg: '28 = 1+2+4+7+14' },
+                'golden': { m: 161, table: 'multiplication', color: 'zeroDivisors', title: 'Golden Ratio', msg: '161 ≈ 100φ' },
+                'ramanujan': { m: 24, table: 'multiplication', color: 'divisibility', title: 'Ramanujan', msg: 'Related to τ function' }
+            };
+
+            const preset = presets[presetName];
+            if (!preset) return;
+
+            document.getElementById('modulusInput').value = preset.m;
+            document.getElementById('modulusSlider').value = Math.min(preset.m, 100);
+            document.getElementById('modulusDisplay').textContent = Math.min(preset.m, 100);
             
-            switch(presetName) {
-                case 'basel':
-                    // Basel problem: ζ(2) = π²/6, related to coprime probability
-                    m = 6;
-                    tableType = 'multiplication';
-                    colorScheme = 'zeroDivisors';
-                    labelType = 'result';
-                    showInfo('Basel Problem (ζ(2))', 'Modulus 6: Related to Euler\'s Basel problem. The probability that two random integers are coprime is 6/π² ≈ 0.6079. φ(6) = 2.');
-                    break;
-                    
-                case 'totient12':
-                    // Classic example with φ(12) = 4
-                    m = 12;
-                    tableType = 'cayley';
-                    colorScheme = 'rainbow';
-                    labelType = 'result';
-                    showInfo('φ(12) = 4', 'The group of units (ℤ/12ℤ)× has 4 elements: {1, 5, 7, 11}. This is the classic coprime density example.');
-                    break;
-                    
-                case 'prime':
-                    // Prime field - integral domain
-                    m = 17;
-                    tableType = 'multiplication';
-                    colorScheme = 'rainbow';
-                    labelType = 'result';
-                    showInfo('Prime Field ℤ/17ℤ', 'A prime modulus creates a field. Every non-zero element is a unit. φ(17) = 16. No zero divisors.');
-                    break;
-                    
-                case 'highly_composite':
-                    // Highly composite number with many divisors
-                    m = 60;
-                    tableType = 'multiplication';
-                    colorScheme = 'divisibility';
-                    labelType = 'result';
-                    showInfo('Highly Composite: 60', '60 = 2²×3×5 has many divisors. φ(60) = 16. Rich algebraic structure with many zero divisors.');
-                    break;
-                    
-                case 'power_of_2':
-                    // Power of 2 - special structure
-                    m = 32;
-                    tableType = 'multiplication';
-                    colorScheme = 'idempotents';
-                    labelType = 'result';
-                    showInfo('Power of 2: m=32', '32 = 2⁵. φ(32) = 16. Half the elements are units. Special structure in powers of 2.');
-                    break;
-                    
-                case 'fibonacci':
-                    // Fibonacci prime
-                    m = 89;
-                    tableType = 'cayley';
-                    colorScheme = 'rainbow';
-                    labelType = 'result';
-                    showInfo('Fibonacci Prime: F₁₁ = 89', '89 is the 11th Fibonacci number and a prime. Forms a field. φ(89) = 88.');
-                    break;
-                    
-                case 'mersenne':
-                    // Mersenne prime
-                    m = 31;
-                    tableType = 'multiplication';
-                    colorScheme = 'rainbow';
-                    labelType = 'result';
-                    showInfo('Mersenne Prime: 2⁵-1 = 31', '31 = 2⁵ - 1 is a Mersenne prime. Forms a field. φ(31) = 30.');
-                    break;
-                    
-                case 'perfect':
-                    // Perfect number
-                    m = 28;
-                    tableType = 'multiplication';
-                    colorScheme = 'divisibility';
-                    labelType = 'result';
-                    showInfo('Perfect Number: 28', '28 = 1+2+4+7+14 is the 2nd perfect number. 28 = 2²×7. φ(28) = 12.');
-                    break;
-                    
-                case 'euler_constant':
-                    // Related to e ≈ 2.718...
-                    m = 271; // e×100 ≈ 271
-                    tableType = 'cayley';
-                    colorScheme = 'rainbow';
-                    labelType = 'result';
-                    showInfo('Euler\'s e: m≈271', '271 is prime and ≈100e. Forms a field with φ(271) = 270 units.');
-                    break;
-                    
-                case 'golden_ratio':
-                    // Related to φ ≈ 1.618...
-                    m = 161; // 100φ ≈ 161.8, but 161 = 7×23
-                    tableType = 'multiplication';
-                    colorScheme = 'zeroDivisors';
-                    labelType = 'result';
-                    showInfo('Golden Ratio: m≈161', '161 ≈ 100φ where φ = (1+√5)/2. 161 = 7×23 (semiprime). φ(161) = 132.');
-                    break;
-                    
-                case 'ramanujan':
-                    // Related to Ramanujan's tau function
-                    m = 24;
-                    tableType = 'multiplication';
-                    colorScheme = 'divisibility';
-                    labelType = 'result';
-                    showInfo('Ramanujan τ: m=24', '24 appears in Ramanujan\'s tau function τ(n). 24 = 2³×3. φ(24) = 8. Related to modular forms.');
-                    break;
-                    
-                case 'catalan':
-                    // Related to Catalan's constant
-                    m = 42; // Related to Catalan numbers
-                    tableType = 'multiplication';
-                    colorScheme = 'rainbow';
-                    labelType = 'result';
-                    showInfo('Catalan Numbers: m=42', '42 = 2×3×7 appears in Catalan number sequences. φ(42) = 12. Answer to everything!');
-                    break;
-                    
-                case 'coprime_density':
-                    // 6/π² ≈ 0.6079... → 61/100
-                    m = 61;
-                    tableType = 'multiplication';
-                    colorScheme = 'zeroDivisors';
-                    labelType = 'result';
-                    showInfo('Coprime Density: 6/π²', '61 is prime. 61/100 ≈ 6/π² (coprime pair density). φ(61) = 60. Forms a field.');
-                    break;
-                    
-                case 'harmonic':
-                    // Harmonic series: 1/1 + 1/2 + 1/3 + ...
-                    m = 100;
-                    tableType = 'cayley';
-                    colorScheme = 'rainbow';
-                    labelType = 'result';
-                    showInfo('Harmonic: m=100', '100 = 2²×5². φ(100) = 40. Visualizes unit structure. Related to harmonic analysis mod 100.');
-                    break;
-                    
-                case 'twin_primes':
-                    // Twin primes 71 and 73
-                    m = 71;
-                    tableType = 'multiplication';
-                    colorScheme = 'rainbow';
-                    labelType = 'result';
-                    showInfo('Twin Primes: 71 & 73', '71 is prime (twin with 73). Both form fields. φ(71) = 70. Prime gaps and density.');
-                    break;
-            }
+            document.querySelector(`input[name="tableType"][value="${preset.table}"]`).checked = true;
+            document.querySelector(`input[name="colorScheme"][value="${preset.color}"]`).checked = true;
             
-            // Apply settings
-            document.getElementById('modulusInput').value = m;
-            document.getElementById('modulusSlider').value = Math.min(m, 100);
-            document.getElementById('modulusDisplay').textContent = Math.min(m, 100);
-            
-            // Set radio buttons
-            document.querySelector(`input[name="tableType"][value="${tableType}"]`).checked = true;
-            document.querySelector(`input[name="colorScheme"][value="${colorScheme}"]`).checked = true;
-            document.querySelector(`input[name="labelType"][value="${labelType}"]`).checked = true;
-            
-            // Update preset info panel
-            document.getElementById('presetInfo').innerHTML = `<strong>${title}:</strong> ${message}`;
-            
+            showNotification(preset.title, preset.msg);
             updateVisualization();
         }
-        
-        // Show info notification
-        function showInfo(title, message) {
-            const infoDiv = document.createElement('div');
-            infoDiv.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                padding: 20px;
-                border-radius: 10px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                max-width: 400px;
-                z-index: 1000;
-                animation: slideIn 0.3s ease-out;
-            `;
-            infoDiv.innerHTML = `
+
+        function showNotification(title, message) {
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
                 <h3 style="margin: 0 0 10px 0; font-size: 1.2em;">${title}</h3>
                 <p style="margin: 0; line-height: 1.5;">${message}</p>
             `;
-            document.body.appendChild(infoDiv);
+            document.body.appendChild(notification);
             
             setTimeout(() => {
-                infoDiv.style.animation = 'slideOut 0.3s ease-in';
-                setTimeout(() => infoDiv.remove(), 300);
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => notification.remove(), 300);
             }, 5000);
         }
-        
-        // Add CSS animations
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(400px); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            @keyframes slideOut {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(400px); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
 
         // Update functions
         function updateModulus() {
@@ -1011,86 +852,50 @@
 
         function updateModulusFromInput() {
             const value = parseInt(document.getElementById('modulusInput').value);
-            if (value >= 2 && value <= 1000) {
+            if (value >= 2 && value <= 500) {
                 document.getElementById('modulusSlider').value = Math.min(value, 100);
                 document.getElementById('modulusDisplay').textContent = Math.min(value, 100);
                 updateVisualization();
             }
         }
 
-        function updateFontSize() {
-            const value = document.getElementById('fontSizeSlider').value;
-            document.getElementById('fontSizeDisplay').textContent = value === '0' ? 'Auto' : value + 'px';
-            updateVisualization();
-        }
-
-        // Main visualization
+        // Main visualization function
         function updateVisualization() {
             const m = parseInt(document.getElementById('modulusInput').value);
             const tableType = document.querySelector('input[name="tableType"]:checked').value;
             const colorScheme = document.querySelector('input[name="colorScheme"]:checked').value;
-            const labelType = document.querySelector('input[name="labelType"]:checked').value;
-            const labelColor = document.querySelector('input[name="labelColor"]:checked').value;
-            const showRowLabels = document.getElementById('showRowLabels').checked;
-            const showColLabels = document.getElementById('showColLabels').checked;
+            const showLabels = document.getElementById('showLabels').checked;
             const showGridLines = document.getElementById('showGridLines').checked;
-            const fontSizeOverride = parseInt(document.getElementById('fontSizeSlider').value);
-
-            const canvas = document.getElementById('gridCanvas');
-            const ctx = canvas.getContext('2d');
-            
-            const size = tableType === 'cayley' ? euler_phi(m) : m;
-            const labelMargin = 40;
-            const gridSize = canvas.width - (showRowLabels || showColLabels ? labelMargin : 0);
-            const cellSize = Math.floor(gridSize / size);
-            const fontSize = fontSizeOverride === 0 ? Math.max(6, Math.min(20, cellSize / 2.5)) : fontSizeOverride;
-            const labelFontSize = Math.max(10, Math.min(16, cellSize / 2));
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Set background
-            ctx.fillStyle = '#1a202c';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const highlightUnits = document.getElementById('highlightUnits').checked;
 
             // Get special elements
             const units = findUnits(m);
             const zeroDivisors = findZeroDivisors(m);
             const idempotents = findIdempotents(m);
-            const nilpotents = findNilpotents(m);
 
-            // Determine which elements to show
-            let elements = [];
-            if (tableType === 'cayley') {
-                elements = units;
-            } else {
-                elements = Array.from({ length: m }, (_, i) => i);
-            }
+            // Draw all canvases
+            drawGridCanvas(m, tableType, colorScheme, showLabels, showGridLines, units, zeroDivisors, idempotents);
+            drawCircleCanvas(m, units, highlightUnits);
+            drawGCDCanvas(m);
+            drawDensityCanvas(m);
 
-            const offset = (showRowLabels || showColLabels) ? labelMargin : 0;
+            // Update statistics
+            updateStatistics(m, units, zeroDivisors, idempotents);
+        }
 
-            // Draw column labels
-            if (showColLabels) {
-                ctx.fillStyle = '#ffffff';
-                ctx.font = `bold ${labelFontSize}px Arial`;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                for (let j = 0; j < elements.length; j++) {
-                    ctx.fillText(elements[j], offset + j * cellSize + cellSize / 2, labelMargin / 2);
-                }
-            }
+        // Canvas 1: Main Grid
+        function drawGridCanvas(m, tableType, colorScheme, showLabels, showGridLines, units, zeroDivisors, idempotents) {
+            const canvas = document.getElementById('gridCanvas');
+            const ctx = canvas.getContext('2d');
+            const size = tableType === 'cayley' ? units.length : m;
+            const cellSize = Math.floor(canvas.width / size);
 
-            // Draw row labels
-            if (showRowLabels) {
-                ctx.fillStyle = '#ffffff';
-                ctx.font = `bold ${labelFontSize}px Arial`;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                for (let i = 0; i < elements.length; i++) {
-                    ctx.fillText(elements[i], labelMargin / 2, offset + i * cellSize + cellSize / 2);
-                }
-            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0a0e1a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw grid
+            const elements = tableType === 'cayley' ? units : Array.from({ length: m }, (_, i) => i);
+
             for (let i = 0; i < elements.length; i++) {
                 for (let j = 0; j < elements.length; j++) {
                     const a = elements[i];
@@ -1103,14 +908,10 @@
                         value = (a * b) % m;
                     }
 
-                    // Determine cell color
                     let color;
                     switch (colorScheme) {
                         case 'rainbow':
                             color = getRainbowColor(value, m);
-                            break;
-                        case 'residueClass':
-                            color = getResidueClassColor(value, m);
                             break;
                         case 'divisibility':
                             color = getDivisibilityColor(value, m);
@@ -1123,332 +924,288 @@
                             break;
                     }
 
-                    const x = offset + j * cellSize;
-                    const y = offset + i * cellSize;
+                    const x = j * cellSize;
+                    const y = i * cellSize;
 
                     ctx.fillStyle = color;
                     ctx.fillRect(x, y, cellSize - 1, cellSize - 1);
 
-                    // Draw grid lines if enabled
-                    if (showGridLines) {
-                        ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
-                        ctx.lineWidth = 1;
+                    if (showGridLines && cellSize > 3) {
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                        ctx.lineWidth = 0.5;
                         ctx.strokeRect(x, y, cellSize - 1, cellSize - 1);
                     }
 
-                    // Determine label text
-                    let labelText = '';
-                    switch (labelType) {
-                        case 'result':
-                            labelText = value.toString();
-                            break;
-                        case 'coordinates':
-                            labelText = `(${a},${b})`;
-                            break;
-                        case 'operation':
-                            const op = tableType === 'addition' ? '+' : '×';
-                            labelText = `${a}${op}${b}`;
-                            break;
-                        case 'properties':
-                            if (units.includes(value)) labelText = 'U';
-                            else if (zeroDivisors.includes(value)) labelText = 'Z';
-                            else if (idempotents.includes(value)) labelText = 'I';
-                            else if (value === 0) labelText = '0';
-                            else labelText = value.toString();
-                            break;
-                        case 'gcd':
-                            labelText = `gcd:${gcd(a, b)}`;
-                            break;
-                        case 'none':
-                            labelText = '';
-                            break;
-                    }
-
-                    // Determine label color
-                    let textColor;
-                    switch (labelColor) {
-                        case 'white':
-                            textColor = '#ffffff';
-                            break;
-                        case 'black':
-                            textColor = '#000000';
-                            break;
-                        case 'contrast':
-                            textColor = getContrastColor(color);
-                            break;
-                        case 'byType':
-                            if (units.includes(value)) textColor = '#00ff00';
-                            else if (zeroDivisors.includes(value)) textColor = '#ff0000';
-                            else if (idempotents.includes(value)) textColor = '#ffff00';
-                            else if (value === 0) textColor = '#ffffff';
-                            else textColor = '#ffffff';
-                            break;
-                    }
-
-                    // Draw label
-                    if (labelText !== '') {
-                        ctx.fillStyle = textColor;
-                        ctx.font = `bold ${fontSize}px Arial`;
+                    if (showLabels && cellSize >= 12) {
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = `bold ${Math.max(8, cellSize / 3)}px Arial`;
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
-                        
-                        // Add text shadow for better readability
-                        if (labelColor !== 'black') {
-                            ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-                            ctx.shadowBlur = 3;
-                            ctx.shadowOffsetX = 1;
-                            ctx.shadowOffsetY = 1;
-                        }
-                        
-                        ctx.fillText(labelText, x + cellSize / 2, y + cellSize / 2);
-                        
-                        // Reset shadow
-                        ctx.shadowColor = 'transparent';
+                        ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                        ctx.shadowBlur = 2;
+                        ctx.fillText(value, x + cellSize / 2, y + cellSize / 2);
                         ctx.shadowBlur = 0;
-                        ctx.shadowOffsetX = 0;
-                        ctx.shadowOffsetY = 0;
                     }
                 }
             }
-
-            // Update statistics
-            updateStatistics(m, units, zeroDivisors, idempotents, nilpotents, tableType);
-            
-            // Update legend
-            updateLegend(colorScheme, labelType, labelColor, m, units, zeroDivisors, idempotents);
         }
 
-        // Update legend based on current settings
-        function updateLegend(colorScheme, labelType, labelColor, m, units, zeroDivisors, idempotents) {
-            const legendSection = document.getElementById('legendSection');
-            const legendContent = document.getElementById('legendContent');
-            
-            let legendHTML = '';
-            
-            // Color scheme legend
-            if (colorScheme === 'rainbow') {
-                legendHTML += '<div style="width: 100%; text-align: center; margin-bottom: 10px;"><strong>Rainbow Colors:</strong> Hue varies by result value (0 to m-1)</div>';
-                for (let i = 0; i < Math.min(12, m); i++) {
-                    const color = getRainbowColor(i, m);
-                    legendHTML += `
-                        <div class="legend-item">
-                            <div class="legend-color" style="background: ${color};"></div>
-                            <span>Value ${i}</span>
-                        </div>
-                    `;
+        // Canvas 2: Unit Circle
+        function drawCircleCanvas(m, units, highlightUnits) {
+            const canvas = document.getElementById('circleCanvas');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(centerX, centerY) * 0.8;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0a0e1a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw circle
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+
+            // Draw elements
+            for (let k = 0; k < m; k++) {
+                const angle = (2 * Math.PI * k) / m - Math.PI / 2;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+
+                const isUnit = units.includes(k);
+                
+                ctx.fillStyle = highlightUnits && isUnit ? '#FFD700' : '#00FFFF';
+                ctx.beginPath();
+                ctx.arc(x, y, isUnit ? 6 : 4, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // Label
+                const labelRadius = radius * 1.15;
+                const labelX = centerX + labelRadius * Math.cos(angle);
+                const labelY = centerY + labelRadius * Math.sin(angle);
+                
+                ctx.fillStyle = isUnit ? '#FFD700' : '#00FFFF';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(k, labelX, labelY);
+            }
+
+            // Center
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 4, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        // Canvas 3: GCD Structure
+        function drawGCDCanvas(m) {
+            const canvas = document.getElementById('gcdCanvas');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0a0e1a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw rings for each gcd value
+            const maxGCD = Math.floor(m / 2);
+            for (let g = 1; g <= maxGCD; g++) {
+                const radius = (g / maxGCD) * Math.min(centerX, centerY) * 0.9;
+                const hue = (g / maxGCD) * 360;
+                
+                ctx.strokeStyle = `hsl(${hue}, 70%, 60%)`;
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Plot points
+            for (let a = 1; a < m; a++) {
+                for (let b = a + 1; b < m; b++) {
+                    const g = gcd(a, b);
+                    if (g > 1) {
+                        const angle1 = (2 * Math.PI * a) / m - Math.PI / 2;
+                        const angle2 = (2 * Math.PI * b) / m - Math.PI / 2;
+                        const radius = (g / maxGCD) * Math.min(centerX, centerY) * 0.9;
+                        
+                        const x1 = centerX + radius * Math.cos(angle1);
+                        const y1 = centerY + radius * Math.sin(angle1);
+                        const x2 = centerX + radius * Math.cos(angle2);
+                        const y2 = centerY + radius * Math.sin(angle2);
+                        
+                        const hue = (g / maxGCD) * 360;
+                        ctx.strokeStyle = `hsla(${hue}, 70%, 60%, 0.3)`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    }
                 }
-            } else if (colorScheme === 'residueClass') {
-                legendHTML += '<div style="width: 100%; text-align: center; margin-bottom: 10px;"><strong>Residue Classes:</strong> Each residue class mod 12 gets a distinct color</div>';
-            } else if (colorScheme === 'divisibility') {
-                legendHTML += '<div style="width: 100%; text-align: center; margin-bottom: 10px;"><strong>By Divisibility:</strong> Color intensity based on number of divisors</div>';
-                legendHTML += `
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #2ecc71;"></div>
-                        <span>Prime/Coprime</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: hsl(180, 70%, 55%);"></div>
-                        <span>Few divisors</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: hsl(60, 70%, 55%);"></div>
-                        <span>Many divisors</span>
-                    </div>
-                `;
-            } else if (colorScheme === 'zeroDivisors') {
-                legendHTML += '<div style="width: 100%; text-align: center; margin-bottom: 10px;"><strong>Zero Divisors Highlighted</strong></div>';
-                legendHTML += `
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #e74c3c;"></div>
-                        <span>Zero Divisor</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #3498db;"></div>
-                        <span>Not Zero Divisor</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #2c3e50;"></div>
-                        <span>Zero Element</span>
-                    </div>
-                `;
-            } else if (colorScheme === 'idempotents') {
-                legendHTML += '<div style="width: 100%; text-align: center; margin-bottom: 10px;"><strong>Idempotents Highlighted</strong></div>';
-                legendHTML += `
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #f39c12;"></div>
-                        <span>Idempotent (a²≡a)</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #95a5a6;"></div>
-                        <span>Not Idempotent</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background: #2c3e50;"></div>
-                        <span>Zero Element</span>
-                    </div>
-                `;
             }
-            
-            // Label type legend
-            if (labelType === 'properties') {
-                legendHTML += '<div style="width: 100%; margin-top: 20px; text-align: center;"><strong>Label Legend:</strong></div>';
-                legendHTML += `
-                    <div class="legend-item">
-                        <span style="font-weight: bold; color: #2d3748;">U</span>
-                        <span>Unit (invertible)</span>
-                    </div>
-                    <div class="legend-item">
-                        <span style="font-weight: bold; color: #2d3748;">Z</span>
-                        <span>Zero Divisor</span>
-                    </div>
-                    <div class="legend-item">
-                        <span style="font-weight: bold; color: #2d3748;">I</span>
-                        <span>Idempotent</span>
-                    </div>
-                    <div class="legend-item">
-                        <span style="font-weight: bold; color: #2d3748;">0</span>
-                        <span>Zero element</span>
-                    </div>
-                `;
-            }
-            
-            // Label color legend
-            if (labelColor === 'byType') {
-                legendHTML += '<div style="width: 100%; margin-top: 20px; text-align: center;"><strong>Label Color by Type:</strong></div>';
-                legendHTML += `
-                    <div class="legend-item">
-                        <span style="font-weight: bold; color: #00ff00;">Green</span>
-                        <span>Units</span>
-                    </div>
-                    <div class="legend-item">
-                        <span style="font-weight: bold; color: #ff0000;">Red</span>
-                        <span>Zero Divisors</span>
-                    </div>
-                    <div class="legend-item">
-                        <span style="font-weight: bold; color: #ffff00;">Yellow</span>
-                        <span>Idempotents</span>
-                    </div>
-                    <div class="legend-item">
-                        <span style="font-weight: bold; color: #ffffff;">White</span>
-                        <span>Other</span>
-                    </div>
-                `;
-            }
-            
-            legendContent.innerHTML = legendHTML;
-            legendSection.style.display = legendHTML ? 'block' : 'none';
         }
 
-        // Helper function to get contrasting text color
-        function getContrastColor(hexColor) {
-            // Convert hex/hsl to RGB
-            const ctx = document.createElement('canvas').getContext('2d');
-            ctx.fillStyle = hexColor;
-            const rgb = ctx.fillStyle;
-            
-            // Extract RGB values
-            let r, g, b;
-            if (rgb.startsWith('#')) {
-                r = parseInt(rgb.substr(1, 2), 16);
-                g = parseInt(rgb.substr(3, 2), 16);
-                b = parseInt(rgb.substr(5, 2), 16);
-            } else if (rgb.startsWith('rgb')) {
-                const matches = rgb.match(/\d+/g);
-                r = parseInt(matches[0]);
-                g = parseInt(matches[1]);
-                b = parseInt(matches[2]);
-            } else {
-                return '#ffffff';
+        // Canvas 4: Coprime Density
+        function drawDensityCanvas(m) {
+            const canvas = document.getElementById('densityCanvas');
+            const ctx = canvas.getContext('2d');
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0a0e1a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Plot density for n = 2 to m
+            const padding = 60;
+            const graphWidth = canvas.width - 2 * padding;
+            const graphHeight = canvas.height - 2 * padding;
+
+            // Axes
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+
+            // Plot points
+            for (let n = 2; n <= m; n++) {
+                const phi = euler_phi(n);
+                const density = phi / n;
+                const x = padding + (n / m) * graphWidth;
+                const y = canvas.height - padding - density * graphHeight;
+
+                ctx.fillStyle = n === m ? '#FFD700' : '#00FFFF';
+                ctx.beginPath();
+                ctx.arc(x, y, n === m ? 6 : 3, 0, 2 * Math.PI);
+                ctx.fill();
             }
+
+            // Reference line for 6/π²
+            const sixOverPiSquared = 6 / (Math.PI * Math.PI);
+            const refY = canvas.height - padding - sixOverPiSquared * graphHeight;
+            ctx.strokeStyle = '#9F7AEA';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([10, 5]);
+            ctx.beginPath();
+            ctx.moveTo(padding, refY);
+            ctx.lineTo(canvas.width - padding, refY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Labels
+            ctx.fillStyle = '#FFD700';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('φ(n)/n', padding / 2, canvas.height / 2);
+            ctx.fillText('n', canvas.width / 2, canvas.height - padding / 2);
             
-            // Calculate luminance
-            const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-            
-            return luminance > 0.5 ? '#000000' : '#ffffff';
+            ctx.fillStyle = '#9F7AEA';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'right';
+            ctx.fillText('6/π² ≈ 0.608', canvas.width - padding - 10, refY - 10);
         }
 
-        function updateStatistics(m, units, zeroDivisors, idempotents, nilpotents, tableType) {
-            // Basic stats
+        // Update statistics
+        function updateStatistics(m, units, zeroDivisors, idempotents) {
             document.getElementById('statModulus').textContent = m;
-            document.getElementById('statTotal').textContent = m * m;
-            document.getElementById('statUnique').textContent = m;
+            document.getElementById('statFactorization').textContent = getPrimeFactorization(m);
+            
             document.getElementById('statPhi').textContent = units.length;
-
-            const isIntegral = zeroDivisors.length === 0;
-            const isField = isPrime(m);
-            document.getElementById('statIntegral').textContent = isIntegral ? 'YES' : 'NO';
-            document.getElementById('statField').textContent = isField ? 'YES' : 'NO';
-
-            // Special elements
-            document.getElementById('unitsCount').textContent = units.length;
-            document.getElementById('unitsList').textContent = `{${units.join(', ')}}`;
-            document.getElementById('zeroDivisorsCount').textContent = zeroDivisors.length;
-            document.getElementById('zeroDivisorsList').textContent = `{${zeroDivisors.join(', ')}}`;
-            document.getElementById('idempotentsCount').textContent = idempotents.length;
-            document.getElementById('idempotentsList').textContent = `{${idempotents.join(', ')}}`;
-            document.getElementById('nilpotentsCount').textContent = nilpotents.length;
-            document.getElementById('nilpotentsList').textContent = nilpotents.length > 0 ? `{${nilpotents.join(', ')}}` : '{}';
-
-            // Structure analysis
-            const structureHTML = `
-                <div class="structure-item">Modulus m = ${m}</div>
-                <div class="structure-item">The ring ℤ/${m}ℤ has ${m} elements: {0, 1, ..., ${m-1}}</div>
-                <div class="structure-item">Units (invertible elements): ${units.length} = φ(${m})</div>
-                <div class="structure-item">This ring ${zeroDivisors.length > 0 ? 'has ' + zeroDivisors.length + ' zero divisor(s). It is NOT an integral domain.' : 'is an integral domain (no zero divisors).'}</div>
-                <div class="structure-item">Idempotent elements (a² ≡ a): ${idempotents.length}</div>
-                ${nilpotents.length > 0 ? `<div class="structure-item">Nilpotent elements: ${nilpotents.length}</div>` : ''}
-            `;
-            document.getElementById('structureContent').innerHTML = structureHTML;
-
-            // Explanation
-            const explanationHTML = getExplanation(tableType);
-            document.getElementById('explanationContent').innerHTML = explanationHTML;
-        }
-
-        function getExplanation(tableType) {
-            if (tableType === 'multiplication') {
-                return `
-                    <p><strong>Multiplication Table:</strong> This table shows all products a × b (mod m) for elements in ℤ/mℤ.</p>
-                    <p><strong>Units:</strong> Elements with multiplicative inverses (gcd(a, m) = 1). They form a group (ℤ/mℤ)×.</p>
-                    <p><strong>Zero Divisors:</strong> Non-zero elements a where a × b ≡ 0 (mod m) for some non-zero b. These prevent the ring from being an integral domain.</p>
-                    <p><strong>Idempotents:</strong> Elements satisfying a² ≡ a (mod m). Always include 0 and 1.</p>
-                `;
-            } else if (tableType === 'cayley') {
-                return `
-                    <p><strong>Cayley Table (Units Only):</strong> This restricted multiplication table shows only the units (invertible elements).</p>
-                    <p><strong>Group Structure:</strong> The units form a group (ℤ/mℤ)× under multiplication mod m.</p>
-                    <p><strong>Order:</strong> The group has φ(m) elements, where φ is Euler's totient function.</p>
-                    <p><strong>Closure:</strong> The product of two units is always a unit, so this table is closed.</p>
-                `;
-            } else {
-                return `
-                    <p><strong>Addition Table:</strong> This table shows all sums a + b (mod m) for elements in ℤ/mℤ.</p>
-                    <p><strong>Group Structure:</strong> (ℤ/mℤ, +) forms an abelian group of order m.</p>
-                    <p><strong>Properties:</strong> Every element has an additive inverse. The identity is 0.</p>
-                    <p><strong>Symmetry:</strong> The table is symmetric about the main diagonal (commutativity).</p>
-                `;
-            }
+            const unitsDisplay = units.length <= 20 ? `{${units.join(',')}}` : `{${units.slice(0, 20).join(',')}, ...}`;
+            document.getElementById('statUnitsList').textContent = unitsDisplay;
+            
+            document.getElementById('statZeroDivisors').textContent = zeroDivisors.length;
+            const zdDisplay = zeroDivisors.length <= 20 ? `{${zeroDivisors.join(',')}}` : `{${zeroDivisors.slice(0, 20).join(',')}, ...}`;
+            document.getElementById('statZDList').textContent = zdDisplay;
+            
+            document.getElementById('statIdempotents').textContent = idempotents.length;
+            const idDisplay = idempotents.length <= 20 ? `{${idempotents.join(',')}}` : `{${idempotents.slice(0, 20).join(',')}, ...}`;
+            document.getElementById('statIdempList').textContent = idDisplay;
+            
+            document.getElementById('statField').textContent = isPrime(m) ? 'YES' : 'NO';
+            document.getElementById('statDensity').textContent = (units.length / m).toFixed(3);
         }
 
         // Export functions
-        function exportCanvas() {
-            const canvas = document.getElementById('gridCanvas');
+        function exportCanvas(canvasId) {
+            const canvasMap = {
+                'grid': 'gridCanvas',
+                'circle': 'circleCanvas',
+                'gcd': 'gcdCanvas',
+                'density': 'densityCanvas'
+            };
+            
+            const canvas = document.getElementById(canvasMap[canvasId]);
             const exportCanvas = document.createElement('canvas');
             exportCanvas.width = 3840;
             exportCanvas.height = 3840;
             const ctx = exportCanvas.getContext('2d');
             
-            ctx.scale(3840 / canvas.width, 3840 / canvas.height);
+            ctx.scale(3840 / 800, 3840 / 800);
             ctx.drawImage(canvas, 0, 0);
             
-            exportCanvas.toBlob(function(blob) {
+            exportCanvas.toBlob(blob => {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `modular_grid_m${document.getElementById('modulusInput').value}_4k.png`;
+                a.download = `modular_${canvasId}_m${document.getElementById('modulusInput').value}.png`;
                 a.click();
                 URL.revokeObjectURL(url);
             });
+            
+            showNotification('Export Complete', `${canvasId.charAt(0).toUpperCase() + canvasId.slice(1)} canvas exported at 4K resolution`);
+        }
+
+        function exportAllCanvases() {
+            const canvases = ['gridCanvas', 'circleCanvas', 'gcdCanvas', 'densityCanvas'];
+            const m = document.getElementById('modulusInput').value;
+            
+            const exportCanvas = document.createElement('canvas');
+            exportCanvas.width = 3840 * 2;
+            exportCanvas.height = 3840 * 2;
+            const ctx = exportCanvas.getContext('2d');
+            
+            ctx.fillStyle = '#0a0e1a';
+            ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+            
+            canvases.forEach((id, idx) => {
+                const canvas = document.getElementById(id);
+                const col = idx % 2;
+                const row = Math.floor(idx / 2);
+                const x = col * 3840;
+                const y = row * 3840;
+                
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.scale(3840 / 800, 3840 / 800);
+                ctx.drawImage(canvas, 0, 0);
+                ctx.restore();
+            });
+            
+            exportCanvas.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `modular_all_4_canvases_m${m}.png`;
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+            
+            showNotification('Export Complete', 'All 4 canvases exported in 2×2 grid at 4K resolution');
+        }
+
+        function exportWithAnalysis() {
+            // Implementation similar to previous version
+            showNotification('Coming Soon', 'Annotated export with analysis panel');
         }
 
         function exportData() {
@@ -1456,7 +1213,6 @@
             const tableType = document.querySelector('input[name="tableType"]:checked').value;
             
             let csv = 'a,b,result,operation\n';
-            
             const elements = tableType === 'cayley' ? findUnits(m) : Array.from({ length: m }, (_, i) => i);
             
             for (let i = 0; i < elements.length; i++) {
@@ -1473,9 +1229,11 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `modular_grid_m${m}_data.csv`;
+            a.download = `modular_data_m${m}.csv`;
             a.click();
             URL.revokeObjectURL(url);
+            
+            showNotification('Export Complete', 'CSV data file exported');
         }
 
         // Initialize
