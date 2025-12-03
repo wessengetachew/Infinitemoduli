@@ -2645,14 +2645,34 @@
                 }
             }
             
-            const gridCanvas = document.getElementById('gridCanvas');
-            const exportRes = 3840;
-            const margin = 200;
-            const legendWidth = 800;
+            const canvases = [
+                { id: 'gridCanvas', title: '⊗ Grid' },
+                { id: 'circleCanvas', title: '○ Circle' },
+                { id: 'gcdCanvas', title: '⊚ GCD' },
+                { id: 'densityCanvas', title: '◬ Density' }
+            ];
+            
+            // Count additional metrics
+            const totalResidues = (m * (m + 1)) / 2;
+            const rotX = document.getElementById('rotationX')?.value || 45;
+            const rotY = document.getElementById('rotationY')?.value || 45;
+            const zoom = document.getElementById('zoomLevel')?.value || 100;
+            
+            let coprimePairs = 0;
+            for (let a = 0; a < m; a++) {
+                for (let b = a + 1; b < m; b++) {
+                    if (gcd(a, b) === 1) coprimePairs++;
+                }
+            }
+            
+            const margin = 250;
+            const legendWidth = 1000;
+            const gridWidth = 3840 * 2;
+            const gridHeight = 3840 * 2;
             
             const exportCanvas = document.createElement('canvas');
-            exportCanvas.width = exportRes + legendWidth;
-            exportCanvas.height = exportRes + margin;
+            exportCanvas.width = gridWidth + legendWidth;
+            exportCanvas.height = gridHeight + margin;
             const ctx = exportCanvas.getContext('2d', { alpha: false });
             
             // White background
@@ -2661,51 +2681,68 @@
             
             // Title
             ctx.fillStyle = '#1a202c';
-            ctx.font = 'bold 72px Arial';
+            ctx.font = 'bold 96px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('Modular Arithmetic Grid Explorer', exportCanvas.width / 2, 80);
+            ctx.fillText('Modular Arithmetic - Complete Analysis', gridWidth / 2, 100);
             
-            // Subtitle with modulus
-            ctx.font = '48px Arial';
+            // Subtitle
+            ctx.font = '56px Arial';
             ctx.fillStyle = '#4a5568';
-            let subtitle = tableType === 'multiplication' ? `Multiplication Table: ℤ/${m}ℤ (m=${m})` :
-                          tableType === 'cayley' ? `Cayley Table (Units): (ℤ/${m}ℤ)× (m=${m})` :
-                          `Addition Table: ℤ/${m}ℤ (m=${m})`;
-            ctx.fillText(subtitle, exportCanvas.width / 2, 140);
+            ctx.fillText(`m = ${m} · Ring ℤ/${m}ℤ · φ(${m}) = ${units.length} · Prime: ${isField ? 'Yes' : 'No'}`, gridWidth / 2, 175);
             
-            // Draw grid
-            ctx.save();
-            ctx.translate(0, margin);
-            ctx.scale(exportRes / 800, exportRes / 800);
-            ctx.drawImage(gridCanvas, 0, 0);
-            ctx.restore();
+            // Draw 2×2 grid of ALL canvases
+            canvases.forEach((info, idx) => {
+                const canvas = document.getElementById(info.id);
+                const col = idx % 2;
+                const row = Math.floor(idx / 2);
+                const x = col * 3840;
+                const y = row * 3840 + margin;
+                
+                // Border
+                ctx.strokeStyle = '#cbd5e0';
+                ctx.lineWidth = 4;
+                ctx.strokeRect(x, y, 3840, 3840);
+                
+                // Canvas
+                ctx.save();
+                ctx.translate(x, y);
+                const sourceCanvas = document.getElementById(info.id);
+                ctx.scale(3840 / sourceCanvas.width, 3840 / sourceCanvas.height);
+                ctx.drawImage(sourceCanvas, 0, 0);
+                ctx.restore();
+                
+                // Label
+                ctx.fillStyle = '#2d3748';
+                ctx.font = 'bold 52px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(info.title, x + 1920, y + 3770);
+            });
             
-            // Analysis panel
-            const legendX = exportRes + 30;
+            // ========== COMPREHENSIVE ANALYSIS PANEL ==========
+            const legendX = gridWidth + 40;
             const legendY = margin;
             
             ctx.fillStyle = '#f7fafc';
-            ctx.fillRect(legendX - 20, legendY - 20, legendWidth + 40, exportRes + 40);
+            ctx.fillRect(legendX - 20, legendY - 20, legendWidth - 60, gridHeight + 40);
             ctx.strokeStyle = '#cbd5e0';
-            ctx.lineWidth = 3;
-            ctx.strokeRect(legendX - 20, legendY - 20, legendWidth + 40, exportRes + 40);
+            ctx.lineWidth = 5;
+            ctx.strokeRect(legendX - 20, legendY - 20, legendWidth - 60, gridHeight + 40);
             
             ctx.fillStyle = '#2d3748';
-            ctx.font = 'bold 56px Arial';
+            ctx.font = 'bold 64px Arial';
             ctx.textAlign = 'left';
-            ctx.fillText('Statistical Analysis', legendX, legendY + 60);
+            ctx.fillText('Analysis', legendX, legendY + 70);
             
-            let yPos = legendY + 130;
-            const lineHeight = 48;
-            const sectionGap = 60;
-            const smallFont = '34px Arial';
-            const mediumFont = '38px Arial';
-            const largeFont = '42px Arial';
+            let yPos = legendY + 150;
+            const lineHeight = 52;
+            const sectionGap = 65;
+            const smallFont = '38px Arial';
+            const mediumFont = '44px Arial';
             
             // ========== MODULUS PROPERTIES ==========
-            ctx.font = 'bold 46px Arial';
+            ctx.font = 'bold 54px Arial';
             ctx.fillStyle = '#667eea';
-            ctx.fillText('Modulus Properties', legendX, yPos);
+            ctx.fillText('Modulus', legendX, yPos);
             yPos += lineHeight + 10;
             
             ctx.font = mediumFont;
@@ -2730,9 +2767,9 @@
             yPos += sectionGap;
             
             // ========== UNIT GROUP ==========
-            ctx.font = 'bold 46px Arial';
+            ctx.font = 'bold 54px Arial';
             ctx.fillStyle = '#667eea';
-            ctx.fillText('Unit Group (ℤ/mℤ)×', legendX, yPos);
+            ctx.fillText('Unit Group', legendX, yPos);
             yPos += lineHeight + 10;
             
             ctx.font = mediumFont;
@@ -2829,10 +2866,27 @@
             }
             yPos += sectionGap - lineHeight;
             
-            // ========== RING CLASSIFICATION ==========
-            ctx.font = 'bold 46px Arial';
+            // ========== CANVAS DETAILS ==========
+            ctx.font = 'bold 54px Arial';
             ctx.fillStyle = '#667eea';
-            ctx.fillText('Ring Classification', legendX, yPos);
+            ctx.fillText('Canvas Details', legendX, yPos);
+            yPos += lineHeight + 10;
+            
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            ctx.fillText(`Grid: ${tableType}, ${colorScheme}`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`Circle: Phase ${phaseAngleDeg.toFixed(1)}°, ${totalResidues} res`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`GCD: View ${rotX}°×${rotY}°, zoom ${zoom}%`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`Density: ${m-1} points, coprime ${coprimePairs}`, legendX + 20, yPos);
+            yPos += sectionGap;
+            
+            // ========== RING CLASSIFICATION ==========
+            ctx.font = 'bold 54px Arial';
+            ctx.fillStyle = '#667eea';
+            ctx.fillText('Classification', legendX, yPos);
             yPos += lineHeight + 10;
             
             ctx.font = mediumFont;
@@ -2857,6 +2911,30 @@
                 ctx.fillText('General commutative ring', legendX + 20, yPos);
                 yPos += lineHeight;
             }
+            yPos += sectionGap;
+            
+            // ========== CANVAS DETAILS ==========
+            ctx.font = 'bold 46px Arial';
+            ctx.fillStyle = '#667eea';
+            ctx.fillText('Canvas Details', legendX, yPos);
+            yPos += lineHeight + 10;
+            
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            ctx.fillText(`⊗ Grid: ${tableType} table`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`○ Circle: ${totalResidues} residues`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`   Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(1)}°`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`⊚ GCD: 3D view ${rotX}°×${rotY}°`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`   ${coprimePairs} coprime pairs`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`◬ Density: ${m-1} data points`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`   Ratio: ${(coprimeDensity/baselLimit).toFixed(4)}×`, legendX + 20, yPos);
+            yPos += lineHeight;
             
             // Footer
             ctx.fillStyle = '#718096';
@@ -2870,12 +2948,12 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `modular_grid_m${m}_${tableType}_comprehensive_analysis.png`;
+                a.download = `modular_all_4_canvases_m${m}_full_analysis.png`;
                 a.click();
                 URL.revokeObjectURL(url);
             });
             
-            showNotification('Export Complete', 'Grid exported with comprehensive statistical analysis panel');
+            showNotification('Export Complete', 'All 4 canvases exported with comprehensive statistical analysis panel');
         }
 
         function exportData(dataType) {
