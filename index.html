@@ -1704,27 +1704,46 @@
             const m = parseInt(document.getElementById('modulusInput').value);
             const tableType = document.querySelector('input[name="tableType"]:checked').value;
             const colorScheme = document.querySelector('input[name="colorScheme"]:checked').value;
+            const units = findUnits(m);
+            const zeroDivisors = findZeroDivisors(m);
+            const idempotents = findIdempotents(m);
+            
+            // Get phase rotation for circle canvas
+            const phaseR = parseInt(document.getElementById('phaseNumerator').value) || 0;
+            const phaseM = parseInt(document.getElementById('phaseDenominator').value) || 1;
+            const phaseAngleDeg = (360 * phaseR) / phaseM;
+            
+            // Count total residues in all layers
+            const totalResidues = (m * (m + 1)) / 2;
+            
+            // Count coprime pairs for GCD
+            let coprimePairs = 0;
+            for (let a = 0; a < m; a++) {
+                for (let b = a + 1; b < m; b++) {
+                    if (gcd(a, b) === 1) coprimePairs++;
+                }
+            }
             
             const canvasMap = {
                 'grid': { 
                     id: 'gridCanvas', 
                     title: '⊗ Multiplication Table',
-                    subtitle: `ℤ/${m}ℤ · ${tableType} · ${colorScheme} colors`
+                    subtitle: `ℤ/${m}ℤ (m=${m}) · ${tableType} · ${colorScheme} · φ(${m})=${units.length} units · ${zeroDivisors.length} zero divisors`
                 },
                 'circle': { 
                     id: 'circleCanvas', 
                     title: '○ Unit Circle - Farey Channels',
-                    subtitle: `Residue layers m=1 to ${m} · Phase: ${document.getElementById('phaseNumerator').value}/${document.getElementById('phaseDenominator').value} · φ(${m}) = ${euler_phi(m)}`
+                    subtitle: `m=${m} · Layers 1→${m} (${totalResidues} residues) · Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(3)}° · φ(${m})=${units.length}`
                 },
                 'gcd': { 
                     id: 'gcdCanvas', 
                     title: '⊚ GCD Structure Network',
-                    subtitle: `Coprimality relationships for m=${m}`
+                    subtitle: `m=${m} · ${coprimePairs} coprime pairs · φ(${m})=${units.length} · Density ${(units.length/m).toFixed(4)}`
                 },
                 'density': { 
                     id: 'densityCanvas', 
                     title: '◬ Coprime Density Analysis',
-                    subtitle: `φ(n)/n for n=2 to ${m} · Reference: 6/π² ≈ 0.608`
+                    subtitle: `m=${m} · φ(m)/m = ${(units.length/m).toFixed(6)} · Basel limit 6/π² ≈ 0.6079 · ${m} data points`
                 }
             };
             
@@ -1733,7 +1752,7 @@
             
             // Create export canvas with title and description
             const exportCanvas = document.createElement('canvas');
-            const margin = 150;
+            const margin = 200;
             exportCanvas.width = 3840;
             exportCanvas.height = 3840 + margin;
             const ctx = exportCanvas.getContext('2d', { alpha: false });
@@ -1748,15 +1767,38 @@
             ctx.textAlign = 'center';
             ctx.fillText(info.title, exportCanvas.width / 2, 80);
             
-            // Draw subtitle
-            ctx.font = '42px Arial';
+            // Draw subtitle (with metrics)
+            ctx.font = '38px Arial';
             ctx.fillStyle = '#4a5568';
-            ctx.fillText(info.subtitle, exportCanvas.width / 2, 130);
+            
+            // Split long subtitle into multiple lines if needed
+            const maxWidth = exportCanvas.width - 200;
+            const words = info.subtitle.split(' · ');
+            let lines = [];
+            let currentLine = words[0];
+            
+            for (let i = 1; i < words.length; i++) {
+                const testLine = currentLine + ' · ' + words[i];
+                const metrics = ctx.measureText(testLine);
+                if (metrics.width > maxWidth && i > 0) {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                } else {
+                    currentLine = testLine;
+                }
+            }
+            lines.push(currentLine);
+            
+            let subtitleY = 130;
+            for (let line of lines) {
+                ctx.fillText(line, exportCanvas.width / 2, subtitleY);
+                subtitleY += 45;
+            }
             
             // Draw canvas
             ctx.save();
             ctx.translate(0, margin);
-            ctx.scale(3840 / 800, 3840 / 800);
+            ctx.scale(3840 / 1000, 3840 / 1000);
             ctx.drawImage(canvas, 0, 0);
             ctx.restore();
             
@@ -1777,20 +1819,42 @@
                 URL.revokeObjectURL(url);
             });
             
-            showNotification('Export Complete', `${info.title} exported with title and description`);
+            showNotification('Export Complete', `${info.title} exported with detailed metrics`);
         }
 
         function exportAllCanvases() {
             const m = parseInt(document.getElementById('modulusInput').value);
+            const units = findUnits(m);
+            const phaseR = parseInt(document.getElementById('phaseNumerator').value) || 0;
+            const phaseM = parseInt(document.getElementById('phaseDenominator').value) || 1;
+            const totalResidues = (m * (m + 1)) / 2;
+            const coprimeDensity = units.length / m;
+            
             const canvases = [
-                { id: 'gridCanvas', title: '⊗ Multiplication Table' },
-                { id: 'circleCanvas', title: '○ Farey Channels' },
-                { id: 'gcdCanvas', title: '⊚ GCD Structure' },
-                { id: 'densityCanvas', title: '◬ Coprime Density' }
+                { 
+                    id: 'gridCanvas', 
+                    title: '⊗ Multiplication Table',
+                    metrics: `φ(${m})=${units.length} units`
+                },
+                { 
+                    id: 'circleCanvas', 
+                    title: '○ Farey Channels',
+                    metrics: `${totalResidues} residues · Phase ${phaseR}/${phaseM}`
+                },
+                { 
+                    id: 'gcdCanvas', 
+                    title: '⊚ GCD Structure',
+                    metrics: `Coprimality network · Density ${coprimeDensity.toFixed(4)}`
+                },
+                { 
+                    id: 'densityCanvas', 
+                    title: '◬ Coprime Density',
+                    metrics: `φ(m)/m trend · Basel limit 6/π²`
+                }
             ];
             
             const exportCanvas = document.createElement('canvas');
-            const margin = 200;
+            const margin = 250;
             exportCanvas.width = 3840 * 2;
             exportCanvas.height = 3840 * 2 + margin;
             const ctx = exportCanvas.getContext('2d', { alpha: false });
@@ -1805,10 +1869,10 @@
             ctx.textAlign = 'center';
             ctx.fillText('Modular Arithmetic Explorer - All 4 Canvases', exportCanvas.width / 2, 100);
             
-            // Subtitle
+            // Subtitle with m and key metrics
             ctx.font = '56px Arial';
             ctx.fillStyle = '#4a5568';
-            ctx.fillText(`m = ${m} · Ring ℤ/${m}ℤ · φ(${m}) = ${euler_phi(m)}`, exportCanvas.width / 2, 170);
+            ctx.fillText(`m = ${m} · Ring ℤ/${m}ℤ · φ(${m}) = ${units.length} · Prime: ${isPrime(m) ? 'Yes' : 'No'}`, exportCanvas.width / 2, 180);
             
             // Draw 2x2 grid
             canvases.forEach((info, idx) => {
@@ -1826,35 +1890,40 @@
                 // Draw canvas
                 ctx.save();
                 ctx.translate(x, y);
-                ctx.scale(3840 / 800, 3840 / 800);
+                ctx.scale(3840 / 1000, 3840 / 1000);
                 ctx.drawImage(canvas, 0, 0);
                 ctx.restore();
                 
-                // Draw label
+                // Draw title at top of each panel
                 ctx.fillStyle = '#2d3748';
-                ctx.font = 'bold 48px Arial';
+                ctx.font = 'bold 56px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText(info.title, x + 1920, y + 3800);
+                ctx.fillText(info.title, x + 1920, y + 80);
+                
+                // Draw metrics at bottom of each panel
+                ctx.font = '40px Arial';
+                ctx.fillStyle = '#718096';
+                ctx.fillText(info.metrics, x + 1920, y + 3760);
             });
             
             // Footer
             ctx.fillStyle = '#718096';
-            ctx.font = '40px Arial';
+            ctx.font = '48px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('Wessen Getachew | github.com/wessengetachew | @7dview', exportCanvas.width / 2, exportCanvas.height - 50);
-            ctx.font = '36px Arial';
-            ctx.fillText(new Date().toLocaleDateString(), exportCanvas.width / 2, exportCanvas.height - 10);
+            ctx.fillText('Wessen Getachew | github.com/wessengetachew | @7dview', exportCanvas.width / 2, exportCanvas.height - 60);
+            ctx.font = '40px Arial';
+            ctx.fillText(new Date().toLocaleDateString(), exportCanvas.width / 2, exportCanvas.height - 15);
             
             exportCanvas.toBlob(blob => {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `modular_all_4_canvases_m${m}_annotated.png`;
+                a.download = `modular_all_4_canvases_m${m}_comprehensive.png`;
                 a.click();
                 URL.revokeObjectURL(url);
             });
             
-            showNotification('Export Complete', 'All 4 canvases exported in 2×2 grid with annotations');
+            showNotification('Export Complete', 'All 4 canvases exported with comprehensive metrics');
         }
 
         function exportWithAnalysis() {
@@ -1867,10 +1936,53 @@
             const idempotents = findIdempotents(m);
             const isField = isPrime(m);
             
+            // Get phase rotation for circle canvas
+            const phaseR = parseInt(document.getElementById('phaseNumerator').value) || 0;
+            const phaseM = parseInt(document.getElementById('phaseDenominator').value) || 1;
+            const phaseAngleDeg = (360 * phaseR) / phaseM;
+            
+            // Calculate additional statistics
+            const nilpotents = [];
+            for (let a = 0; a < m; a++) {
+                let temp = a;
+                for (let n = 1; n < 20; n++) {
+                    temp = (temp * a) % m;
+                    if (temp === 0) {
+                        nilpotents.push(a);
+                        break;
+                    }
+                }
+            }
+            
+            // Count GCD values
+            const gcdDistribution = new Map();
+            for (let r = 0; r < m; r++) {
+                const g = gcd(r, m);
+                gcdDistribution.set(g, (gcdDistribution.get(g) || 0) + 1);
+            }
+            
+            // Calculate coprime density
+            const coprimeDensity = units.length / m;
+            const baselLimit = 6 / (Math.PI * Math.PI);
+            
+            // Prime factorization details
+            const primeFactors = [];
+            let temp = m;
+            for (let p = 2; p <= temp; p++) {
+                let count = 0;
+                while (temp % p === 0) {
+                    count++;
+                    temp /= p;
+                }
+                if (count > 0) {
+                    primeFactors.push({ prime: p, power: count });
+                }
+            }
+            
             const gridCanvas = document.getElementById('gridCanvas');
             const exportRes = 3840;
             const margin = 200;
-            const legendWidth = 600;
+            const legendWidth = 800;
             
             const exportCanvas = document.createElement('canvas');
             exportCanvas.width = exportRes + legendWidth;
@@ -1887,12 +1999,12 @@
             ctx.textAlign = 'center';
             ctx.fillText('Modular Arithmetic Grid Explorer', exportCanvas.width / 2, 80);
             
-            // Subtitle
+            // Subtitle with modulus
             ctx.font = '48px Arial';
             ctx.fillStyle = '#4a5568';
-            let subtitle = tableType === 'multiplication' ? `Multiplication Table: ℤ/${m}ℤ` :
-                          tableType === 'cayley' ? `Cayley Table (Units): (ℤ/${m}ℤ)×` :
-                          `Addition Table: ℤ/${m}ℤ`;
+            let subtitle = tableType === 'multiplication' ? `Multiplication Table: ℤ/${m}ℤ (m=${m})` :
+                          tableType === 'cayley' ? `Cayley Table (Units): (ℤ/${m}ℤ)× (m=${m})` :
+                          `Addition Table: ℤ/${m}ℤ (m=${m})`;
             ctx.fillText(subtitle, exportCanvas.width / 2, 140);
             
             // Draw grid
@@ -1903,114 +2015,201 @@
             ctx.restore();
             
             // Analysis panel
-            const legendX = exportRes + 20;
+            const legendX = exportRes + 30;
             const legendY = margin;
             
             ctx.fillStyle = '#f7fafc';
-            ctx.fillRect(legendX - 10, legendY - 10, legendWidth + 20, exportRes + 20);
+            ctx.fillRect(legendX - 20, legendY - 20, legendWidth + 40, exportRes + 40);
             ctx.strokeStyle = '#cbd5e0';
             ctx.lineWidth = 3;
-            ctx.strokeRect(legendX - 10, legendY - 10, legendWidth + 20, exportRes + 20);
+            ctx.strokeRect(legendX - 20, legendY - 20, legendWidth + 40, exportRes + 40);
             
             ctx.fillStyle = '#2d3748';
             ctx.font = 'bold 56px Arial';
             ctx.textAlign = 'left';
-            ctx.fillText('Analysis', legendX, legendY + 60);
+            ctx.fillText('Statistical Analysis', legendX, legendY + 60);
             
-            let yPos = legendY + 120;
-            const lineHeight = 50;
-            const sectionGap = 70;
+            let yPos = legendY + 130;
+            const lineHeight = 48;
+            const sectionGap = 60;
+            const smallFont = '34px Arial';
+            const mediumFont = '38px Arial';
+            const largeFont = '42px Arial';
             
-            // Parameters
-            ctx.font = 'bold 42px Arial';
+            // ========== MODULUS PROPERTIES ==========
+            ctx.font = 'bold 46px Arial';
             ctx.fillStyle = '#667eea';
-            ctx.fillText('Parameters', legendX, yPos);
-            yPos += lineHeight;
+            ctx.fillText('Modulus Properties', legendX, yPos);
+            yPos += lineHeight + 10;
             
-            ctx.font = '36px Arial';
+            ctx.font = mediumFont;
             ctx.fillStyle = '#2d3748';
-            ctx.fillText(`Modulus: m = ${m}`, legendX, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Table: ${tableType}`, legendX, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Colors: ${colorScheme}`, legendX, yPos);
-            yPos += sectionGap;
-            
-            // Ring Structure
-            ctx.font = 'bold 42px Arial';
-            ctx.fillStyle = '#667eea';
-            ctx.fillText('Ring Structure', legendX, yPos);
+            ctx.fillText(`m = ${m}`, legendX, yPos);
             yPos += lineHeight;
             
-            ctx.font = '36px Arial';
-            ctx.fillStyle = '#2d3748';
-            ctx.fillText(`φ(${m}) = ${units.length}`, legendX, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Field: ${isField ? 'YES' : 'NO'}`, legendX, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Factorization:`, legendX, yPos);
-            yPos += lineHeight;
-            ctx.font = '32px Arial';
+            ctx.font = smallFont;
             ctx.fillStyle = '#4a5568';
+            ctx.fillText(`Prime factorization:`, legendX, yPos);
+            yPos += lineHeight;
             ctx.fillText(`${getPrimeFactorization(m)}`, legendX + 20, yPos);
-            yPos += sectionGap;
-            
-            ctx.font = '36px Arial';
-            ctx.fillStyle = '#2d3748';
-            
-            // Special Elements
-            ctx.font = 'bold 42px Arial';
-            ctx.fillStyle = '#667eea';
-            ctx.fillText('Special Elements', legendX, yPos);
             yPos += lineHeight;
             
-            ctx.font = '36px Arial';
-            ctx.fillStyle = '#2d3748';
-            ctx.fillText(`Units: ${units.length}`, legendX, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Zero Divisors: ${zeroDivisors.length}`, legendX, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Idempotents: ${idempotents.length}`, legendX, yPos);
-            yPos += lineHeight;
-            if (idempotents.length <= 10) {
-                ctx.font = '30px Arial';
+            if (isField) {
+                ctx.fillStyle = '#48BB78';
+                ctx.fillText(`✓ Prime: Forms a field`, legendX + 20, yPos);
+            } else {
                 ctx.fillStyle = '#718096';
-                ctx.fillText(`{${idempotents.join(', ')}}`, legendX + 20, yPos);
-                yPos += lineHeight;
+                ctx.fillText(`Composite: Has zero divisors`, legendX + 20, yPos);
             }
             yPos += sectionGap;
             
-            // Properties
-            ctx.font = 'bold 42px Arial';
+            // ========== UNIT GROUP ==========
+            ctx.font = 'bold 46px Arial';
             ctx.fillStyle = '#667eea';
-            ctx.fillText('Properties', legendX, yPos);
+            ctx.fillText('Unit Group (ℤ/mℤ)×', legendX, yPos);
+            yPos += lineHeight + 10;
+            
+            ctx.font = mediumFont;
+            ctx.fillStyle = '#2d3748';
+            ctx.fillText(`φ(${m}) = ${units.length}`, legendX, yPos);
             yPos += lineHeight;
             
-            ctx.font = '36px Arial';
-            ctx.fillStyle = '#2d3748';
-            const phiRatio = (units.length / m).toFixed(4);
-            ctx.fillText(`φ(m)/m = ${phiRatio}`, legendX, yPos);
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            ctx.fillText(`Density: ${coprimeDensity.toFixed(6)}`, legendX + 20, yPos);
             yPos += lineHeight;
-            ctx.fillText(`Integral: ${zeroDivisors.length === 0 ? 'YES' : 'NO'}`, legendX, yPos);
+            ctx.fillText(`Basel limit: ${baselLimit.toFixed(6)}`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`Ratio: ${(coprimeDensity/baselLimit).toFixed(4)}×`, legendX + 20, yPos);
+            yPos += lineHeight;
+            
+            if (units.length <= 20) {
+                ctx.fillText(`Units: {${units.join(',')}}`, legendX + 20, yPos);
+                yPos += lineHeight;
+            } else {
+                ctx.fillText(`Units: {${units.slice(0,15).join(',')}, ...}`, legendX + 20, yPos);
+                yPos += lineHeight;
+            }
+            yPos += sectionGap - lineHeight;
+            
+            // ========== ZERO DIVISORS ==========
+            ctx.font = 'bold 46px Arial';
+            ctx.fillStyle = '#667eea';
+            ctx.fillText('Zero Divisor Structure', legendX, yPos);
+            yPos += lineHeight + 10;
+            
+            ctx.font = mediumFont;
+            ctx.fillStyle = '#2d3748';
+            ctx.fillText(`Count: ${zeroDivisors.length}`, legendX, yPos);
+            yPos += lineHeight;
+            
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            const zdDensity = zeroDivisors.length / m;
+            ctx.fillText(`Density: ${zdDensity.toFixed(6)}`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`Non-zero ZD: ${zeroDivisors.filter(z => z !== 0).length}`, legendX + 20, yPos);
+            yPos += lineHeight;
+            
+            if (zeroDivisors.length > 0 && zeroDivisors.length <= 15) {
+                ctx.fillText(`Set: {${zeroDivisors.join(',')}}`, legendX + 20, yPos);
+                yPos += lineHeight;
+            }
+            yPos += sectionGap - lineHeight;
+            
+            // ========== IDEMPOTENT STRUCTURE ==========
+            ctx.font = 'bold 46px Arial';
+            ctx.fillStyle = '#667eea';
+            ctx.fillText('Idempotent Structure', legendX, yPos);
+            yPos += lineHeight + 10;
+            
+            ctx.font = mediumFont;
+            ctx.fillStyle = '#2d3748';
+            ctx.fillText(`Count: ${idempotents.length}`, legendX, yPos);
+            yPos += lineHeight;
+            
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            const numPrimeFactors = primeFactors.length;
+            const expectedIdempotents = Math.pow(2, numPrimeFactors);
+            ctx.fillText(`Expected (2^ω(m)): ${expectedIdempotents}`, legendX + 20, yPos);
+            yPos += lineHeight;
+            
+            if (idempotents.length <= 15) {
+                ctx.fillText(`Set: {${idempotents.join(',')}}`, legendX + 20, yPos);
+                yPos += lineHeight;
+            }
+            yPos += sectionGap - lineHeight;
+            
+            // ========== GCD DISTRIBUTION ==========
+            ctx.font = 'bold 46px Arial';
+            ctx.fillStyle = '#667eea';
+            ctx.fillText('GCD Distribution', legendX, yPos);
+            yPos += lineHeight + 10;
+            
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            const sortedGCDs = Array.from(gcdDistribution.keys()).sort((a, b) => a - b);
+            let gcdCount = 0;
+            for (let g of sortedGCDs.slice(0, 8)) {
+                const count = gcdDistribution.get(g);
+                ctx.fillText(`gcd=${g}: ${count} elements (${(count/m*100).toFixed(1)}%)`, legendX + 20, yPos);
+                yPos += lineHeight;
+                gcdCount++;
+            }
+            if (sortedGCDs.length > 8) {
+                ctx.fillText(`... and ${sortedGCDs.length - 8} more`, legendX + 20, yPos);
+                yPos += lineHeight;
+            }
+            yPos += sectionGap - lineHeight;
+            
+            // ========== RING CLASSIFICATION ==========
+            ctx.font = 'bold 46px Arial';
+            ctx.fillStyle = '#667eea';
+            ctx.fillText('Ring Classification', legendX, yPos);
+            yPos += lineHeight + 10;
+            
+            ctx.font = mediumFont;
+            ctx.fillStyle = '#2d3748';
+            
+            const classifications = [];
+            if (isField) classifications.push('Field');
+            if (zeroDivisors.length === 0) classifications.push('Integral Domain');
+            if (units.length === m - 1) classifications.push('Division Ring');
+            if (idempotents.length > 2) classifications.push('Non-trivial Idempotents');
+            if (nilpotents.length > 1) classifications.push('Has Nilpotents');
+            
+            for (let i = 0; i < Math.min(classifications.length, 6); i++) {
+                ctx.font = smallFont;
+                ctx.fillStyle = '#48BB78';
+                ctx.fillText(`✓ ${classifications[i]}`, legendX + 20, yPos);
+                yPos += lineHeight;
+            }
+            
+            if (classifications.length === 0) {
+                ctx.fillStyle = '#718096';
+                ctx.fillText('General commutative ring', legendX + 20, yPos);
+                yPos += lineHeight;
+            }
             
             // Footer
             ctx.fillStyle = '#718096';
-            ctx.font = '32px Arial';
+            ctx.font = '36px Arial';
             ctx.textAlign = 'center';
             ctx.fillText('Wessen Getachew | github.com/wessengetachew | @7dview', exportCanvas.width / 2, exportCanvas.height - 50);
-            ctx.font = '28px Arial';
+            ctx.font = '32px Arial';
             ctx.fillText(new Date().toLocaleDateString(), exportCanvas.width / 2, exportCanvas.height - 15);
             
             exportCanvas.toBlob(blob => {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `modular_grid_m${m}_${tableType}_full_analysis.png`;
+                a.download = `modular_grid_m${m}_${tableType}_comprehensive_analysis.png`;
                 a.click();
                 URL.revokeObjectURL(url);
             });
             
-            showNotification('Export Complete', 'Grid exported with comprehensive analysis panel');
+            showNotification('Export Complete', 'Grid exported with comprehensive statistical analysis panel');
         }
 
         function exportData(dataType) {
