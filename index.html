@@ -772,7 +772,7 @@
                     </div>
 
                     <div class="intro-card">
-                        <h3>🔢 Mathematical Concepts</h3>
+                        <h3>Mathematical Concepts</h3>
                         <p>
                             <strong>φ(m) - Euler's Totient:</strong> Count of units (invertible elements). For prime p, φ(p) = p-1.
                             For prime powers, φ(p^k) = p^k - p^(k-1).
@@ -788,7 +788,7 @@
                     </div>
 
                     <div class="intro-card">
-                        <h3>🎓 Using the Tool</h3>
+                        <h3>Using the Tool</h3>
                         <p>
                             <strong>1. Choose a modulus:</strong> Use slider (2-100) or type directly (up to 500).
                             Try the preset buttons for mathematically significant values.
@@ -819,7 +819,7 @@
                     </div>
 
                     <div class="intro-card">
-                        <h3>💡 Interesting Examples</h3>
+                        <h3>Interesting Examples</h3>
                         <p>
                             <strong>m = 6 (Basel Problem):</strong> φ(6) = 2. Only 1 and 5 are units. 
                             Related to ζ(2) = π²/6 and coprime probability. Try phase r=1, m=6 for 60° rotation showing 6-fold symmetry.
@@ -944,7 +944,7 @@
                     <!-- Live Statistics Dashboard -->
                     <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-panel), var(--bg-card)); border-radius: 10px; border: 2px solid var(--border);">
                         <h3 style="color: var(--gold); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            📊 Live Statistics Dashboard
+                            Live Statistics Dashboard
                         </h3>
                         
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
@@ -963,7 +963,7 @@
                         </div>
                         
                         <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px;">
-                            <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 10px;">⚡ Quick Properties:</div>
+                            <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 10px;">Quick Properties:</div>
                             <div id="liveStatProperties" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
                                 • Units: {1, 5, 7, 11}<br>
                                 • Zero Divisors: 7 elements<br>
@@ -973,7 +973,7 @@
                         </div>
                         
                         <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
-                            <div style="color: var(--accent-green); font-weight: 600; margin-bottom: 10px;">🔗 Related Numbers:</div>
+                            <div style="color: var(--accent-green); font-weight: 600; margin-bottom: 10px;">Related Numbers:</div>
                             <div id="liveStatRelated" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
                                 • Previous Prime: 11 | Next Prime: 13<br>
                                 • Carmichael λ(12): 2<br>
@@ -985,7 +985,7 @@
                     <!-- Element Inspector -->
                     <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)); border-radius: 10px; border: 2px solid var(--border);">
                         <h3 style="color: var(--cyan); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            🧮 Element Inspector
+                            Element Inspector
                         </h3>
                         
                         <div style="margin-bottom: 15px;">
@@ -2463,6 +2463,13 @@
             const ctx = canvas.getContext('2d');
             const size = tableType === 'cayley' ? units.length : m;
             const cellSize = Math.floor(canvas.width / size);
+            
+            // Get additional controls
+            const showSymmetry = document.getElementById('showTableSymmetry')?.checked || false;
+            const showDiagonal = document.getElementById('showDiagonal')?.checked || false;
+            const alternateShading = document.getElementById('alternateShading')?.checked || false;
+            const boldLabels = document.getElementById('boldLabels')?.checked || false;
+            const cellOpacity = document.getElementById('cellOpacity') ? parseFloat(document.getElementById('cellOpacity').value) : 1;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#0a0e1a';
@@ -2472,8 +2479,8 @@
 
             for (let i = 0; i < elements.length; i++) {
                 for (let j = 0; j < elements.length; j++) {
-                    const a = elements[i];
-                    const b = elements[j];
+                    const a = isTransposed ? elements[j] : elements[i];
+                    const b = isTransposed ? elements[i] : elements[j];
                     
                     let value;
                     if (tableType === 'addition') {
@@ -2500,11 +2507,34 @@
 
                     const x = j * cellSize;
                     const y = i * cellSize;
+                    
+                    // Apply alternate shading
+                    let alpha = cellOpacity;
+                    if (alternateShading && (i + j) % 2 === 1) {
+                        alpha *= 0.7;
+                    }
 
-                    ctx.globalAlpha = 1;
+                    ctx.globalAlpha = alpha;
                     ctx.fillStyle = color;
                     ctx.fillRect(x, y, cellSize - 1, cellSize - 1);
                     ctx.globalAlpha = 1;
+                    
+                    // Highlight diagonal
+                    if (showDiagonal && i === j) {
+                        ctx.strokeStyle = '#FFD700';
+                        ctx.lineWidth = 3;
+                        ctx.strokeRect(x + 2, y + 2, cellSize - 5, cellSize - 5);
+                    }
+                    
+                    // Highlight symmetry (if a*b = b*a)
+                    if (showSymmetry && i !== j && tableType === 'multiplication') {
+                        const valueReverse = (elements[j] * elements[i]) % m;
+                        if (value === valueReverse) {
+                            ctx.strokeStyle = '#00FFFF';
+                            ctx.lineWidth = 1.5;
+                            ctx.strokeRect(x + 1, y + 1, cellSize - 3, cellSize - 3);
+                        }
+                    }
 
                     if (showGridLines && cellSize > 3) {
                         ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
@@ -2524,7 +2554,7 @@
 
                     if (showLabels && cellSize >= 12) {
                         ctx.fillStyle = '#ffffff';
-                        ctx.font = `bold ${Math.max(8, cellSize / 3)}px Arial`;
+                        ctx.font = `${boldLabels ? 'bold' : ''} ${Math.max(8, cellSize / 3)}px Arial`;
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
                         ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
@@ -2630,11 +2660,11 @@
                 phaseAngleDegrees.toFixed(17) + '°';
 
             // Get visualization options
-            const showResidueLayers = document.getElementById('showResidueLayers').checked;
-            const connectByR = document.getElementById('connectByR').checked;
-            const connectToNextMod = document.getElementById('connectToNextMod').checked;
-            const connectDyadicPowers = document.getElementById('connectDyadicPowers').checked;
-            const highlightPrimeGCD = document.getElementById('highlightPrimeGCD').checked;
+            const showResidueLayers = document.getElementById('showResidueLayers')?.checked !== false;
+            const connectByR = document.getElementById('connectByR')?.checked || false;
+            const connectToNextMod = document.getElementById('connectToNextMod')?.checked || false;
+            const connectDyadicPowers = document.getElementById('connectDyadicPowers')?.checked || false;
+            const highlightPrimeGCD = document.getElementById('highlightPrimeGCD')?.checked !== false;
             const showRingLabels = document.getElementById('showRingLabels')?.checked !== false;
             const showAngleMarkers = document.getElementById('showAngleMarkers')?.checked || false;
             const fadeNonCoprime = document.getElementById('fadeNonCoprime')?.checked || false;
@@ -5032,4 +5062,4 @@
         }
     </script>
 </body>
-                                </html>
+                            </html>
