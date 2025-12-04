@@ -1,3 +1,4 @@
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1056,53 +1057,56 @@
                         <span>Modulus (m)</span>
                         <span class="control-value" id="modulusDisplay">12</span>
                     </div>
-                    <input type="range" id="modulusSlider" min="2" max="200" value="12" oninput="updateModulus()">
+                    <input type="range" id="modulusSlider" min="1" max="200" value="12" oninput="updateModulus()">
                 </div>
                 <div class="control-item">
                     <label class="control-label">
                         <span>Direct Input</span>
                     </label>
-                    <input type="number" id="modulusInput" min="2" max="1000" value="12" onchange="updateModulusFromInput()">
+                    <input type="number" id="modulusInput" min="1" max="1000" value="12" onchange="updateModulusFromInput()">
                 </div>
             </div>
 
-            <!-- Table Type -->
-            <div class="section-header">Global Table Type (Affects Exports)</div>
-            <div class="radio-group">
-                <label class="radio-option">
-                    <input type="radio" name="tableType" value="multiplication" checked onchange="updateVisualization()">
-                    <span>Multiplication</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="tableType" value="cayley" onchange="updateVisualization()">
-                    <span>Units Only (Cayley)</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="tableType" value="addition" onchange="updateVisualization()">
-                    <span>Addition</span>
-                </label>
+            <!-- Animation Controls -->
+            <div class="section-header">Animation Player</div>
+            <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; border: 2px solid var(--border);">
+                <div class="control-row" style="margin-bottom: 15px;">
+                    <div class="control-item">
+                        <label class="control-label">
+                            <span>Start Modulus</span>
+                        </label>
+                        <input type="number" id="animStartMod" min="1" max="1000" value="1" style="width: 100%;">
+                    </div>
+                    <div class="control-item">
+                        <label class="control-label">
+                            <span>End Modulus</span>
+                        </label>
+                        <input type="number" id="animEndMod" min="1" max="1000" value="30" style="width: 100%;">
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label class="control-label">
+                        <span>Animation Speed (ms per step)</span>
+                        <span class="control-value" id="animSpeedDisplay">200ms</span>
+                    </label>
+                    <input type="range" id="animSpeed" min="50" max="2000" step="50" value="200" 
+                           style="width: 100%;" oninput="document.getElementById('animSpeedDisplay').textContent = this.value + 'ms'">
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="startAnimation()" id="playBtn">▶ Play</button>
+                    <button class="btn btn-secondary" onclick="pauseAnimation()" id="pauseBtn" disabled>⏸ Pause</button>
+                    <button class="btn btn-secondary" onclick="stopAnimation()" id="stopBtn" disabled>⏹ Stop</button>
+                    <button class="preset-btn" onclick="setAnimRange(1, 30)" style="padding: 10px 15px;">1→30</button>
+                    <button class="preset-btn" onclick="setAnimRange(1, 60)" style="padding: 10px 15px;">1→60</button>
+                    <button class="preset-btn" onclick="setAnimRange(1, 100)" style="padding: 10px 15px;">1→100</button>
+                    <button class="preset-btn" onclick="setAnimRange(1, 1000)" style="padding: 10px 15px;">1→1000</button>
+                </div>
+                <div id="animProgress" style="margin-top: 15px; text-align: center; color: var(--cyan); font-weight: 600; font-size: 1.1em;">
+                    Ready to play
+                </div>
             </div>
 
-            <!-- Color Scheme -->
-            <div class="section-header">Global Color Scheme (Affects Exports)</div>
-            <div class="radio-group">
-                <label class="radio-option">
-                    <input type="radio" name="colorScheme" value="rainbow" checked onchange="updateVisualization()">
-                    <span>Rainbow</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="colorScheme" value="divisibility" onchange="updateVisualization()">
-                    <span>Divisibility</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="colorScheme" value="zeroDivisors" onchange="updateVisualization()">
-                    <span>Zero Divisors</span>
-                </label>
-                <label class="radio-option">
-                    <input type="radio" name="colorScheme" value="idempotents" onchange="updateVisualization()">
-                    <span>Idempotents</span>
-                </label>
-            </div>
+
 
             <!-- Display Options -->
             <div class="section-header">Display Options</div>
@@ -1304,6 +1308,7 @@
         }
 
         function findUnits(m) {
+            if (m === 1) return [0]; // For m=1, the only element is 0 which is the unit
             const units = [];
             for (let a = 1; a < m; a++) {
                 if (gcd(a, m) === 1) units.push(a);
@@ -1530,11 +1535,96 @@
 
         function updateModulusFromInput() {
             const value = parseInt(document.getElementById('modulusInput').value);
-            if (value >= 2 && value <= 1000) {
+            if (value >= 1 && value <= 1000) {
                 document.getElementById('modulusSlider').value = Math.min(value, 200);
                 document.getElementById('modulusDisplay').textContent = Math.min(value, 200);
                 updateVisualization();
             }
+        }
+
+        // Animation variables
+        let animationInterval = null;
+        let animationPaused = false;
+        let currentAnimMod = 1;
+
+        function setAnimRange(start, end) {
+            document.getElementById('animStartMod').value = start;
+            document.getElementById('animEndMod').value = end;
+            showNotification('Animation Range Set', `Will animate from m=${start} to m=${end}`);
+        }
+
+        function startAnimation() {
+            const startMod = parseInt(document.getElementById('animStartMod').value);
+            const endMod = parseInt(document.getElementById('animEndMod').value);
+            const speed = parseInt(document.getElementById('animSpeed').value);
+
+            if (startMod > endMod) {
+                showNotification('Invalid Range', 'Start modulus must be ≤ end modulus');
+                return;
+            }
+
+            // If resuming from pause, continue from current position
+            if (!animationPaused) {
+                currentAnimMod = startMod;
+            }
+            animationPaused = false;
+
+            // Update UI
+            document.getElementById('playBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = false;
+
+            // Start animation loop
+            animationInterval = setInterval(() => {
+                if (currentAnimMod > endMod) {
+                    stopAnimation();
+                    showNotification('Animation Complete', `Finished playing m=${startMod} to m=${endMod}`);
+                    return;
+                }
+
+                // Update modulus
+                document.getElementById('modulusInput').value = currentAnimMod;
+                document.getElementById('modulusSlider').value = Math.min(currentAnimMod, 200);
+                document.getElementById('modulusDisplay').textContent = Math.min(currentAnimMod, 200);
+                
+                // Update progress
+                const progress = Math.round(((currentAnimMod - startMod) / (endMod - startMod)) * 100);
+                document.getElementById('animProgress').textContent = 
+                    `Playing: m = ${currentAnimMod} / ${endMod} (${progress}%)`;
+
+                // Redraw
+                updateVisualization();
+
+                // Increment
+                currentAnimMod++;
+            }, speed);
+        }
+
+        function pauseAnimation() {
+            if (animationInterval) {
+                clearInterval(animationInterval);
+                animationInterval = null;
+                animationPaused = true;
+                
+                document.getElementById('playBtn').disabled = false;
+                document.getElementById('pauseBtn').disabled = true;
+                document.getElementById('animProgress').textContent = `Paused at m = ${currentAnimMod - 1}`;
+            }
+        }
+
+        function stopAnimation() {
+            if (animationInterval) {
+                clearInterval(animationInterval);
+                animationInterval = null;
+            }
+            
+            animationPaused = false;
+            currentAnimMod = 1;
+            
+            document.getElementById('playBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('animProgress').textContent = 'Ready to play';
         }
 
         // Main visualization function
@@ -1716,7 +1806,7 @@
                 }
             }
 
-            // Draw all residues r/mod for each modulus
+            // Draw all residues r/mod for each modulus (including mod=1)
             for (let mod = 1; mod <= m; mod++) {
                 const ringRadius = (mod / m) * maxRadius;
                 const ringIndex = mod - 1; // 0-indexed for rotation calculation
@@ -1730,6 +1820,7 @@
                     const gcdVal = gcd(r, mod);
                     
                     // Calculate angle: 2πr/mod + phase rotation + per-ring rotation offset
+                    // For mod=1: angle = 0 (r=0, so 2π*0/1 = 0), at center
                     let angle = (2 * Math.PI * r) / mod + phaseAngle + ringRotationOffset;
                     // Also map -2πr/mod
                     let angleNeg = -(2 * Math.PI * r) / mod + phaseAngle + ringRotationOffset;
@@ -1739,6 +1830,8 @@
                     angleNeg = ((angleNeg % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI);
                     
                     // Position on ring
+                    // For mod=1, r=0: ringRadius=maxRadius/m (very small), angle=phase
+                    // This places mod=1 near center at the phase rotation angle
                     const x = centerX + ringRadius * Math.cos(angle - Math.PI / 2);
                     const y = centerY + ringRadius * Math.sin(angle - Math.PI / 2);
                     
@@ -1747,8 +1840,8 @@
                     
                     // Determine color based on GCD
                     let color;
-                    if (gcdVal === 1) {
-                        color = '#FFD700'; // Gold for coprime (units)
+                    if (gcdVal === 1 || mod === 1) {
+                        color = '#FFD700'; // Gold for coprime (units) and mod=1
                     } else if (isPrime(gcdVal) && highlightPrimeGCD) {
                         color = '#00FFFF'; // Cyan for prime GCD
                     } else {
@@ -1759,9 +1852,19 @@
                     // Draw point for +2πr/mod
                     ctx.fillStyle = color;
                     ctx.beginPath();
-                    const pointSize = gcdVal === 1 ? 4 : 3;
+                    // Make mod=1 point slightly larger and more visible
+                    const pointSize = mod === 1 ? 6 : (gcdVal === 1 ? 4 : 3);
                     ctx.arc(x, y, pointSize, 0, 2 * Math.PI);
                     ctx.fill();
+                    
+                    // Add glow for mod=1
+                    if (mod === 1) {
+                        ctx.strokeStyle = color;
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(x, y, pointSize + 2, 0, 2 * Math.PI);
+                        ctx.stroke();
+                    }
                     
                     // Draw point for -2πr/mod (if r > 0)
                     if (r > 0) {
@@ -1781,8 +1884,17 @@
                     }
                     pointsByResidue.get(r).push(pointData);
                     
-                    // Label important points
-                    if (mod === m && gcdVal === 1) {
+                    // Label mod=1 point
+                    if (mod === 1) {
+                        ctx.fillStyle = '#FFD700';
+                        ctx.font = 'bold 11px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'bottom';
+                        ctx.fillText('m=1', x, y - 10);
+                    }
+                    
+                    // Label important points on outer ring
+                    if (mod === m && gcdVal === 1 && r > 0) {
                         const labelRadius = ringRadius * 1.08;
                         const labelX = centerX + labelRadius * Math.cos(angle - Math.PI / 2);
                         const labelY = centerY + labelRadius * Math.sin(angle - Math.PI / 2);
@@ -2199,7 +2311,7 @@
             ctx.fillStyle = '#0a0e1a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Plot density for n = 2 to m
+            // Plot density for n = 1 to m (include m=1)
             const padding = 60;
             const graphWidth = canvas.width - 2 * padding;
             const graphHeight = canvas.height - 2 * padding;
@@ -2239,10 +2351,10 @@
                 ctx.strokeStyle = '#00FFFF';
                 ctx.lineWidth = 1;
                 let firstPoint = true;
-                for (let n = 2; n <= m; n++) {
+                for (let n = 1; n <= m; n++) {
                     const phi = euler_phi(n);
                     const density = phi / n;
-                    const x = padding + (n / m) * graphWidth;
+                    const x = padding + ((n - 1) / (m - 1)) * graphWidth;
                     const y = canvas.height - padding - density * graphHeight;
                     if (firstPoint) {
                         ctx.moveTo(x, y);
@@ -2254,16 +2366,16 @@
                 ctx.stroke();
             }
 
-            // Plot points
-            for (let n = 2; n <= m; n++) {
+            // Plot points (start from m=1)
+            for (let n = 1; n <= m; n++) {
                 const phi = euler_phi(n);
                 const density = phi / n;
-                const x = padding + (n / m) * graphWidth;
+                const x = padding + ((n - 1) / Math.max(1, m - 1)) * graphWidth;
                 const y = canvas.height - padding - density * graphHeight;
 
-                ctx.fillStyle = n === m ? '#FFD700' : '#00FFFF';
+                ctx.fillStyle = n === m ? '#FFD700' : (n === 1 ? '#00FF00' : '#00FFFF');
                 ctx.beginPath();
-                ctx.arc(x, y, n === m ? pointSize * 2 : pointSize, 0, 2 * Math.PI);
+                ctx.arc(x, y, n === m ? pointSize * 2 : (n === 1 ? pointSize * 1.5 : pointSize), 0, 2 * Math.PI);
                 ctx.fill();
             }
 
@@ -3480,4 +3592,4 @@
         };
     </script>
 </body>
-    </html>
+                                </html>
