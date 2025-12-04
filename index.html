@@ -559,7 +559,7 @@
 <body>
     <div class="main-container">
         <header>
-            <h1>⟨ Modular Arithmetic Explorer ⟩</h1>
+            <h1>Modular Arithmetic Explorer</h1>
             <div class="subtitle">Multi-Canvas Visualization Suite · Ring Theory · Number Theory</div>
             <div class="author">Wessen Getachew · @7dview</div>
         </header>
@@ -574,7 +574,7 @@
             <div class="intro-content" id="introContent">
                 <div class="intro-grid">
                     <div class="intro-card">
-                        <h3>🎯 What is This Tool?</h3>
+                        <h3>What is This Tool?</h3>
                         <p>
                             This interactive visualization suite explores <strong>modular arithmetic</strong> through multiple geometric and algebraic perspectives. 
                             For a modulus m, we study the ring ℤ/mℤ = {0, 1, 2, ..., m-1} with addition and multiplication mod m.
@@ -583,10 +583,14 @@
                             Each of the 4 canvases reveals different structural properties: multiplication tables, geometric representations 
                             on the unit circle, GCD relationships, and coprime density patterns.
                         </p>
+                        <p>
+                            <strong>New in this version:</strong> Interactive tooltips on all canvases, keyboard shortcuts, 3D mouse rotation, 
+                            live statistics dashboard, element inspector, URL state sharing, and performance optimizations with caching.
+                        </p>
                     </div>
 
                     <div class="intro-card">
-                        <h3>⊗ Canvas 1: Multiplication Table</h3>
+                        <h3>Canvas 1: Multiplication Table</h3>
                         <p>
                             <strong>What it shows:</strong> The complete multiplication table a × b (mod m) for all elements.
                             Each cell (i,j) shows the product of row i and column j reduced modulo m.
@@ -599,12 +603,16 @@
                             <br>• <em>Idempotents:</em> Elements where a² ≡ a (mod m)
                         </p>
                         <p>
-                            <strong>Key insight:</strong> Patterns reveal ring structure, symmetries, and special elements.
+                            <strong>Interactive features:</strong>
+                            <br>• <em>Hover tooltips:</em> Shows "a × b ≡ result (mod m)" with properties
+                            <br>• <em>Click to inspect:</em> Select any cell to analyze in Element Inspector
+                            <br>• <em>Live Statistics:</em> Real-time dashboard showing φ(m), units, zero divisors, and more
+                            <br>• <em>Element Inspector:</em> Deep analysis of any element's properties, order, inverse, and generated subgroup
                         </p>
                     </div>
 
                     <div class="intro-card">
-                        <h3>○ Canvas 2: Unit Circle - Farey Channels</h3>
+                        <h3>Canvas 2: Unit Circle - Farey Channels</h3>
                         <p>
                             <strong>What it shows:</strong> Comprehensive visualization of all residues r/m for every modulus from 1 to m, 
                             mapped to concentric rings inside the unit circle. Each ring represents a different modulus, with points at 
@@ -627,14 +635,15 @@
                             <br>• <em>Highlight Prime GCD:</em> Cyan coloring for points where gcd(r,m) is prime
                         </p>
                         <p>
-                            <strong>Key insight:</strong> Visualizes the complete modular lattice structure, showing how residue classes 
-                            relate across different moduli. Dyadic connections reveal multiplication by 2 patterns (like times table cardioids). 
-                            Phase rotation exposes hidden symmetries. The center represents gcd=1 (coprimality), with φ(m) gold points on each ring.
+                            <strong>Interactive features:</strong>
+                            <br>• <em>Hover tooltips:</em> Shows r, m, fraction, angle, GCD value, and coprime status
+                            <br>• <em>Fraction presets:</em> Quick buttons for common rotations (1/2, 1/3, 1/4, etc.)
+                            <br>• <em>Per-ring rotation:</em> Additional rotation control with degree increments
                         </p>
                     </div>
 
                     <div class="intro-card">
-                        <h3>⊚ Canvas 3: GCD Structure - 3D Sphere</h3>
+                        <h3>Canvas 3: GCD Structure - 3D Sphere</h3>
                         <p>
                             <strong>What it shows:</strong> Interactive 3D sphere visualization mapping pairs (a,b) to spherical coordinates 
                             based on their GCD value. Points are positioned using spherical coordinates (θ, φ) where θ = 2πa/m (azimuthal) 
@@ -647,7 +656,9 @@
                         </p>
                         <p>
                             <strong>Interactive Features:</strong>
-                            <br>• <em>Rotation X/Y:</em> Full 360° control on both axes - explore from any angle
+                            <br>• <em>Mouse drag rotation:</em> Click and drag to rotate sphere in real-time
+                            <br>• <em>Hover tooltips:</em> Shows pair (a,b), GCD value, coprime status, and depth
+                            <br>• <em>Rotation sliders:</em> Precise 360° control on both axes
                             <br>• <em>Zoom:</em> Adjust perspective from 50% to 200%
                             <br>• <em>Show Connections:</em> Draw lines between related GCD pairs
                             <br>• <em>Show Grid:</em> Display latitude/longitude grid with X/Y/Z axes
@@ -659,16 +670,10 @@
                             Perspective projection with depth sorting ensures proper occlusion. Point size and opacity scale with depth 
                             for realistic 3D effect.
                         </p>
-                        <p>
-                            <strong>Key insight:</strong> The 3D sphere reveals spatial clustering of GCD relationships that aren't 
-                            visible in 2D. Coprime pairs (gcd=1, gold) cluster near the surface. Higher GCD values create concentric 
-                            shells. Rotation exposes hidden symmetries in the divisibility structure. The spherical topology naturally 
-                            represents the periodic nature of modular arithmetic.
-                        </p>
                     </div>
 
                     <div class="intro-card">
-                        <h3>◬ Canvas 4: Coprime Density</h3>
+                        <h3>Canvas 4: Coprime Density</h3>
                         <p>
                             <strong>What it shows:</strong> Plot of φ(n)/n for n = 2 to m, where φ(n) is Euler's totient function 
                             (count of numbers coprime to n).
@@ -678,12 +683,15 @@
                             two random integers are coprime (Basel problem connection).
                         </p>
                         <p>
-                            <strong>Key insight:</strong> Shows how coprime density varies with m and converges toward 6/π² on average.
+                            <strong>Interactive features:</strong>
+                            <br>• <em>Hover tooltips:</em> Shows n, φ(n), density, Basel ratio, and prime factorization
+                            <br>• <em>Point size control:</em> Adjust visualization detail
+                            <br>• <em>Toggle options:</em> Basel line, grid, labels, and point connections
                         </p>
                     </div>
 
                     <div class="intro-card">
-                        <h3>🔢 Mathematical Concepts</h3>
+                        <h3>Mathematical Concepts</h3>
                         <p>
                             <strong>φ(m) - Euler's Totient:</strong> Count of units (invertible elements). For prime p, φ(p) = p-1.
                             For prime powers, φ(p^k) = p^k - p^(k-1).
@@ -696,12 +704,20 @@
                             <strong>Idempotents:</strong> Elements satisfying a² ≡ a (mod m). Always includes 0 and 1.
                             By Chinese Remainder Theorem, m = p₁^k₁ × ... × pᵣ^kᵣ has 2^r idempotents.
                         </p>
+                        <p>
+                            <strong>Multiplicative Order:</strong> For unit a, the smallest positive integer k such that a^k ≡ 1 (mod m).
+                            The order divides φ(m) by Lagrange's theorem.
+                        </p>
+                        <p>
+                            <strong>Primitive Roots:</strong> Elements of order φ(m) that generate the entire unit group.
+                            Primitive roots exist only when m = 1, 2, 4, p^k, or 2p^k for odd prime p.
+                        </p>
                     </div>
 
                     <div class="intro-card">
-                        <h3>🎓 Using the Tool</h3>
+                        <h3>Using the Tool</h3>
                         <p>
-                            <strong>1. Choose a modulus:</strong> Use slider (2-100) or type directly (up to 500).
+                            <strong>1. Choose a modulus:</strong> Use slider (2-200) or type directly (up to 1000).
                             Try the preset buttons for mathematically significant values.
                         </p>
                         <p>
@@ -711,51 +727,92 @@
                             <br>• <em>Addition:</em> Addition table structure
                         </p>
                         <p>
-                            <strong>3. Explore Farey Channels (Canvas 2):</strong>
-                            <br>• <em>Phase Rotation:</em> Enter r/m fraction to rotate structure (17-decimal precision)
-                            <br>• <em>Connection Modes:</em> Toggle connections to reveal patterns
-                            <br>• <em>Dyadic Powers:</em> Enable for cardioid patterns (like times tables)
-                            <br>• <em>Residue Layers:</em> See all moduli from 1 to m simultaneously
+                            <strong>3. Explore with mouse:</strong>
+                            <br>• <em>Hover:</em> See tooltips with detailed information on all canvases
+                            <br>• <em>Click:</em> Select elements in multiplication table for deep analysis
+                            <br>• <em>Drag:</em> Rotate the 3D GCD sphere freely
                         </p>
                         <p>
-                            <strong>4. Explore presets:</strong> Basel Problem (m=6), Highly Composite (m=60), 
-                            Prime Fields (m=17), etc. Each preset demonstrates special properties. After loading a preset, 
-                            experiment with Farey channel settings for deeper insights.
+                            <strong>4. Use keyboard shortcuts:</strong>
+                            <br>• <em>← / →:</em> Change modulus ±1
+                            <br>• <em>↑ / ↓:</em> Change modulus ±10
+                            <br>• <em>Space:</em> Play/Pause animation
+                            <br>• <em>R:</em> Reset all views
+                            <br>• <em>E:</em> Export all canvases
+                            <br>• <em>H:</em> Show keyboard help
                         </p>
                         <p>
-                            <strong>5. Export:</strong> Save individual canvases with titles (including phase rotation info), 
-                            export all 4 together, or download CSV data for analysis. Circle CSV now includes all residue 
-                            layers with GCD values and ring positions.
+                            <strong>5. Analyze elements:</strong> Use the Element Inspector panel below Canvas 1 to:
+                            <br>• View multiplicative order and inverse
+                            <br>• See powers and generated subgroups
+                            <br>• Identify special properties (idempotent, nilpotent)
+                            <br>• Highlight element occurrences in multiplication table
+                        </p>
+                        <p>
+                            <strong>6. Monitor statistics:</strong> The Live Statistics Dashboard updates in real-time showing:
+                            <br>• Current modulus and φ(m)
+                            <br>• Unit density and Basel ratio
+                            <br>• Quick properties (units, zero divisors, idempotents)
+                            <br>• Related primes and Carmichael lambda
+                        </p>
+                        <p>
+                            <strong>7. Export and share:</strong>
+                            <br>• Choose resolution (2K/4K/8K) before exporting
+                            <br>• Export individual canvases with PNG or CSV buttons
+                            <br>• Export all 4 canvases in a 2×2 grid
+                            <br>• Share exact configurations via URL (state auto-saved)
                         </p>
                     </div>
 
                     <div class="intro-card">
-                        <h3>💡 Interesting Examples</h3>
+                        <h3>Interesting Examples</h3>
                         <p>
                             <strong>m = 6 (Basel Problem):</strong> φ(6) = 2. Only 1 and 5 are units. 
                             Related to ζ(2) = π²/6 and coprime probability. Try phase r=1, m=6 for 60° rotation showing 6-fold symmetry.
+                            Click element 3 in the inspector to see a zero divisor that's also idempotent.
                         </p>
                         <p>
                             <strong>m = 12:</strong> φ(12) = 4. Units are {1,5,7,11}. Rich idempotent structure 
                             with {0,1,4,9} as idempotents. Enable "Connect r in Each m" to see dodecagonal patterns. 
-                            Phase r=1, m=2 (180°) reveals binary structure.
+                            Phase r=1, m=2 (180°) reveals binary structure. Inspect element 5 to see order 2 and self-inverse property.
                         </p>
                         <p>
                             <strong>m = 17 (Prime):</strong> φ(17) = 16. All non-zero elements are units. 
                             Forms a field - no zero divisors. Farey channels show perfect symmetry with all rings having coprime structure.
+                            Inspect element 3 to see a primitive root that generates all 16 units.
                         </p>
                         <p>
                             <strong>m = 60 (Highly Composite):</strong> φ(60) = 16. Has 60 = 2²×3×5, 
                             showing rich factorization structure with many zero divisors. Enable "Dyadic Powers r×2ⁿ" to see beautiful 
-                            cardioid patterns emerging from multiplication by powers of 2.
+                            cardioid patterns emerging from multiplication by powers of 2. Drag the 3D sphere to explore complex GCD clustering.
                         </p>
                         <p>
-                            <strong>Dyadic Cardioids:</strong> Set any m ≥ 30, enable "Dyadic Powers r×2ⁿ". Watch how doubling 
-                            creates patterns identical to times table visualizations. Try m=100 for stunning complexity.
+                            <strong>Animation exploration:</strong> Use the animation player to watch how structure changes from m=1 to m=100.
+                            Press Space to play/pause. Notice how prime moduli stand out with maximum φ(m)/m density approaching 1.0.
+                        </p>
+                    </div>
+
+                    <div class="intro-card">
+                        <h3>Performance & Technical Features</h3>
+                        <p>
+                            <strong>Caching system:</strong> All expensive mathematical computations (φ(m), GCD, prime tests, etc.) are 
+                            cached automatically. This makes exploration of large moduli (m > 500) significantly faster on repeated access.
                         </p>
                         <p>
-                            <strong>Phase Exploration:</strong> Try m=8 with phase r=1, m=8 (45°) to see octagonal symmetry. 
-                            Or m=12 with r=1, m=3 (120°) for triangular symmetry. The 17-decimal display shows exact rotation angles.
+                            <strong>Responsive tooltips:</strong> Hover over any visualization to see context-specific information without 
+                            cluttering the interface. Tooltips show mathematical properties, computed values, and interpretations.
+                        </p>
+                        <p>
+                            <strong>URL state management:</strong> Your current configuration (modulus, table type, color scheme, rotations) 
+                            is automatically saved to the URL. Copy and share the URL to reproduce exact visualizations.
+                        </p>
+                        <p>
+                            <strong>High-resolution exports:</strong> Choose between 2K (2048px), 4K (3840px), or 8K (7680px) resolution 
+                            for publication-quality graphics. All exports include titles, subtitles with key metrics, and proper attribution.
+                        </p>
+                        <p>
+                            <strong>CSV data export:</strong> Export raw numerical data for external analysis in tools like Python, R, 
+                            Mathematica, or Excel. Includes multiplication tables, Farey channel coordinates, GCD structures, and density plots.
                         </p>
                     </div>
                 </div>
@@ -814,6 +871,85 @@
                                 <input type="radio" name="colorSchemeCanvas1" value="idempotents" onchange="updateVisualization()">
                                 <span>Idempotents</span>
                             </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Live Statistics Dashboard -->
+                    <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-panel), var(--bg-card)); border-radius: 10px; border: 2px solid var(--border);">
+                        <h3 style="color: var(--gold); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            Live Statistics Dashboard
+                        </h3>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Modulus</div>
+                                <div id="liveStatModulus" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">12</div>
+                            </div>
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">φ(m) Units</div>
+                                <div id="liveStatPhi" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">4</div>
+                            </div>
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Density</div>
+                                <div id="liveStatDensity" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">0.333</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px;">
+                            <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 10px;">Quick Properties:</div>
+                            <div id="liveStatProperties" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
+                                • Units: {1, 5, 7, 11}<br>
+                                • Zero Divisors: 7 elements<br>
+                                • Idempotents: {0, 1, 4, 9}<br>
+                                • Prime Test: Composite (2² × 3)
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                            <div style="color: var(--accent-green); font-weight: 600; margin-bottom: 10px;">Related Numbers:</div>
+                            <div id="liveStatRelated" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
+                                • Previous Prime: 11 | Next Prime: 13<br>
+                                • Carmichael λ(12): 2<br>
+                                • Group Order: 4
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Element Inspector -->
+                    <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)); border-radius: 10px; border: 2px solid var(--border);">
+                        <h3 style="color: var(--cyan); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            Element Inspector
+                        </h3>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="color: var(--text-primary); font-weight: 600; display: block; margin-bottom: 8px;">
+                                Select Element (click table or type):
+                            </label>
+                            <input type="number" id="inspectorElement" min="0" value="5" 
+                                   style="width: 100%; padding: 12px; background: var(--bg-deep); border: 2px solid var(--border); border-radius: 8px; color: var(--gold); font-size: 1.2em; font-weight: 700; font-family: 'Courier New', monospace;"
+                                   onchange="updateElementInspector()">
+                        </div>
+                        
+                        <div id="inspectorContent" style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                            <div style="color: var(--gold); font-size: 1.2em; font-weight: 700; margin-bottom: 12px;">
+                                Properties of <span id="inspectorElementTitle">5</span> (mod <span id="inspectorModulus">12</span>):
+                            </div>
+                            <div id="inspectorDetails" style="color: var(--text-secondary); line-height: 2; font-size: 0.95em;">
+                                • <strong style="color: var(--text-primary);">Order:</strong> <span style="color: var(--cyan);">2</span> (5² ≡ 1)<br>
+                                • <strong style="color: var(--text-primary);">Unit:</strong> <span style="color: var(--accent-green);">✓ Yes</span> (gcd(5,12)=1)<br>
+                                • <strong style="color: var(--text-primary);">Inverse:</strong> <span style="color: var(--gold);">5⁻¹ ≡ 5</span><br>
+                                • <strong style="color: var(--text-primary);">Powers:</strong> 5¹=5, 5²=1<br>
+                                • <strong style="color: var(--text-primary);">Generates:</strong> {1, 5}
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 15px; display: flex; gap: 10px;">
+                            <button class="btn btn-secondary" onclick="highlightElementInTable()" style="flex: 1; padding: 10px;">
+                                Highlight in Table
+                            </button>
+                            <button class="btn btn-secondary" onclick="showSubgroupGenerated()" style="flex: 1; padding: 10px;">
+                                Show Subgroup
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1275,6 +1411,9 @@
 
         const globalCache = new ModularArithmeticCache();
 
+        // ========== ELEMENT HIGHLIGHTING ==========
+        let highlightedElement = null;
+
         // ========== TOOLTIP SYSTEM ==========
         let tooltipElement = null;
         
@@ -1464,7 +1603,7 @@
         function showKeyboardHelp() {
             const helpText = `
                 <div style="text-align: left;">
-                    <div style="font-size: 18px; font-weight: bold; margin-bottom: 12px; color: #00FFFF;">⌨️ Keyboard Shortcuts</div>
+                    <div style="font-size: 18px; font-weight: bold; margin-bottom: 12px; color: #00FFFF;">Keyboard Shortcuts</div>
                     <div style="margin-bottom: 8px;"><span style="color: #FFD700;">←/→</span> : Change modulus ±1</div>
                     <div style="margin-bottom: 8px;"><span style="color: #FFD700;">↑/↓</span> : Change modulus ±10</div>
                     <div style="margin-bottom: 8px;"><span style="color: #FFD700;">Space</span> : Play/Pause animation</div>
@@ -2093,6 +2232,16 @@
                         ctx.lineWidth = 0.5;
                         ctx.strokeRect(x, y, cellSize - 1, cellSize - 1);
                     }
+                    
+                    // Highlight if element is selected in inspector
+                    if (highlightedElement !== null && (a === highlightedElement || b === highlightedElement || value === highlightedElement)) {
+                        ctx.strokeStyle = '#FFD700';
+                        ctx.lineWidth = 3;
+                        ctx.strokeRect(x + 1, y + 1, cellSize - 3, cellSize - 3);
+                        ctx.strokeStyle = '#00FFFF';
+                        ctx.lineWidth = 1.5;
+                        ctx.strokeRect(x + 3, y + 3, cellSize - 7, cellSize - 7);
+                    }
 
                     if (showLabels && cellSize >= 12) {
                         ctx.fillStyle = '#ffffff';
@@ -2134,6 +2283,8 @@
                         tooltipText += '<br><span style="color: #FFD700;">Idempotent: ' + result + '² ≡ ' + result + '</span>';
                     }
                     
+                    tooltipText += '<br><span style="color: #00FFFF; font-size: 0.9em;">Click to inspect</span>';
+                    
                     showTooltip(tooltipText, e.clientX, e.clientY);
                 } else {
                     hideTooltip();
@@ -2142,6 +2293,31 @@
             
             canvas.onmouseleave = () => {
                 hideTooltip();
+            };
+            
+            // Add click functionality to select element in inspector
+            canvas.onclick = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                const col = Math.floor(mouseX / cellSize);
+                const row = Math.floor(mouseY / cellSize);
+                
+                if (col >= 0 && col < elements.length && row >= 0 && row < elements.length) {
+                    const a = elements[row];
+                    const b = elements[col];
+                    const result = tableType === 'addition' ? (a + b) % m : (a * b) % m;
+                    
+                    // Set element in inspector
+                    document.getElementById('inspectorElement').value = result;
+                    updateElementInspector();
+                    
+                    // Scroll to inspector
+                    document.getElementById('inspectorElement').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    showNotification('Element Selected', `Inspecting element ${result}`, 2000);
+                }
             };
         }
 
@@ -3045,6 +3221,181 @@
             document.getElementById('statCarmichael').textContent = lambda;
             document.getElementById('statCarmichaelDetails').textContent = 
                 lambda === phi ? 'λ(m) = φ(m)' : `λ(m) < φ(m)`;
+            
+            // Update Live Statistics Dashboard
+            updateLiveStatistics(m, units, zeroDivisors, idempotents, primitiveRoots);
+            
+            // Update Element Inspector (if element is set)
+            updateElementInspector();
+        }
+        
+        // Live Statistics Dashboard Update
+        function updateLiveStatistics(m, units, zeroDivisors, idempotents, primitiveRoots) {
+            // Update main stats
+            document.getElementById('liveStatModulus').textContent = m;
+            document.getElementById('liveStatPhi').textContent = units.length;
+            document.getElementById('liveStatDensity').textContent = (units.length / m).toFixed(6);
+            
+            // Update properties
+            const unitsDisplay = units.length <= 8 ? `{${units.join(', ')}}` : `{${units.slice(0, 8).join(', ')}, ...}`;
+            const idempDisplay = idempotents.length <= 6 ? `{${idempotents.join(', ')}}` : `{${idempotents.slice(0, 6).join(', ')}, ...}`;
+            
+            const primeTest = isPrime(m) ? `<span style="color: var(--accent-green);">✓ Prime</span>` : `Composite (${getPrimeFactorization(m)})`;
+            
+            document.getElementById('liveStatProperties').innerHTML = `
+                • <strong style="color: var(--text-primary);">Units:</strong> ${unitsDisplay}<br>
+                • <strong style="color: var(--text-primary);">Zero Divisors:</strong> ${zeroDivisors.length} elements<br>
+                • <strong style="color: var(--text-primary);">Idempotents:</strong> ${idempDisplay}<br>
+                • <strong style="color: var(--text-primary);">Prime Test:</strong> ${primeTest}
+            `;
+            
+            // Find previous and next prime
+            let prevPrime = m - 1;
+            while (prevPrime > 1 && !isPrime(prevPrime)) prevPrime--;
+            
+            let nextPrime = m + 1;
+            while (nextPrime < m + 100 && !isPrime(nextPrime)) nextPrime++;
+            
+            const lambda = carmichaelLambda(m);
+            
+            document.getElementById('liveStatRelated').innerHTML = `
+                • <strong style="color: var(--text-primary);">Previous Prime:</strong> <span style="color: var(--gold);">${prevPrime}</span> | 
+                  <strong style="color: var(--text-primary);">Next Prime:</strong> <span style="color: var(--gold);">${nextPrime}</span><br>
+                • <strong style="color: var(--text-primary);">Carmichael λ(${m}):</strong> <span style="color: var(--cyan);">${lambda}</span><br>
+                • <strong style="color: var(--text-primary);">Group Order:</strong> <span style="color: var(--accent-purple);">${units.length}</span>
+            `;
+        }
+        
+        // Element Inspector Functions
+        function updateElementInspector() {
+            const m = parseInt(document.getElementById('modulusInput').value);
+            let element = parseInt(document.getElementById('inspectorElement').value);
+            
+            // Clamp element to valid range
+            if (element < 0) element = 0;
+            if (element >= m) element = m - 1;
+            document.getElementById('inspectorElement').value = element;
+            
+            // Update display
+            document.getElementById('inspectorElementTitle').textContent = element;
+            document.getElementById('inspectorModulus').textContent = m;
+            
+            // Calculate properties
+            const gcdVal = gcd(element, m);
+            const isUnit = gcdVal === 1;
+            
+            // Calculate order
+            let order = 0;
+            if (isUnit) {
+                let temp = 1;
+                for (let k = 1; k <= m; k++) {
+                    temp = (temp * element) % m;
+                    if (temp === 1) {
+                        order = k;
+                        break;
+                    }
+                }
+            }
+            
+            // Calculate inverse
+            let inverse = null;
+            if (isUnit) {
+                for (let i = 1; i < m; i++) {
+                    if ((element * i) % m === 1) {
+                        inverse = i;
+                        break;
+                    }
+                }
+            }
+            
+            // Calculate powers
+            let powers = [];
+            let temp = element;
+            for (let k = 1; k <= Math.min(order || 10, 10); k++) {
+                powers.push(`${element}<sup>${k}</sup>=${temp}`);
+                temp = (temp * element) % m;
+            }
+            
+            // Generate subgroup
+            let subgroup = new Set();
+            if (isUnit && order > 0) {
+                temp = 1;
+                for (let k = 0; k < order; k++) {
+                    subgroup.add(temp);
+                    temp = (temp * element) % m;
+                }
+            }
+            const subgroupDisplay = subgroup.size > 0 ? `{${Array.from(subgroup).sort((a,b) => a-b).join(', ')}}` : 'N/A';
+            
+            // Check if idempotent
+            const isIdempotent = (element * element) % m === element;
+            
+            // Check if nilpotent
+            let isNilpotent = false;
+            temp = element;
+            for (let k = 1; k < 20; k++) {
+                temp = (temp * element) % m;
+                if (temp === 0) {
+                    isNilpotent = true;
+                    break;
+                }
+            }
+            
+            // Build display
+            let html = '';
+            
+            if (isUnit) {
+                html += `• <strong style="color: var(--text-primary);">Order:</strong> <span style="color: var(--cyan);">${order}</span> (${element}<sup>${order}</sup> ≡ 1)<br>`;
+                html += `• <strong style="color: var(--text-primary);">Unit:</strong> <span style="color: var(--accent-green);">✓ Yes</span> (gcd(${element},${m})=1)<br>`;
+                html += `• <strong style="color: var(--text-primary);">Inverse:</strong> <span style="color: var(--gold);">${element}⁻¹ ≡ ${inverse}</span><br>`;
+                html += `• <strong style="color: var(--text-primary);">Powers:</strong> ${powers.join(', ')}<br>`;
+                html += `• <strong style="color: var(--text-primary);">Generates:</strong> ${subgroupDisplay}`;
+            } else {
+                html += `• <strong style="color: var(--text-primary);">Order:</strong> <span style="color: var(--text-secondary);">N/A (not a unit)</span><br>`;
+                html += `• <strong style="color: var(--text-primary);">Unit:</strong> <span style="color: #e74c3c;">✗ No</span> (gcd(${element},${m})=${gcdVal})<br>`;
+                html += `• <strong style="color: var(--text-primary);">Zero Divisor:</strong> <span style="color: #e74c3c;">✓ Yes</span><br>`;
+                
+                if (isIdempotent) {
+                    html += `• <strong style="color: var(--text-primary);">Idempotent:</strong> <span style="color: var(--gold);">✓ Yes</span> (${element}² ≡ ${element})<br>`;
+                }
+                
+                if (isNilpotent) {
+                    html += `• <strong style="color: var(--text-primary);">Nilpotent:</strong> <span style="color: var(--accent-purple);">✓ Yes</span> (${element}<sup>n</sup> ≡ 0 for some n)`;
+                }
+            }
+            
+            document.getElementById('inspectorDetails').innerHTML = html;
+        }
+        
+        // Highlight element in multiplication table
+        function highlightElementInTable() {
+            const element = parseInt(document.getElementById('inspectorElement').value);
+            highlightedElement = element;
+            updateVisualization();
+            showNotification('Highlighted', `Element ${element} highlighted in multiplication table`);
+        }
+        
+        function showSubgroupGenerated() {
+            const m = parseInt(document.getElementById('modulusInput').value);
+            const element = parseInt(document.getElementById('inspectorElement').value);
+            const gcdVal = gcd(element, m);
+            
+            if (gcdVal !== 1) {
+                showNotification('Not a Unit', `Element ${element} is not a unit (gcd=${gcdVal}), cannot generate subgroup`);
+                return;
+            }
+            
+            // Generate subgroup
+            const subgroup = new Set();
+            let temp = 1;
+            do {
+                subgroup.add(temp);
+                temp = (temp * element) % m;
+            } while (temp !== 1);
+            
+            const subgroupArray = Array.from(subgroup).sort((a,b) => a-b);
+            
+            showNotification('Subgroup Generated', `⟨${element}⟩ = {${subgroupArray.join(', ')}}<br>Order: ${subgroupArray.length}`, 8000);
         }
 
         // Export functions with titles and descriptions
@@ -3080,9 +3431,9 @@
             }
             
             const canvasMap = {
-                'grid': { 
+                'grid':                 { 
                     id: 'gridCanvas', 
-                    title: '⊗ Multiplication Table',
+                    title: 'Multiplication Table',
                     subtitle: `ℤ/${m}ℤ (m=${m}) · ${tableType} · ${colorScheme} · φ(${m})=${units.length} units · ${zeroDivisors.length} zero divisors`
                 },
                 'circle': { 
@@ -4052,9 +4403,9 @@
             
             // Show keyboard shortcuts hint
             setTimeout(() => {
-                showNotification('💡 Tip', 'Press <strong>H</strong> for keyboard shortcuts', 3000);
+                showNotification('Tip', 'Press <strong>H</strong> for keyboard shortcuts', 3000);
             }, 1000);
         };
     </script>
 </body>
-    </html>
+                                </html>
