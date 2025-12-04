@@ -559,7 +559,7 @@
 <body>
     <div class="main-container">
         <header>
-            <h1>Modular Arithmetic Explorer</h1>
+            <h1>⟨ Modular Arithmetic Explorer ⟩</h1>
             <div class="subtitle">Multi-Canvas Visualization Suite · Ring Theory · Number Theory</div>
             <div class="author">Wessen Getachew · @7dview</div>
         </header>
@@ -576,16 +576,30 @@
                     <div class="intro-card">
                         <h3>What is This Tool?</h3>
                         <p>
-                            This interactive visualization suite explores <strong>modular arithmetic</strong> through multiple geometric and algebraic perspectives. 
-                            For a modulus m, we study the ring ℤ/mℤ = {0, 1, 2, ..., m-1} with addition and multiplication mod m.
+                            This interactive visualization suite provides comprehensive exploration of <strong>modular arithmetic</strong> through four synchronized canvases, 
+                            each revealing different structural properties of the ring ℤ/mℤ = {0, 1, 2, ..., m-1} with addition and multiplication mod m.
                         </p>
                         <p>
-                            Each of the 4 canvases reveals different structural properties: multiplication tables, geometric representations 
-                            on the unit circle, GCD relationships, and coprime density patterns.
+                            <strong>Canvas 1: Multiplication Table</strong> - Complete operation tables with multiple coloring schemes (Rainbow, Divisibility, Zero Divisors, Idempotents). 
+                            Features live statistics dashboard showing modulus properties, unit count, density, and quick properties. Includes element inspector for detailed analysis of individual elements.
                         </p>
                         <p>
-                            <strong>New in this version:</strong> Interactive tooltips on all canvases, keyboard shortcuts, 3D mouse rotation, 
-                            live statistics dashboard, element inspector, URL state sharing, and performance optimizations with caching.
+                            <strong>Canvas 2: Unit Circle - Farey Channels</strong> - Geometric representation with concentric rings for all moduli from 1 to m. 
+                            Features global phase rotation (r/m with 17-decimal precision), per-ring rotation control, dyadic power connections for cardioid patterns, 
+                            and multiple connection modes. Live statistics track rotation angles and residue layer counts.
+                        </p>
+                        <p>
+                            <strong>Canvas 3: GCD Structure - 3D Sphere</strong> - Interactive 3D visualization with full 360-degree rotation on both axes, 
+                            zoom control (50%-200%), auto-rotate mode, and optional grid display. Maps GCD relationships to spherical coordinates with depth-sorted rendering. 
+                            Live statistics show current rotation angles and zoom level.
+                        </p>
+                        <p>
+                            <strong>Canvas 4: Coprime Density</strong> - Plot of φ(n)/n for all n from 2 to m, with Basel problem reference line (6/π² ≈ 0.6079). 
+                            Adjustable point size, optional grid/labels, and point connection mode. Live statistics display density trends and Basel ratio comparisons.
+                        </p>
+                        <p>
+                            All canvases include mouse hover tooltips for detailed information, live updating statistics panels, and synchronized controls. 
+                            Animation player supports automated progression through moduli. Export system provides 2K/4K/8K resolution with comprehensive legends and statistical analysis panels.
                         </p>
                     </div>
 
@@ -596,18 +610,31 @@
                             Each cell (i,j) shows the product of row i and column j reduced modulo m.
                         </p>
                         <p>
-                            <strong>Color schemes:</strong>
-                            <br>• <em>Rainbow:</em> Color by result value
-                            <br>• <em>Divisibility:</em> Intensity by number of divisors
-                            <br>• <em>Zero Divisors:</em> Highlights elements where ab ≡ 0 (mod m)
-                            <br>• <em>Idempotents:</em> Elements where a² ≡ a (mod m)
+                            <strong>Table Types:</strong>
+                            <br>• Multiplication: Full ring multiplication a × b (mod m)
+                            <br>• Cayley (Units): Restricted to invertible elements only
+                            <br>• Addition: Addition table a + b (mod m)
                         </p>
                         <p>
-                            <strong>Interactive features:</strong>
-                            <br>• <em>Hover tooltips:</em> Shows "a × b ≡ result (mod m)" with properties
-                            <br>• <em>Click to inspect:</em> Select any cell to analyze in Element Inspector
-                            <br>• <em>Live Statistics:</em> Real-time dashboard showing φ(m), units, zero divisors, and more
-                            <br>• <em>Element Inspector:</em> Deep analysis of any element's properties, order, inverse, and generated subgroup
+                            <strong>Color schemes:</strong>
+                            <br>• Rainbow: Color by result value (hue-based spectrum)
+                            <br>• Divisibility: Intensity by number of divisors of result
+                            <br>• Zero Divisors: Highlights non-zero elements where ab ≡ 0 (mod m)
+                            <br>• Idempotents: Elements where a² ≡ a (mod m) in gold
+                        </p>
+                        <p>
+                            <strong>Live Statistics Dashboard:</strong> Real-time display of modulus properties including φ(m) count, density ratio, 
+                            units list, zero divisor count, idempotent set, prime test with factorization, previous/next primes, Carmichael lambda, 
+                            and group order. Updates instantly as modulus changes.
+                        </p>
+                        <p>
+                            <strong>Element Inspector:</strong> Click any table cell or enter element number to analyze individual elements. 
+                            Shows order (for units), inverse calculation, power sequences, generated subgroup, idempotent status, and nilpotent properties. 
+                            Includes "Highlight in Table" and "Show Subgroup" buttons for visual exploration.
+                        </p>
+                        <p>
+                            <strong>Key insight:</strong> Patterns reveal ring structure, symmetries, and special elements. Hover over cells for instant 
+                            operation details and properties.
                         </p>
                     </div>
 
@@ -616,29 +643,42 @@
                         <p>
                             <strong>What it shows:</strong> Comprehensive visualization of all residues r/m for every modulus from 1 to m, 
                             mapped to concentric rings inside the unit circle. Each ring represents a different modulus, with points at 
-                            angles ±2πr/m showing both positive and negative rotations.
+                            angles ±2πr/m showing both positive and negative rotations. Total of m(m+1)/2 residues displayed.
                         </p>
                         <p>
-                            <strong>Phase Rotation (r/m):</strong> Control global rotation with fraction r/m, displayed to 17 decimal places.
-                            For example, r=1, m=2 gives 180° rotation; r=1, m=8 gives 45°. This reveals rotational symmetries in the modular structure.
+                            <strong>Global Phase Rotation (r/m):</strong> Control global rotation with fraction r/m, displayed to 17 decimal places 
+                            for maximum precision. For example, r=1, m=2 gives 180° rotation; r=1, m=8 gives 45°. This reveals rotational symmetries 
+                            in the modular structure. Quick preset buttons available for common fractions (1/2, 1/3, 1/4, 2/3, 1/6, 3/4, 1/8).
                         </p>
                         <p>
-                            <strong>Residue Layers:</strong> Concentric rings from center (m=1) to outer edge (m=your_limit). 
-                            Ring radius = m/M × maxRadius. Points colored by gcd(r,m): Gold for coprime (gcd=1), 
-                            Cyan for prime GCD, gradient for composite.
+                            <strong>Per-Ring Rotation Increment:</strong> Additional rotation control (0-360°) that applies progressively to each ring. 
+                            Ring index × increment creates spiral patterns. Can be applied to global phase via checkbox to affect all canvases.
+                        </p>
+                        <p>
+                            <strong>Residue Layers:</strong> Concentric rings from center (m=1, specially marked and larger) to outer edge (m=your_limit). 
+                            Ring radius = m/M × maxRadius. Points colored by gcd(r,m): Gold for coprime (gcd=1, units), 
+                            Cyan for prime GCD (when enabled), gradient for composite GCD values. Ring labels show modulus values at intervals.
                         </p>
                         <p>
                             <strong>Connection Modes:</strong>
-                            <br>• <em>Connect r in Each m:</em> Forms polygons on each ring
-                            <br>• <em>Connect r to Next mod r:</em> Radial lines showing how residues project through modular hierarchy
-                            <br>• <em>Dyadic Powers r×2ⁿ:</em> Creates cardioid patterns by connecting r, 2r, 4r, 8r, 16r... (only coprime points)
-                            <br>• <em>Highlight Prime GCD:</em> Cyan coloring for points where gcd(r,m) is prime
+                            <br>• Show Residue Layers: Toggle visibility of all concentric rings
+                            <br>• Connect r in Each m: Forms polygons on each ring connecting points with same residue
+                            <br>• Connect r to Next mod r: Radial lines showing how residues project through modular hierarchy
+                            <br>• Dyadic Powers r×2ⁿ: Creates cardioid patterns by connecting r, 2r, 4r, 8r, 16r... (coprime points only)
+                            <br>• Highlight Prime GCD: Cyan coloring for points where gcd(r,m) is prime
                         </p>
                         <p>
-                            <strong>Interactive features:</strong>
-                            <br>• <em>Hover tooltips:</em> Shows r, m, fraction, angle, GCD value, and coprime status
-                            <br>• <em>Fraction presets:</em> Quick buttons for common rotations (1/2, 1/3, 1/4, etc.)
-                            <br>• <em>Per-ring rotation:</em> Additional rotation control with degree increments
+                            <strong>Line Thickness Control:</strong> Adjustable slider (0.5-5px) for connection line width to optimize visibility.
+                        </p>
+                        <p>
+                            <strong>Live Statistics:</strong> Real-time display of current phase rotation angle (17 decimals), per-ring increment, 
+                            total residue count, and layer information. Updates instantly with any parameter change.
+                        </p>
+                        <p>
+                            <strong>Key insight:</strong> Visualizes the complete modular lattice structure, showing how residue classes 
+                            relate across different moduli. Dyadic connections reveal multiplication by 2 patterns (like times table cardioids). 
+                            Phase rotation exposes hidden symmetries. The center represents gcd=1 (coprimality), with φ(m) gold points on each ring. 
+                            Hover over points for detailed fraction, angle, and GCD information.
                         </p>
                     </div>
 
@@ -647,51 +687,92 @@
                         <p>
                             <strong>What it shows:</strong> Interactive 3D sphere visualization mapping pairs (a,b) to spherical coordinates 
                             based on their GCD value. Points are positioned using spherical coordinates (θ, φ) where θ = 2πa/m (azimuthal) 
-                            and φ = πb/m (polar), with radius proportional to gcd(a,b).
+                            and φ = πb/m (polar), with radius proportional to gcd(a,b). Creates shells where coprime pairs cluster near surface.
                         </p>
                         <p>
-                            <strong>360° Rotation Control:</strong> Two sliders control X-axis and Y-axis rotation independently (0-360°).
-                            Zoom slider adjusts view distance (50%-200%). Auto-rotate option continuously spins the sphere. 
-                            Reset button returns to default view (45°, 45°, 100%).
+                            <strong>Full 360-Degree Rotation Control:</strong> Two independent sliders control X-axis and Y-axis rotation (0-360°) 
+                            with real-time updates. Explore from any angle to reveal hidden structures. Mouse drag support for intuitive rotation 
+                            (click and drag to rotate, cursor changes to grabbing hand). Values displayed in degrees with instant visual feedback.
+                        </p>
+                        <p>
+                            <strong>Zoom Control:</strong> Adjust view distance from 50% to 200% for detailed inspection or overview perspective. 
+                            Maintains proper depth sorting and point scaling throughout zoom range.
                         </p>
                         <p>
                             <strong>Interactive Features:</strong>
-                            <br>• <em>Mouse drag rotation:</em> Click and drag to rotate sphere in real-time
-                            <br>• <em>Hover tooltips:</em> Shows pair (a,b), GCD value, coprime status, and depth
-                            <br>• <em>Rotation sliders:</em> Precise 360° control on both axes
-                            <br>• <em>Zoom:</em> Adjust perspective from 50% to 200%
-                            <br>• <em>Show Connections:</em> Draw lines between related GCD pairs
-                            <br>• <em>Show Grid:</em> Display latitude/longitude grid with X/Y/Z axes
-                            <br>• <em>Auto-Rotate:</em> Continuous animation for presentation mode
+                            <br>• Rotation X/Y: Full 360° control on both axes - explore from any angle, mouse drag enabled
+                            <br>• Zoom: Perspective adjustment from 50% to 200% of base size
+                            <br>• Show Connections: Draw lines between related GCD pairs for structural analysis
+                            <br>• Show Grid: Display latitude/longitude grid with X/Y/Z axes for spatial reference
+                            <br>• Auto-Rotate: Continuous animation mode for presentations (rotates on Y-axis)
+                            <br>• Reset View: Instantly return to default orientation (45°, 45°, 100%)
                         </p>
                         <p>
-                            <strong>3D Mapping:</strong> Each pair (a,b) with gcd value g maps to 3D coordinates:
+                            <strong>3D Mapping Mathematics:</strong> Each pair (a,b) with gcd value g maps to 3D coordinates:
                             x = r·sin(φ)·cos(θ), y = r·sin(φ)·sin(θ), z = r·cos(φ), where r = (g/max_gcd)·radius.
-                            Perspective projection with depth sorting ensures proper occlusion. Point size and opacity scale with depth 
-                            for realistic 3D effect.
+                            Perspective projection with focalLength/(focalLength + z) scaling. Depth sorting ensures proper occlusion. 
+                            Point size and opacity scale with depth for realistic 3D effect (back points smaller/dimmer).
+                        </p>
+                        <p>
+                            <strong>Color Coding:</strong> Hue mapped to GCD value - coprime pairs (gcd=1) in gold at surface, 
+                            higher GCD values in spectrum from blue to red. Brightness increases for closer points (depth-based lighting).
+                        </p>
+                        <p>
+                            <strong>Live Statistics:</strong> Real-time display of current X-rotation angle, Y-rotation angle, and zoom percentage. 
+                            Updates continuously during rotation and zoom operations. Shows whether auto-rotate is active.
+                        </p>
+                        <p>
+                            <strong>Key insight:</strong> The 3D sphere reveals spatial clustering of GCD relationships that aren't 
+                            visible in 2D. Coprime pairs (gcd=1, gold) cluster near the surface forming a dense shell. Higher GCD values create concentric 
+                            inner shells. Rotation exposes hidden symmetries in the divisibility structure. The spherical topology naturally 
+                            represents the periodic nature of modular arithmetic. Hover over points for pair information and GCD details.
                         </p>
                     </div>
 
                     <div class="intro-card">
-                        <h3>Canvas 4: Coprime Density</h3>
+                        <h3>Canvas 4: Coprime Density Analysis</h3>
                         <p>
-                            <strong>What it shows:</strong> Plot of φ(n)/n for n = 2 to m, where φ(n) is Euler's totient function 
-                            (count of numbers coprime to n).
+                            <strong>What it shows:</strong> Complete plot of φ(n)/n for all n from 2 to m, where φ(n) is Euler's totient function 
+                            (count of numbers coprime to n). Visualizes how the density of coprime numbers varies across different moduli and 
+                            converges toward the Basel problem limit.
                         </p>
                         <p>
-                            <strong>Reference line:</strong> Purple dashed line at 6/π² ≈ 0.6079, the limiting probability that 
-                            two random integers are coprime (Basel problem connection).
+                            <strong>Basel Problem Reference Line:</strong> Purple dashed line at 6/π² ≈ 0.6079, representing the limiting probability 
+                            that two random integers are coprime. This fundamental constant connects number theory to the Riemann zeta function: 
+                            ζ(2) = π²/6, so 1/ζ(2) = 6/π². The plot shows how individual moduli deviate from this asymptotic average.
                         </p>
                         <p>
-                            <strong>Interactive features:</strong>
-                            <br>• <em>Hover tooltips:</em> Shows n, φ(n), density, Basel ratio, and prime factorization
-                            <br>• <em>Point size control:</em> Adjust visualization detail
-                            <br>• <em>Toggle options:</em> Basel line, grid, labels, and point connections
+                            <strong>Visualization Controls:</strong>
+                            <br>• Point Size: Adjustable slider (1-10px) for optimal visibility across different data ranges
+                            <br>• Show 6/π² Line: Toggle Basel problem reference line on/off
+                            <br>• Show Grid: Display background grid for easier value reading
+                            <br>• Show Labels: Toggle axis labels and value annotations
+                            <br>• Connect Points: Optional line connections between consecutive points to show trend
+                        </p>
+                        <p>
+                            <strong>Data Representation:</strong> Each point represents one modulus n (from 2 to m), plotted at coordinates 
+                            (n, φ(n)/n). Prime numbers appear highest (φ(p)/p = (p-1)/p → 1 as p increases). Highly composite numbers with 
+                            many small prime factors show lowest densities. The m=1 case is omitted as φ(1)/1 = 1 is trivial.
+                        </p>
+                        <p>
+                            <strong>Color Coding:</strong> The current modulus m appears in gold (larger point), m=1 in green (if shown), 
+                            and all other points in cyan. This highlights the current focus while maintaining context of the full range.
+                        </p>
+                        <p>
+                            <strong>Live Statistics:</strong> Real-time display of total data points plotted, current modulus density value, 
+                            ratio compared to Basel limit, trend analysis (above/below average), and distance to nearest prime densities. 
+                            Updates instantly as modulus changes.
+                        </p>
+                        <p>
+                            <strong>Key insight:</strong> Shows how coprime density varies with m and converges toward 6/π² on average. 
+                            Prime moduli have densities approaching 1 (all non-zero elements coprime). Composite moduli with many small 
+                            prime divisors have lower densities. The overall trend illustrates a fundamental probabilistic property of integers: 
+                            asymptotically, about 60.79% of integer pairs are coprime. Hover over points for exact φ(n), density, and Basel ratio.
                         </p>
                     </div>
 
                     <div class="intro-card">
-                        <h3>Mathematical Concepts</h3>
+                        <h3>🔢 Mathematical Concepts</h3>
                         <p>
                             <strong>φ(m) - Euler's Totient:</strong> Count of units (invertible elements). For prime p, φ(p) = p-1.
                             For prime powers, φ(p^k) = p^k - p^(k-1).
@@ -704,20 +785,12 @@
                             <strong>Idempotents:</strong> Elements satisfying a² ≡ a (mod m). Always includes 0 and 1.
                             By Chinese Remainder Theorem, m = p₁^k₁ × ... × pᵣ^kᵣ has 2^r idempotents.
                         </p>
-                        <p>
-                            <strong>Multiplicative Order:</strong> For unit a, the smallest positive integer k such that a^k ≡ 1 (mod m).
-                            The order divides φ(m) by Lagrange's theorem.
-                        </p>
-                        <p>
-                            <strong>Primitive Roots:</strong> Elements of order φ(m) that generate the entire unit group.
-                            Primitive roots exist only when m = 1, 2, 4, p^k, or 2p^k for odd prime p.
-                        </p>
                     </div>
 
                     <div class="intro-card">
-                        <h3>Using the Tool</h3>
+                        <h3>🎓 Using the Tool</h3>
                         <p>
-                            <strong>1. Choose a modulus:</strong> Use slider (2-200) or type directly (up to 1000).
+                            <strong>1. Choose a modulus:</strong> Use slider (2-100) or type directly (up to 500).
                             Try the preset buttons for mathematically significant values.
                         </p>
                         <p>
@@ -727,92 +800,51 @@
                             <br>• <em>Addition:</em> Addition table structure
                         </p>
                         <p>
-                            <strong>3. Explore with mouse:</strong>
-                            <br>• <em>Hover:</em> See tooltips with detailed information on all canvases
-                            <br>• <em>Click:</em> Select elements in multiplication table for deep analysis
-                            <br>• <em>Drag:</em> Rotate the 3D GCD sphere freely
+                            <strong>3. Explore Farey Channels (Canvas 2):</strong>
+                            <br>• <em>Phase Rotation:</em> Enter r/m fraction to rotate structure (17-decimal precision)
+                            <br>• <em>Connection Modes:</em> Toggle connections to reveal patterns
+                            <br>• <em>Dyadic Powers:</em> Enable for cardioid patterns (like times tables)
+                            <br>• <em>Residue Layers:</em> See all moduli from 1 to m simultaneously
                         </p>
                         <p>
-                            <strong>4. Use keyboard shortcuts:</strong>
-                            <br>• <em>← / →:</em> Change modulus ±1
-                            <br>• <em>↑ / ↓:</em> Change modulus ±10
-                            <br>• <em>Space:</em> Play/Pause animation
-                            <br>• <em>R:</em> Reset all views
-                            <br>• <em>E:</em> Export all canvases
-                            <br>• <em>H:</em> Show keyboard help
+                            <strong>4. Explore presets:</strong> Basel Problem (m=6), Highly Composite (m=60), 
+                            Prime Fields (m=17), etc. Each preset demonstrates special properties. After loading a preset, 
+                            experiment with Farey channel settings for deeper insights.
                         </p>
                         <p>
-                            <strong>5. Analyze elements:</strong> Use the Element Inspector panel below Canvas 1 to:
-                            <br>• View multiplicative order and inverse
-                            <br>• See powers and generated subgroups
-                            <br>• Identify special properties (idempotent, nilpotent)
-                            <br>• Highlight element occurrences in multiplication table
-                        </p>
-                        <p>
-                            <strong>6. Monitor statistics:</strong> The Live Statistics Dashboard updates in real-time showing:
-                            <br>• Current modulus and φ(m)
-                            <br>• Unit density and Basel ratio
-                            <br>• Quick properties (units, zero divisors, idempotents)
-                            <br>• Related primes and Carmichael lambda
-                        </p>
-                        <p>
-                            <strong>7. Export and share:</strong>
-                            <br>• Choose resolution (2K/4K/8K) before exporting
-                            <br>• Export individual canvases with PNG or CSV buttons
-                            <br>• Export all 4 canvases in a 2×2 grid
-                            <br>• Share exact configurations via URL (state auto-saved)
+                            <strong>5. Export:</strong> Save individual canvases with titles (including phase rotation info), 
+                            export all 4 together, or download CSV data for analysis. Circle CSV now includes all residue 
+                            layers with GCD values and ring positions.
                         </p>
                     </div>
 
                     <div class="intro-card">
-                        <h3>Interesting Examples</h3>
+                        <h3>💡 Interesting Examples</h3>
                         <p>
                             <strong>m = 6 (Basel Problem):</strong> φ(6) = 2. Only 1 and 5 are units. 
                             Related to ζ(2) = π²/6 and coprime probability. Try phase r=1, m=6 for 60° rotation showing 6-fold symmetry.
-                            Click element 3 in the inspector to see a zero divisor that's also idempotent.
                         </p>
                         <p>
                             <strong>m = 12:</strong> φ(12) = 4. Units are {1,5,7,11}. Rich idempotent structure 
                             with {0,1,4,9} as idempotents. Enable "Connect r in Each m" to see dodecagonal patterns. 
-                            Phase r=1, m=2 (180°) reveals binary structure. Inspect element 5 to see order 2 and self-inverse property.
+                            Phase r=1, m=2 (180°) reveals binary structure.
                         </p>
                         <p>
                             <strong>m = 17 (Prime):</strong> φ(17) = 16. All non-zero elements are units. 
                             Forms a field - no zero divisors. Farey channels show perfect symmetry with all rings having coprime structure.
-                            Inspect element 3 to see a primitive root that generates all 16 units.
                         </p>
                         <p>
                             <strong>m = 60 (Highly Composite):</strong> φ(60) = 16. Has 60 = 2²×3×5, 
                             showing rich factorization structure with many zero divisors. Enable "Dyadic Powers r×2ⁿ" to see beautiful 
-                            cardioid patterns emerging from multiplication by powers of 2. Drag the 3D sphere to explore complex GCD clustering.
+                            cardioid patterns emerging from multiplication by powers of 2.
                         </p>
                         <p>
-                            <strong>Animation exploration:</strong> Use the animation player to watch how structure changes from m=1 to m=100.
-                            Press Space to play/pause. Notice how prime moduli stand out with maximum φ(m)/m density approaching 1.0.
-                        </p>
-                    </div>
-
-                    <div class="intro-card">
-                        <h3>Performance & Technical Features</h3>
-                        <p>
-                            <strong>Caching system:</strong> All expensive mathematical computations (φ(m), GCD, prime tests, etc.) are 
-                            cached automatically. This makes exploration of large moduli (m > 500) significantly faster on repeated access.
+                            <strong>Dyadic Cardioids:</strong> Set any m ≥ 30, enable "Dyadic Powers r×2ⁿ". Watch how doubling 
+                            creates patterns identical to times table visualizations. Try m=100 for stunning complexity.
                         </p>
                         <p>
-                            <strong>Responsive tooltips:</strong> Hover over any visualization to see context-specific information without 
-                            cluttering the interface. Tooltips show mathematical properties, computed values, and interpretations.
-                        </p>
-                        <p>
-                            <strong>URL state management:</strong> Your current configuration (modulus, table type, color scheme, rotations) 
-                            is automatically saved to the URL. Copy and share the URL to reproduce exact visualizations.
-                        </p>
-                        <p>
-                            <strong>High-resolution exports:</strong> Choose between 2K (2048px), 4K (3840px), or 8K (7680px) resolution 
-                            for publication-quality graphics. All exports include titles, subtitles with key metrics, and proper attribution.
-                        </p>
-                        <p>
-                            <strong>CSV data export:</strong> Export raw numerical data for external analysis in tools like Python, R, 
-                            Mathematica, or Excel. Includes multiplication tables, Farey channel coordinates, GCD structures, and density plots.
+                            <strong>Phase Exploration:</strong> Try m=8 with phase r=1, m=8 (45°) to see octagonal symmetry. 
+                            Or m=12 with r=1, m=3 (120°) for triangular symmetry. The 17-decimal display shows exact rotation angles.
                         </p>
                     </div>
                 </div>
@@ -874,10 +906,45 @@
                         </div>
                     </div>
                     
+                    <!-- Additional Grid Controls -->
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 10px;">Advanced Display Options:</label>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--bg-card); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                                <input type="checkbox" id="showTableSymmetry" onchange="updateVisualization()">
+                                <span style="color: var(--text-primary);">Highlight Symmetry</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--bg-card); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                                <input type="checkbox" id="showDiagonal" onchange="updateVisualization()">
+                                <span style="color: var(--text-primary);">Highlight Diagonal</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--bg-card); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                                <input type="checkbox" id="alternateShading" onchange="updateVisualization()">
+                                <span style="color: var(--text-primary);">Alternate Shading</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--bg-card); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                                <input type="checkbox" id="boldLabels" onchange="updateVisualization()">
+                                <span style="color: var(--text-primary);">Bold Labels</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Cell Opacity:</label>
+                        <input type="range" id="cellOpacity" min="0.3" max="1" step="0.1" value="1" 
+                               style="width: 100%;" oninput="updateVisualization(); document.getElementById('cellOpacityValue').textContent = Math.round(this.value * 100) + '%'">
+                        <span id="cellOpacityValue" style="color: var(--gold); font-family: monospace;">100%</span>
+                    </div>
+                    
+                    <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" onclick="transposeTable()" style="padding: 10px 20px;">Transpose Table</button>
+                        <button class="btn btn-secondary" onclick="compareWithAddition()" style="padding: 10px 20px;">Compare with Addition</button>
+                    </div>
+                    
                     <!-- Live Statistics Dashboard -->
                     <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-panel), var(--bg-card)); border-radius: 10px; border: 2px solid var(--border);">
                         <h3 style="color: var(--gold); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            Live Statistics Dashboard
+                            📊 Live Statistics Dashboard
                         </h3>
                         
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
@@ -896,7 +963,7 @@
                         </div>
                         
                         <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px;">
-                            <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 10px;">Quick Properties:</div>
+                            <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 10px;">⚡ Quick Properties:</div>
                             <div id="liveStatProperties" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
                                 • Units: {1, 5, 7, 11}<br>
                                 • Zero Divisors: 7 elements<br>
@@ -906,7 +973,7 @@
                         </div>
                         
                         <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
-                            <div style="color: var(--accent-green); font-weight: 600; margin-bottom: 10px;">Related Numbers:</div>
+                            <div style="color: var(--accent-green); font-weight: 600; margin-bottom: 10px;">🔗 Related Numbers:</div>
                             <div id="liveStatRelated" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
                                 • Previous Prime: 11 | Next Prime: 13<br>
                                 • Carmichael λ(12): 2<br>
@@ -918,7 +985,7 @@
                     <!-- Element Inspector -->
                     <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)); border-radius: 10px; border: 2px solid var(--border);">
                         <h3 style="color: var(--cyan); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            Element Inspector
+                            🧮 Element Inspector
                         </h3>
                         
                         <div style="margin-bottom: 15px;">
@@ -969,6 +1036,48 @@
                 </div>
                 <canvas id="circleCanvas" width="800" height="800"></canvas>
                 <div class="canvas-info" id="circleInfo">
+                    <!-- Live Statistics Dashboard for Circle Canvas -->
+                    <div style="margin-bottom: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-panel), var(--bg-card)); border-radius: 10px; border: 2px solid var(--border);">
+                        <h3 style="color: var(--gold); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            Live Statistics - Farey Channels
+                        </h3>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Total Residues</div>
+                                <div id="liveCircleTotalResidues" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">78</div>
+                            </div>
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Phase Angle</div>
+                                <div id="liveCirclePhaseAngle" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">0.00000°</div>
+                            </div>
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Ring Increment</div>
+                                <div id="liveCircleRingRotation" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">0°</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px;">
+                            <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 10px;">Rotation Settings:</div>
+                            <div id="liveCircleRotationInfo" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
+                                • Phase: 0/1 (0.00000000000000000°)<br>
+                                • Per-Ring: 0° increment<br>
+                                • Layers: 1 to 12 (visible)<br>
+                                • Connection Mode: None active
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                            <div style="color: var(--accent-green); font-weight: 600; margin-bottom: 10px;">Layer Distribution:</div>
+                            <div id="liveCircleLayerInfo" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
+                                • Coprime Points: 28 (gold)<br>
+                                • Prime GCD Points: 0 (cyan)<br>
+                                • Composite GCD: 50<br>
+                                • Sum Formula: m(m+1)/2
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
                         <div style="flex: 1; min-width: 250px;">
                             <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 5px;">
@@ -1057,6 +1166,31 @@
                             <input type="checkbox" id="highlightPrimeGCD" checked onchange="updateCircleVisualization()">
                             <span style="color: var(--text-primary);">Highlight Prime GCD Channels</span>
                         </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showRingLabels" checked onchange="updateCircleVisualization()">
+                            <span style="color: var(--text-primary);">Show Ring Labels</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showAngleMarkers" onchange="updateCircleVisualization()">
+                            <span style="color: var(--text-primary);">Show Angle Markers</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="fadeNonCoprime" onchange="updateCircleVisualization()">
+                            <span style="color: var(--text-primary);">Fade Non-Coprime</span>
+                        </label>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Point Size Adjustment:</label>
+                        <input type="range" id="circlePointSize" min="2" max="12" step="1" value="4" 
+                               style="width: 100%;" oninput="updateCircleVisualization(); document.getElementById('circlePointSizeValue').textContent = this.value + 'px'">
+                        <span id="circlePointSizeValue" style="color: var(--gold); font-family: monospace;">4px</span>
+                    </div>
+                    
+                    <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" onclick="toggleCircleAnimation()" id="circleAnimBtn" style="padding: 10px 20px;">Animate Rotation</button>
+                        <button class="btn btn-secondary" onclick="resetCircleView()" style="padding: 10px 20px;">Reset View</button>
+                        <button class="btn btn-secondary" onclick="highlightCoprimeRings()" style="padding: 10px 20px;">Highlight Coprime Rings</button>
                     </div>
                 </div>
             </div>
@@ -1075,6 +1209,48 @@
                 </div>
                 <canvas id="gcdCanvas" width="800" height="800"></canvas>
                 <div class="canvas-info" id="gcdInfo">
+                    <!-- Live Statistics Dashboard for GCD Canvas -->
+                    <div style="margin-bottom: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-panel), var(--bg-card)); border-radius: 10px; border: 2px solid var(--border);">
+                        <h3 style="color: var(--gold); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            Live Statistics - 3D Sphere View
+                        </h3>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">X-Rotation</div>
+                                <div id="liveGCDRotX" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">45°</div>
+                            </div>
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Y-Rotation</div>
+                                <div id="liveGCDRotY" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">45°</div>
+                            </div>
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Zoom Level</div>
+                                <div id="liveGCDZoom" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">100%</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px;">
+                            <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 10px;">View Settings:</div>
+                            <div id="liveGCDViewInfo" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
+                                • Rotation: 45° × 45°<br>
+                                • Perspective: 100% base<br>
+                                • Auto-Rotate: Inactive<br>
+                                • Mouse Drag: Enabled
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                            <div style="color: var(--accent-green); font-weight: 600; margin-bottom: 10px;">GCD Statistics:</div>
+                            <div id="liveGCDPairInfo" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
+                                • Total Pairs: 66<br>
+                                • Coprime Pairs: 28 (42.4%)<br>
+                                • Max GCD: 6<br>
+                                • Depth Sorting: Active
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center; margin-bottom: 15px;">
                         <div style="flex: 1; min-width: 200px;">
                             <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 5px;">
@@ -1114,7 +1290,32 @@
                             <input type="checkbox" id="autoRotate" onchange="toggleAutoRotate()">
                             <span style="color: var(--text-primary);">Auto-Rotate</span>
                         </label>
-                        <button class="btn btn-secondary" onclick="resetGCD3DView()" style="padding: 8px 15px;">Reset View</button>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showCoprimeOnly" onchange="updateGCDVisualization()">
+                            <span style="color: var(--text-primary);">Coprime Only</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="colorByGCDValue" checked onchange="updateGCDVisualization()">
+                            <span style="color: var(--text-primary);">Color by GCD</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showGCDLabels" onchange="updateGCDVisualization()">
+                            <span style="color: var(--text-primary);">Show GCD Labels</span>
+                        </label>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Point Size Scale:</label>
+                        <input type="range" id="gcdPointSize" min="0.5" max="5" step="0.5" value="2" 
+                               style="width: 100%;" oninput="updateGCDVisualization(); document.getElementById('gcdPointSizeValue').textContent = this.value + 'x'">
+                        <span id="gcdPointSizeValue" style="color: var(--gold); font-family: monospace;">2x</span>
+                    </div>
+                    
+                    <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" onclick="resetGCD3DView()" style="padding: 10px 20px;">Reset View</button>
+                        <button class="btn btn-secondary" onclick="snapToAxis('x')" style="padding: 10px 20px;">View X-Axis</button>
+                        <button class="btn btn-secondary" onclick="snapToAxis('y')" style="padding: 10px 20px;">View Y-Axis</button>
+                        <button class="btn btn-secondary" onclick="snapToAxis('z')" style="padding: 10px 20px;">View Z-Axis</button>
                     </div>
                 </div>
             </div>
@@ -1133,6 +1334,48 @@
                 </div>
                 <canvas id="densityCanvas" width="800" height="800"></canvas>
                 <div class="canvas-info" id="densityInfo">
+                    <!-- Live Statistics Dashboard for Density Canvas -->
+                    <div style="margin-bottom: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-panel), var(--bg-card)); border-radius: 10px; border: 2px solid var(--border);">
+                        <h3 style="color: var(--gold); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            Live Statistics - Density Analysis
+                        </h3>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Data Points</div>
+                                <div id="liveDensityPoints" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">11</div>
+                            </div>
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Current Density</div>
+                                <div id="liveDensityValue" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">0.333333</div>
+                            </div>
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Basel Ratio</div>
+                                <div id="liveDensityBaselRatio" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">0.5483</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px;">
+                            <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 10px;">Basel Problem:</div>
+                            <div id="liveDensityBaselInfo" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
+                                • Limit: 6/π² ≈ 0.607927<br>
+                                • Current: 0.333333 (54.8% of limit)<br>
+                                • Status: Below average<br>
+                                • ζ(2) = π²/6 connection
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                            <div style="color: var(--accent-green); font-weight: 600; margin-bottom: 10px;">Trend Analysis:</div>
+                            <div id="liveDensityTrendInfo" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
+                                • Range: n=2 to n=12<br>
+                                • Average: 0.512346<br>
+                                • Primes in range: 4<br>
+                                • Convergence: Approaching limit
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
                         <div style="flex: 1; min-width: 200px;">
                             <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 5px;">
@@ -1160,6 +1403,42 @@
                             <input type="checkbox" id="connectPoints" onchange="updateDensityVisualization()">
                             <span style="color: var(--text-primary);">Connect Points</span>
                         </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="highlightPrimes" checked onchange="updateDensityVisualization()">
+                            <span style="color: var(--text-primary);">Highlight Primes</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showTrendline" onchange="updateDensityVisualization()">
+                            <span style="color: var(--text-primary);">Show Trendline</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="logScaleX" onchange="updateDensityVisualization()">
+                            <span style="color: var(--text-primary);">Log Scale X</span>
+                        </label>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Y-Axis Range:</label>
+                        <div style="display: flex; gap: 15px; align-items: center;">
+                            <div style="flex: 1;">
+                                <label style="color: var(--text-secondary); font-size: 0.9em;">Min:</label>
+                                <input type="number" id="yAxisMin" min="0" max="1" step="0.1" value="0" 
+                                       style="width: 100%; padding: 8px; background: var(--bg-deep); border: 1px solid var(--border); border-radius: 6px; color: var(--text-primary);"
+                                       onchange="updateDensityVisualization()">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="color: var(--text-secondary); font-size: 0.9em;">Max:</label>
+                                <input type="number" id="yAxisMax" min="0" max="1" step="0.1" value="1" 
+                                       style="width: 100%; padding: 8px; background: var(--bg-deep); border: 1px solid var(--border); border-radius: 6px; color: var(--text-primary);"
+                                       onchange="updateDensityVisualization()">
+                            </div>
+                            <button class="btn btn-secondary" onclick="resetDensityYAxis()" style="padding: 8px 15px;">Reset</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" onclick="zoomToPrimes()" style="padding: 10px 20px;">Zoom to Primes</button>
+                        <button class="btn btn-secondary" onclick="fitToData()" style="padding: 10px 20px;">Fit to Data</button>
                     </div>
                 </div>
             </div>
@@ -2356,6 +2635,10 @@
             const connectToNextMod = document.getElementById('connectToNextMod').checked;
             const connectDyadicPowers = document.getElementById('connectDyadicPowers').checked;
             const highlightPrimeGCD = document.getElementById('highlightPrimeGCD').checked;
+            const showRingLabels = document.getElementById('showRingLabels')?.checked !== false;
+            const showAngleMarkers = document.getElementById('showAngleMarkers')?.checked || false;
+            const fadeNonCoprime = document.getElementById('fadeNonCoprime')?.checked || false;
+            const pointSize = document.getElementById('circlePointSize') ? parseFloat(document.getElementById('circlePointSize').value) : 4;
 
             // Store all points for connections
             const pointsByModulus = new Map(); // mod -> [{r, angle, x, y, gcdVal}]
@@ -2376,7 +2659,7 @@
                     ctx.setLineDash([]);
                     
                     // Label modulus
-                    if (mod % Math.max(1, Math.floor(m / 10)) === 0 || mod === 1 || mod === m) {
+                    if (showRingLabels && (mod % Math.max(1, Math.floor(m / 10)) === 0 || mod === 1 || mod === m)) {
                         ctx.fillStyle = '#718096';
                         ctx.font = 'bold 11px Arial';
                         ctx.textAlign = 'left';
@@ -2430,26 +2713,28 @@
                     
                     // Draw point for +2πr/mod
                     ctx.fillStyle = color;
+                    ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
                     ctx.beginPath();
                     // Make mod=1 point slightly larger and more visible
-                    const pointSize = mod === 1 ? 6 : (gcdVal === 1 ? 4 : 3);
-                    ctx.arc(x, y, pointSize, 0, 2 * Math.PI);
+                    const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
+                    ctx.arc(x, y, basePointSize, 0, 2 * Math.PI);
                     ctx.fill();
+                    ctx.globalAlpha = 1.0;
                     
                     // Add glow for mod=1
                     if (mod === 1) {
                         ctx.strokeStyle = color;
                         ctx.lineWidth = 2;
                         ctx.beginPath();
-                        ctx.arc(x, y, pointSize + 2, 0, 2 * Math.PI);
+                        ctx.arc(x, y, basePointSize + 2, 0, 2 * Math.PI);
                         ctx.stroke();
                     }
                     
                     // Draw point for -2πr/mod (if r > 0)
                     if (r > 0) {
-                        ctx.globalAlpha = 0.5;
+                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
                         ctx.beginPath();
-                        ctx.arc(xNeg, yNeg, pointSize * 0.8, 0, 2 * Math.PI);
+                        ctx.arc(xNeg, yNeg, basePointSize * 0.8, 0, 2 * Math.PI);
                         ctx.fill();
                         ctx.globalAlpha = 1.0;
                     }
@@ -2576,6 +2861,33 @@
             ctx.beginPath();
             ctx.arc(centerX, centerY, maxRadius, 0, 2 * Math.PI);
             ctx.stroke();
+            
+            // Draw angle markers if enabled
+            if (showAngleMarkers) {
+                const angles = [0, 45, 90, 135, 180, 225, 270, 315];
+                angles.forEach(deg => {
+                    const rad = (deg - 90) * Math.PI / 180;
+                    const x1 = centerX + maxRadius * 0.95 * Math.cos(rad);
+                    const y1 = centerY + maxRadius * 0.95 * Math.sin(rad);
+                    const x2 = centerX + maxRadius * 1.05 * Math.cos(rad);
+                    const y2 = centerY + maxRadius * 1.05 * Math.sin(rad);
+                    
+                    ctx.strokeStyle = '#FFD700';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+                    
+                    const labelX = centerX + maxRadius * 1.12 * Math.cos(rad);
+                    const labelY = centerY + maxRadius * 1.12 * Math.sin(rad);
+                    ctx.fillStyle = '#FFD700';
+                    ctx.font = 'bold 11px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(deg + '°', labelX, labelY);
+                });
+            }
 
             // Center point
             ctx.fillStyle = '#FFD700';
@@ -2669,6 +2981,57 @@
             const units = findUnits(m);
             const highlightUnits = document.getElementById('highlightUnits')?.checked || false;
             drawCircleCanvas(m, units, highlightUnits);
+            updateCircleLiveStats(m);
+        }
+        
+        // Update live statistics for Circle canvas
+        function updateCircleLiveStats(m) {
+            const phaseR = parseInt(document.getElementById('phaseNumerator').value) || 0;
+            const phaseM = parseInt(document.getElementById('phaseDenominator').value) || 1;
+            const phaseAngleDeg = (360 * phaseR) / phaseM;
+            const ringRotation = parseFloat(document.getElementById('ringRotation')?.value) || 0;
+            const totalResidues = (m * (m + 1)) / 2;
+            
+            // Count coprime and prime GCD points
+            let coprimeCount = 0;
+            let primeGCDCount = 0;
+            for (let mod = 1; mod <= m; mod++) {
+                for (let r = 0; r < mod; r++) {
+                    const gcdVal = gcd(r, mod);
+                    if (gcdVal === 1) coprimeCount++;
+                    else if (isPrime(gcdVal)) primeGCDCount++;
+                }
+            }
+            
+            const showLayers = document.getElementById('showResidueLayers')?.checked !== false;
+            const connectByR = document.getElementById('connectByR')?.checked || false;
+            const connectNext = document.getElementById('connectToNextMod')?.checked || false;
+            const connectDyadic = document.getElementById('connectDyadicPowers')?.checked || false;
+            
+            let connectionModes = [];
+            if (connectByR) connectionModes.push('Connect r in m');
+            if (connectNext) connectionModes.push('Radial');
+            if (connectDyadic) connectionModes.push('Dyadic');
+            const connectionStr = connectionModes.length > 0 ? connectionModes.join(', ') : 'None active';
+            
+            document.getElementById('liveCircleTotalResidues').textContent = totalResidues;
+            document.getElementById('liveCirclePhaseAngle').textContent = phaseAngleDeg.toFixed(5) + '°';
+            document.getElementById('liveCircleRingRotation').textContent = ringRotation.toFixed(1) + '°';
+            
+            document.getElementById('liveCircleRotationInfo').innerHTML = `
+                • Phase: ${phaseR}/${phaseM} (${phaseAngleDeg.toFixed(17)}°)<br>
+                • Per-Ring: ${ringRotation.toFixed(1)}° increment<br>
+                • Layers: 1 to ${m} (${showLayers ? 'visible' : 'hidden'})<br>
+                • Connection Mode: ${connectionStr}
+            `;
+            
+            const compositeGCD = totalResidues - coprimeCount - primeGCDCount;
+            document.getElementById('liveCircleLayerInfo').innerHTML = `
+                • Coprime Points: ${coprimeCount} (gold)<br>
+                • Prime GCD Points: ${primeGCDCount} (cyan)<br>
+                • Composite GCD: ${compositeGCD}<br>
+                • Sum Formula: m(m+1)/2
+            `;
         }
 
 
@@ -2691,6 +3054,10 @@
             const zoom = (document.getElementById('zoomLevel')?.value || 100) / 100;
             const showConnections = document.getElementById('show3DConnections')?.checked !== false;
             const showGrid = document.getElementById('showGCDSphereGrid')?.checked || false;
+            const showCoprimeOnly = document.getElementById('showCoprimeOnly')?.checked || false;
+            const colorByGCD = document.getElementById('colorByGCDValue')?.checked !== false;
+            const showGCDLabels = document.getElementById('showGCDLabels')?.checked || false;
+            const pointSizeScale = document.getElementById('gcdPointSize') ? parseFloat(document.getElementById('gcdPointSize').value) : 2;
             
             // Update display values
             if (document.getElementById('rotXValue')) {
@@ -2751,6 +3118,9 @@
                 for (let b = a + 1; b < m; b++) {
                     const g = gcd(a, b);
                     if (g >= 1) {
+                        // Skip if coprime-only mode is enabled and this isn't coprime
+                        if (showCoprimeOnly && g > 1) continue;
+                        
                         // Map to sphere using spherical coordinates
                         const theta = (2 * Math.PI * a) / m; // azimuthal
                         const phi = Math.PI * b / m; // polar
@@ -2849,12 +3219,12 @@
 
             // Draw points
             points3D.forEach(p => {
-                const hue = (p.g / Math.max(maxGCD, 1)) * 360;
+                const hue = colorByGCD ? (p.g / Math.max(maxGCD, 1)) * 360 : 200;
                 const brightness = 40 + 40 * p.scale;
                 const alpha = 0.3 + 0.7 * p.scale;
                 
                 ctx.fillStyle = `hsla(${hue}, 70%, ${brightness}%, ${alpha})`;
-                const size = (p.g === 1 ? 3 : 2) * p.scale;
+                const size = (p.g === 1 ? 3 : 2) * p.scale * pointSizeScale;
                 
                 ctx.beginPath();
                 ctx.arc(p.x2d, p.y2d, size, 0, 2 * Math.PI);
@@ -2865,6 +3235,14 @@
                     ctx.strokeStyle = `rgba(255, 215, 0, ${alpha * 0.5})`;
                     ctx.lineWidth = 1;
                     ctx.stroke();
+                }
+                
+                // Show GCD labels if enabled
+                if (showGCDLabels && p.g > 1 && p.scale > 0.7) {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                    ctx.font = '10px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(p.g, p.x2d, p.y2d - size - 3);
                 }
             });
 
@@ -2951,6 +3329,48 @@
         function updateGCDVisualization() {
             const m = parseInt(document.getElementById('modulusInput').value);
             drawGCDCanvas(m);
+            updateGCDLiveStats(m);
+        }
+        
+        // Update live statistics for GCD canvas
+        function updateGCDLiveStats(m) {
+            const rotX = document.getElementById('rotationX')?.value || 45;
+            const rotY = document.getElementById('rotationY')?.value || 45;
+            const zoom = document.getElementById('zoomLevel')?.value || 100;
+            const autoRotate = document.getElementById('autoRotate')?.checked || false;
+            
+            // Count coprime pairs and total pairs
+            let coprimePairs = 0;
+            let totalPairs = 0;
+            let maxGCD = 0;
+            for (let a = 0; a < m; a++) {
+                for (let b = a + 1; b < m; b++) {
+                    totalPairs++;
+                    const g = gcd(a, b);
+                    if (g === 1) coprimePairs++;
+                    if (g > maxGCD) maxGCD = g;
+                }
+            }
+            
+            const coprimePercent = totalPairs > 0 ? (coprimePairs / totalPairs * 100).toFixed(1) : 0;
+            
+            document.getElementById('liveGCDRotX').textContent = rotX + '°';
+            document.getElementById('liveGCDRotY').textContent = rotY + '°';
+            document.getElementById('liveGCDZoom').textContent = zoom + '%';
+            
+            document.getElementById('liveGCDViewInfo').innerHTML = `
+                • Rotation: ${rotX}° × ${rotY}°<br>
+                • Perspective: ${zoom}% base<br>
+                • Auto-Rotate: ${autoRotate ? 'Active' : 'Inactive'}<br>
+                • Mouse Drag: Enabled
+            `;
+            
+            document.getElementById('liveGCDPairInfo').innerHTML = `
+                • Total Pairs: ${totalPairs}<br>
+                • Coprime Pairs: ${coprimePairs} (${coprimePercent}%)<br>
+                • Max GCD: ${maxGCD}<br>
+                • Depth Sorting: Active
+            `;
         }
 
         function resetGCD3DView() {
@@ -2988,6 +3408,11 @@
             const showDensityGrid = document.getElementById('showDensityGrid') ? document.getElementById('showDensityGrid').checked : true;
             const showDensityLabels = document.getElementById('showDensityLabels') ? document.getElementById('showDensityLabels').checked : true;
             const connectPoints = document.getElementById('connectPoints') ? document.getElementById('connectPoints').checked : false;
+            const highlightPrimes = document.getElementById('highlightPrimes') ? document.getElementById('highlightPrimes').checked : true;
+            const showTrendline = document.getElementById('showTrendline') ? document.getElementById('showTrendline').checked : false;
+            const logScaleX = document.getElementById('logScaleX') ? document.getElementById('logScaleX').checked : false;
+            const yMin = document.getElementById('yAxisMin') ? parseFloat(document.getElementById('yAxisMin').value) : 0;
+            const yMax = document.getElementById('yAxisMax') ? parseFloat(document.getElementById('yAxisMax').value) : 1;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#0a0e1a';
@@ -2997,6 +3422,9 @@
             const padding = 60;
             const graphWidth = canvas.width - 2 * padding;
             const graphHeight = canvas.height - 2 * padding;
+            
+            // Adjust y-axis range
+            const yRange = yMax - yMin;
 
             // Draw grid if enabled
             if (showDensityGrid) {
@@ -3049,36 +3477,74 @@
             }
 
             // Plot points (start from m=1)
+            const densityData = [];
             for (let n = 1; n <= m; n++) {
                 const phi = euler_phi(n);
                 const density = phi / n;
-                const x = padding + ((n - 1) / Math.max(1, m - 1)) * graphWidth;
-                const y = canvas.height - padding - density * graphHeight;
+                const xPos = logScaleX ? Math.log(n) / Math.log(m) : (n - 1) / Math.max(1, m - 1);
+                const x = padding + xPos * graphWidth;
+                const y = canvas.height - padding - ((density - yMin) / yRange) * graphHeight;
 
-                ctx.fillStyle = n === m ? '#FFD700' : (n === 1 ? '#00FF00' : '#00FFFF');
+                densityData.push({ n, density, x, y, isPrime: isPrime(n) });
+
+                const isCurrentM = n === m;
+                const isFirst = n === 1;
+                
+                ctx.fillStyle = isCurrentM ? '#FFD700' : (isFirst ? '#00FF00' : (highlightPrimes && isPrime(n) ? '#FF6B9D' : '#00FFFF'));
                 ctx.beginPath();
-                ctx.arc(x, y, n === m ? pointSize * 2 : (n === 1 ? pointSize * 1.5 : pointSize), 0, 2 * Math.PI);
+                ctx.arc(x, y, isCurrentM ? pointSize * 2 : (isFirst ? pointSize * 1.5 : pointSize), 0, 2 * Math.PI);
                 ctx.fill();
+            }
+            
+            // Draw trendline if enabled
+            if (showTrendline && densityData.length > 2) {
+                // Simple linear regression
+                let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+                densityData.forEach(d => {
+                    const xNorm = d.n / m;
+                    sumX += xNorm;
+                    sumY += d.density;
+                    sumXY += xNorm * d.density;
+                    sumX2 += xNorm * xNorm;
+                });
+                const n = densityData.length;
+                const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+                const intercept = (sumY - slope * sumX) / n;
+                
+                ctx.strokeStyle = '#9F7AEA';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                const x1 = padding;
+                const y1 = canvas.height - padding - ((intercept - yMin) / yRange) * graphHeight;
+                const x2 = canvas.width - padding;
+                const y2 = canvas.height - padding - ((slope + intercept - yMin) / yRange) * graphHeight;
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+                ctx.setLineDash([]);
             }
 
             // Reference line for 6/π²
             if (showBaselLine) {
                 const sixOverPiSquared = 6 / (Math.PI * Math.PI);
-                const refY = canvas.height - padding - sixOverPiSquared * graphHeight;
-                ctx.strokeStyle = '#9F7AEA';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([10, 5]);
-            ctx.beginPath();
-            ctx.moveTo(padding, refY);
-            ctx.lineTo(canvas.width - padding, refY);
-            ctx.stroke();
-            ctx.setLineDash([]);
-                
-                if (showDensityLabels) {
-                    ctx.fillStyle = '#9F7AEA';
-                    ctx.font = '14px Arial';
-                    ctx.textAlign = 'right';
-                    ctx.fillText('6/π² ≈ 0.608', canvas.width - padding - 10, refY - 10);
+                if (sixOverPiSquared >= yMin && sixOverPiSquared <= yMax) {
+                    const refY = canvas.height - padding - ((sixOverPiSquared - yMin) / yRange) * graphHeight;
+                    ctx.strokeStyle = '#9F7AEA';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([10, 5]);
+                    ctx.beginPath();
+                    ctx.moveTo(padding, refY);
+                    ctx.lineTo(canvas.width - padding, refY);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    
+                    if (showDensityLabels) {
+                        ctx.fillStyle = '#9F7AEA';
+                        ctx.font = '14px Arial';
+                        ctx.textAlign = 'right';
+                        ctx.fillText('6/π² ≈ 0.608', canvas.width - padding - 10, refY - 10);
+                    }
                 }
             }
 
@@ -3143,6 +3609,47 @@
         function updateDensityVisualization() {
             const m = parseInt(document.getElementById('modulusInput').value);
             drawDensityCanvas(m);
+            updateDensityLiveStats(m);
+        }
+        
+        // Update live statistics for Density canvas
+        function updateDensityLiveStats(m) {
+            const units = findUnits(m);
+            const currentDensity = units.length / m;
+            const baselLimit = 6 / (Math.PI * Math.PI);
+            const baselRatio = currentDensity / baselLimit;
+            
+            const dataPoints = m - 1; // from 2 to m
+            
+            // Calculate average density and count primes
+            let sumDensity = 0;
+            let primeCount = 0;
+            for (let n = 2; n <= m; n++) {
+                const phi = euler_phi(n);
+                sumDensity += phi / n;
+                if (isPrime(n)) primeCount++;
+            }
+            const avgDensity = dataPoints > 0 ? sumDensity / dataPoints : 0;
+            
+            const status = currentDensity >= baselLimit ? 'Above average' : 'Below average';
+            
+            document.getElementById('liveDensityPoints').textContent = dataPoints;
+            document.getElementById('liveDensityValue').textContent = currentDensity.toFixed(6);
+            document.getElementById('liveDensityBaselRatio').textContent = baselRatio.toFixed(4);
+            
+            document.getElementById('liveDensityBaselInfo').innerHTML = `
+                • Limit: 6/π² ≈ ${baselLimit.toFixed(6)}<br>
+                • Current: ${currentDensity.toFixed(6)} (${(baselRatio * 100).toFixed(1)}% of limit)<br>
+                • Status: ${status}<br>
+                • ζ(2) = π²/6 connection
+            `;
+            
+            document.getElementById('liveDensityTrendInfo').innerHTML = `
+                • Range: n=2 to n=${m}<br>
+                • Average: ${avgDensity.toFixed(6)}<br>
+                • Primes in range: ${primeCount}<br>
+                • Convergence: ${avgDensity > 0.5 ? 'Approaching limit' : 'Early range'}
+            `;
         }
 
         // Get selected export resolution
@@ -3224,6 +3731,11 @@
             
             // Update Live Statistics Dashboard
             updateLiveStatistics(m, units, zeroDivisors, idempotents, primitiveRoots);
+            
+            // Update live stats for all canvases
+            updateCircleLiveStats(m);
+            updateGCDLiveStats(m);
+            updateDensityLiveStats(m);
             
             // Update Element Inspector (if element is set)
             updateElementInspector();
@@ -3431,9 +3943,9 @@
             }
             
             const canvasMap = {
-                'grid':                 { 
+                'grid': { 
                     id: 'gridCanvas', 
-                    title: 'Multiplication Table',
+                    title: '⊗ Multiplication Table',
                     subtitle: `ℤ/${m}ℤ (m=${m}) · ${tableType} · ${colorScheme} · φ(${m})=${units.length} units · ${zeroDivisors.length} zero divisors`
                 },
                 'circle': { 
@@ -3898,18 +4410,6 @@
         }
 
         function exportWithAnalysis() {
-            try {
-                // For now, just call exportAllCanvases as the full analysis export is very complex
-                // This provides the 4 canvases in a clean grid format
-                exportAllCanvases();
-                showNotification('Export Complete', 'All 4 canvases exported. For detailed analysis, export individual canvases.');
-            } catch (err) {
-                console.error('Export with analysis error:', err);
-                showNotification('Export Error', 'Failed to export: ' + err.message);
-            }
-        }
-        
-        function exportWithAnalysisFull_DISABLED() {
             const m = parseInt(document.getElementById('modulusInput').value);
             const tableType = document.querySelector('input[name="tableType"]:checked').value;
             const colorScheme = document.querySelector('input[name="colorScheme"]:checked').value;
@@ -4406,6 +4906,130 @@
                 showNotification('Tip', 'Press <strong>H</strong> for keyboard shortcuts', 3000);
             }, 1000);
         };
+        
+        // ========== NEW TOOL FUNCTIONS ==========
+        
+        // Circle Canvas Tools
+        let circleAnimationInterval = null;
+        
+        function toggleCircleAnimation() {
+            const btn = document.getElementById('circleAnimBtn');
+            if (circleAnimationInterval) {
+                clearInterval(circleAnimationInterval);
+                circleAnimationInterval = null;
+                btn.textContent = 'Animate Rotation';
+            } else {
+                circleAnimationInterval = setInterval(() => {
+                    const phaseM = parseInt(document.getElementById('phaseDenominator').value);
+                    let phaseR = parseInt(document.getElementById('phaseNumerator').value);
+                    phaseR = (phaseR + 1) % phaseM;
+                    document.getElementById('phaseNumerator').value = phaseR;
+                    updateCircleVisualization();
+                }, 200);
+                btn.textContent = 'Stop Animation';
+            }
+        }
+        
+        function resetCircleView() {
+            document.getElementById('phaseNumerator').value = 0;
+            document.getElementById('phaseDenominator').value = 1;
+            document.getElementById('ringRotation').value = 0;
+            document.getElementById('ringRotationValue').textContent = '0°';
+            updateCircleVisualization();
+            showNotification('Circle View Reset', 'All rotation parameters reset to defaults');
+        }
+        
+        function highlightCoprimeRings() {
+            document.getElementById('fadeNonCoprime').checked = true;
+            document.getElementById('highlightPrimeGCD').checked = false;
+            updateCircleVisualization();
+            showNotification('Coprime Highlight', 'Non-coprime points faded, coprime points emphasized');
+        }
+        
+        // GCD Canvas Tools
+        function snapToAxis(axis) {
+            const rotX = document.getElementById('rotationX');
+            const rotY = document.getElementById('rotationY');
+            
+            if (axis === 'x') {
+                rotX.value = 0;
+                rotY.value = 90;
+            } else if (axis === 'y') {
+                rotX.value = 90;
+                rotY.value = 0;
+            } else if (axis === 'z') {
+                rotX.value = 0;
+                rotY.value = 0;
+            }
+            
+            updateGCDVisualization();
+            showNotification('View Snapped', `Viewing along ${axis.toUpperCase()}-axis`);
+        }
+        
+        // Density Canvas Tools
+        function resetDensityYAxis() {
+            document.getElementById('yAxisMin').value = 0;
+            document.getElementById('yAxisMax').value = 1;
+            updateDensityVisualization();
+            showNotification('Y-Axis Reset', 'Reset to full range [0, 1]');
+        }
+        
+        function zoomToPrimes() {
+            const m = parseInt(document.getElementById('modulusInput').value);
+            let minDensity = 1;
+            let maxDensity = 0;
+            
+            for (let n = 2; n <= m; n++) {
+                if (isPrime(n)) {
+                    const density = euler_phi(n) / n;
+                    minDensity = Math.min(minDensity, density);
+                    maxDensity = Math.max(maxDensity, density);
+                }
+            }
+            
+            const padding = 0.05;
+            document.getElementById('yAxisMin').value = Math.max(0, minDensity - padding).toFixed(2);
+            document.getElementById('yAxisMax').value = Math.min(1, maxDensity + padding).toFixed(2);
+            updateDensityVisualization();
+            showNotification('Zoomed to Primes', `Y-axis range optimized for prime densities`);
+        }
+        
+        function fitToData() {
+            const m = parseInt(document.getElementById('modulusInput').value);
+            let minDensity = 1;
+            let maxDensity = 0;
+            
+            for (let n = 2; n <= m; n++) {
+                const density = euler_phi(n) / n;
+                minDensity = Math.min(minDensity, density);
+                maxDensity = Math.max(maxDensity, density);
+            }
+            
+            const padding = 0.05;
+            document.getElementById('yAxisMin').value = Math.max(0, minDensity - padding).toFixed(2);
+            document.getElementById('yAxisMax').value = Math.min(1, maxDensity + padding).toFixed(2);
+            updateDensityVisualization();
+            showNotification('Fitted to Data', `Y-axis optimized for current data range`);
+        }
+        
+        // Grid Canvas Tools
+        let isTransposed = false;
+        
+        function transposeTable() {
+            isTransposed = !isTransposed;
+            updateVisualization();
+            showNotification('Table Transposed', isTransposed ? 'Showing transposed view' : 'Showing normal view');
+        }
+        
+        function compareWithAddition() {
+            // Switch to addition table and highlight differences
+            const additionRadio = document.querySelector('input[name="tableTypeCanvas1"][value="addition"]');
+            if (additionRadio) {
+                additionRadio.checked = true;
+                updateVisualization();
+                showNotification('Switched to Addition', 'Now showing addition table for comparison');
+            }
+        }
     </script>
 </body>
                                 </html>
