@@ -772,10 +772,30 @@
                         <div class="panel-title">⊗ Multiplication Table</div>
                         <div class="panel-subtitle">Ring ℤ/mℤ · Color-coded Structure</div>
                     </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="exportCanvas('grid')" style="padding: 8px 15px; font-size: 0.9em;">PNG</button>
+                        <button class="btn btn-secondary" onclick="exportData('grid')" style="padding: 8px 15px; font-size: 0.9em;">CSV</button>
+                    </div>
                 </div>
                 <canvas id="gridCanvas" width="800" height="800"></canvas>
                 <div class="canvas-info" id="gridInfo">
                     Multiplication table visualization with configurable color schemes
+                </div>
+                <div class="canvas-info" id="gridInfo">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showLabelsGrid" checked onchange="updateVisualization()">
+                            <span style="color: var(--text-primary);">Show Labels</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showGridLinesCanvas" onchange="updateVisualization()">
+                            <span style="color: var(--text-primary);">Grid Lines</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="highlightUnitsCanvas" onchange="updateVisualization()">
+                            <span style="color: var(--text-primary);">Highlight Units</span>
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -785,6 +805,10 @@
                     <div>
                         <div class="panel-title">○ Unit Circle - Farey Channels</div>
                         <div class="panel-subtitle">Modular Residue Channels · Phase Rotation · Dyadic Lifting</div>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="exportCanvas('circle')" style="padding: 8px 15px; font-size: 0.9em;">PNG</button>
+                        <button class="btn btn-secondary" onclick="exportData('circle')" style="padding: 8px 15px; font-size: 0.9em;">CSV</button>
                     </div>
                 </div>
                 <canvas id="circleCanvas" width="800" height="800"></canvas>
@@ -845,6 +869,10 @@
                         <div class="panel-title">⊚ GCD Structure - 3D Sphere</div>
                         <div class="panel-subtitle">Interactive 360° View · Coprimality Network</div>
                     </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="exportCanvas('gcd')" style="padding: 8px 15px; font-size: 0.9em;">PNG</button>
+                        <button class="btn btn-secondary" onclick="exportData('gcd')" style="padding: 8px 15px; font-size: 0.9em;">CSV</button>
+                    </div>
                 </div>
                 <canvas id="gcdCanvas" width="800" height="800"></canvas>
                 <div class="canvas-info" id="gcdInfo">
@@ -899,14 +927,35 @@
                         <div class="panel-title">◬ Coprime Density</div>
                         <div class="panel-subtitle">φ(m)/m Analysis</div>
                     </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="exportCanvas('density')" style="padding: 8px 15px; font-size: 0.9em;">PNG</button>
+                        <button class="btn btn-secondary" onclick="exportData('density')" style="padding: 8px 15px; font-size: 0.9em;">CSV</button>
+                    </div>
                 </div>
                 <canvas id="densityCanvas" width="800" height="800"></canvas>
                 <div class="canvas-info" id="densityInfo">
                     Visualization of Euler's totient function density
                 </div>
             </div>
+                <canvas id="densityCanvas" width="800" height="800"></canvas>
+                <div class="canvas-info" id="densityInfo">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showBaselLine" checked onchange="updateDensityVisualization()">
+                            <span style="color: var(--text-primary);">Show 6/π² Line</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showDensityGrid" checked onchange="updateDensityVisualization()">
+                            <span style="color: var(--text-primary);">Show Grid</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showDensityLabels" checked onchange="updateDensityVisualization()">
+                            <span style="color: var(--text-primary);">Show Values</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
-
         <!-- Controls Section -->
         <div class="controls-section">
             <div class="controls-header">Configuration & Parameters</div>
@@ -1039,32 +1088,30 @@
 
         <!-- Export Section -->
         <div class="export-section">
-            <h3 style="width: 100%; color: var(--gold); text-align: center; margin-bottom: 20px;">Export Options</h3>
+            <h3 style="width: 100%; color: var(--gold); text-align: center; margin-bottom: 20px;">Combined Export Options</h3>
+            
+            <div style="width: 100%; margin-bottom: 25px;">
+                <div style="display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <label style="color: var(--text-primary); font-weight: 600;">Export Resolution:</label>
+                    <label class="radio-option" style="margin: 0;">
+                        <input type="radio" name="exportResolution" value="2048" onchange="updateExportResolution()">
+                        <span>2K (2048px)</span>
+                    </label>
+                    <label class="radio-option" style="margin: 0;">
+                        <input type="radio" name="exportResolution" value="3840" checked onchange="updateExportResolution()">
+                        <span>4K (3840px)</span>
+                    </label>
+                    <label class="radio-option" style="margin: 0;">
+                        <input type="radio" name="exportResolution" value="7680" onchange="updateExportResolution()">
+                        <span>8K (7680px)</span>
+                    </label>
+                </div>
+            </div>
             
             <div style="width: 100%; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">
-                <button class="btn btn-primary" onclick="exportWithAnalysis()">Export with Full Analysis Panel</button>
+                <button class="btn btn-primary" onclick="exportWithAnalysis()">Export All with Full Analysis Panel</button>
                 <button class="btn btn-primary" onclick="exportAllCanvases()">Export All 4 Canvases (2×2 Grid)</button>
-            </div>
-            
-            <div style="width: 100%; margin: 20px 0;">
-                <h4 style="color: var(--cyan); text-align: center; margin-bottom: 15px;">Individual Canvas Exports</h4>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-                    <button class="btn btn-secondary" onclick="exportCanvas('grid')">⊗ Grid PNG</button>
-                    <button class="btn btn-secondary" onclick="exportCanvas('circle')">○ Circle PNG</button>
-                    <button class="btn btn-secondary" onclick="exportCanvas('gcd')">⊚ GCD PNG</button>
-                    <button class="btn btn-secondary" onclick="exportCanvas('density')">◬ Density PNG</button>
-                </div>
-            </div>
-            
-            <div style="width: 100%; margin: 20px 0;">
-                <h4 style="color: var(--cyan); text-align: center; margin-bottom: 15px;">Data Exports (CSV)</h4>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-                    <button class="btn btn-secondary" onclick="exportData('grid')">⊗ Grid Data</button>
-                    <button class="btn btn-secondary" onclick="exportData('circle')">○ Circle Data</button>
-                    <button class="btn btn-secondary" onclick="exportData('gcd')">⊚ GCD Data</button>
-                    <button class="btn btn-secondary" onclick="exportData('density')">◬ Density Data</button>
-                    <button class="btn btn-secondary" onclick="exportData('all')">All Data Combined</button>
-                </div>
+                <button class="btn btn-primary" onclick="exportData('all')">Export All Data Combined (CSV)</button>
             </div>
         </div>
 
@@ -1291,9 +1338,11 @@
             const m = parseInt(document.getElementById('modulusInput').value);
             const tableType = document.querySelector('input[name="tableType"]:checked').value;
             const colorScheme = document.querySelector('input[name="colorScheme"]:checked').value;
-            const showLabels = document.getElementById('showLabels').checked;
-            const showGridLines = document.getElementById('showGridLines').checked;
-            const highlightUnits = document.getElementById('highlightUnits').checked;
+            
+            // Get Canvas 1 controls (with fallback to main controls)
+            const showLabels = (document.getElementById('showLabelsGrid') || document.getElementById('showLabels')).checked;
+            const showGridLines = (document.getElementById('showGridLinesCanvas') || document.getElementById('showGridLines')).checked;
+            const highlightUnits = (document.getElementById('highlightUnitsCanvas') || document.getElementById('highlightUnits')).checked;
 
             // Get special elements
             const units = findUnits(m);
@@ -1887,6 +1936,11 @@
             const canvas = document.getElementById('densityCanvas');
             const ctx = canvas.getContext('2d');
 
+            // Get control states
+            const showBaselLine = document.getElementById('showBaselLine') ? document.getElementById('showBaselLine').checked : true;
+            const showDensityGrid = document.getElementById('showDensityGrid') ? document.getElementById('showDensityGrid').checked : true;
+            const showDensityLabels = document.getElementById('showDensityLabels') ? document.getElementById('showDensityLabels').checked : true;
+
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#0a0e1a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -1895,6 +1949,26 @@
             const padding = 60;
             const graphWidth = canvas.width - 2 * padding;
             const graphHeight = canvas.height - 2 * padding;
+
+            // Draw grid if enabled
+            if (showDensityGrid) {
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i <= 10; i++) {
+                    const y = padding + (i / 10) * graphHeight;
+                    ctx.beginPath();
+                    ctx.moveTo(padding, y);
+                    ctx.lineTo(canvas.width - padding, y);
+                    ctx.stroke();
+                }
+                for (let i = 0; i <= 10; i++) {
+                    const x = padding + (i / 10) * graphWidth;
+                    ctx.beginPath();
+                    ctx.moveTo(x, padding);
+                    ctx.lineTo(x, canvas.height - padding);
+                    ctx.stroke();
+                }
+            }
 
             // Axes
             ctx.strokeStyle = '#FFD700';
@@ -1919,28 +1993,39 @@
             }
 
             // Reference line for 6/π²
-            const sixOverPiSquared = 6 / (Math.PI * Math.PI);
-            const refY = canvas.height - padding - sixOverPiSquared * graphHeight;
-            ctx.strokeStyle = '#9F7AEA';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([10, 5]);
-            ctx.beginPath();
-            ctx.moveTo(padding, refY);
-            ctx.lineTo(canvas.width - padding, refY);
-            ctx.stroke();
-            ctx.setLineDash([]);
+            if (showBaselLine) {
+                const sixOverPiSquared = 6 / (Math.PI * Math.PI);
+                const refY = canvas.height - padding - sixOverPiSquared * graphHeight;
+                ctx.strokeStyle = '#9F7AEA';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([10, 5]);
+                ctx.beginPath();
+                ctx.moveTo(padding, refY);
+                ctx.lineTo(canvas.width - padding, refY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                if (showDensityLabels) {
+                    ctx.fillStyle = '#9F7AEA';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'right';
+                    ctx.fillText('6/π² ≈ 0.608', canvas.width - padding - 10, refY - 10);
+                }
+            }
 
             // Labels
-            ctx.fillStyle = '#FFD700';
-            ctx.font = 'bold 16px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('φ(n)/n', padding / 2, canvas.height / 2);
-            ctx.fillText('n', canvas.width / 2, canvas.height - padding / 2);
-            
-            ctx.fillStyle = '#9F7AEA';
-            ctx.font = '14px Arial';
-            ctx.textAlign = 'right';
-            ctx.fillText('6/π² ≈ 0.608', canvas.width - padding - 10, refY - 10);
+            if (showDensityLabels) {
+                ctx.fillStyle = '#FFD700';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('φ(n)/n', padding / 2, canvas.height / 2);
+                ctx.fillText('n', canvas.width / 2, canvas.height - padding / 2);
+            }
+        }
+
+        function updateDensityVisualization() {
+            const m = parseInt(document.getElementById('modulusInput').value);
+            drawDensityCanvas(m);
         }
 
         // Update statistics
@@ -1962,6 +2047,18 @@
             
             document.getElementById('statField').textContent = isPrime(m) ? 'YES' : 'NO';
             document.getElementById('statDensity').textContent = (units.length / m).toFixed(3);
+        }
+
+        // Get selected export resolution
+        function getExportResolution() {
+            const selected = document.querySelector('input[name="exportResolution"]:checked');
+            return selected ? parseInt(selected.value) : 3840;
+        }
+
+        function updateExportResolution() {
+            const resolution = getExportResolution();
+            const resText = resolution === 2048 ? '2K' : resolution === 3840 ? '4K' : '8K';
+            showNotification('Export Resolution Updated', `All exports will now be ${resText} (${resolution}px)`);
         }
 
         // Export functions with titles and descriptions
@@ -2015,29 +2112,33 @@
             const info = canvasMap[canvasId];
             const canvas = document.getElementById(info.id);
             
+            // Get export resolution
+            const baseSize = getExportResolution();
+            const scaleFactor = baseSize / 3840; // Scale fonts relative to 4K
+            
             // Create export canvas with title and description
             const exportCanvas = document.createElement('canvas');
-            const margin = 200;
-            exportCanvas.width = 3840;
-            exportCanvas.height = 3840 + margin;
+            const margin = Math.round(200 * scaleFactor);
+            exportCanvas.width = baseSize;
+            exportCanvas.height = baseSize + margin;
             const ctx = exportCanvas.getContext('2d', { alpha: false });
             
             // White background
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
             
-            // Draw title
+            // Draw title (scaled)
             ctx.fillStyle = '#1a202c';
-            ctx.font = 'bold 72px Arial';
+            ctx.font = `bold ${Math.round(72 * scaleFactor)}px Arial`;
             ctx.textAlign = 'center';
-            ctx.fillText(info.title, exportCanvas.width / 2, 80);
+            ctx.fillText(info.title, exportCanvas.width / 2, Math.round(80 * scaleFactor));
             
-            // Draw subtitle (with metrics)
-            ctx.font = '38px Arial';
+            // Draw subtitle (with metrics, scaled)
+            ctx.font = `${Math.round(38 * scaleFactor)}px Arial`;
             ctx.fillStyle = '#4a5568';
             
             // Split long subtitle into multiple lines if needed
-            const maxWidth = exportCanvas.width - 200;
+            const maxWidth = exportCanvas.width - Math.round(200 * scaleFactor);
             const words = info.subtitle.split(' · ');
             let lines = [];
             let currentLine = words[0];
@@ -2054,30 +2155,30 @@
             }
             lines.push(currentLine);
             
-            let subtitleY = 130;
+            let subtitleY = Math.round(130 * scaleFactor);
             for (let line of lines) {
                 ctx.fillText(line, exportCanvas.width / 2, subtitleY);
-                subtitleY += 45;
+                subtitleY += Math.round(45 * scaleFactor);
             }
             
             // Draw canvas
             ctx.save();
             ctx.translate(0, margin);
             const sourceCanvas = document.getElementById(info.id);
-            ctx.scale(3840 / sourceCanvas.width, 3840 / sourceCanvas.height);
+            ctx.scale(baseSize / sourceCanvas.width, baseSize / sourceCanvas.height);
             ctx.drawImage(sourceCanvas, 0, 0);
             ctx.restore();
             
-            // ========== ADD LEGEND PANEL TO RIGHT SIDE ==========
-            const legendWidth = 700;
-            const legendX = 3840 + 50;
-            const legendY = margin + 50;
-            const legendHeight = 3840 - 100;
+            // ========== ADD LEGEND PANEL TO RIGHT SIDE (scaled) ==========
+            const legendWidth = Math.round(700 * scaleFactor);
+            const legendX = baseSize + Math.round(50 * scaleFactor);
+            const legendY = margin + Math.round(50 * scaleFactor);
+            const legendHeight = baseSize - Math.round(100 * scaleFactor);
             
             // Expand canvas width to include legend
             const finalCanvas = document.createElement('canvas');
-            finalCanvas.width = 3840 + legendWidth + 100;
-            finalCanvas.height = 3840 + margin;
+            finalCanvas.width = baseSize + legendWidth + Math.round(100 * scaleFactor);
+            finalCanvas.height = baseSize + margin;
             const finalCtx = finalCanvas.getContext('2d', { alpha: false });
             
             // Copy everything we've drawn so far
@@ -2085,26 +2186,27 @@
             finalCtx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
             finalCtx.drawImage(exportCanvas, 0, 0);
             
-            // Now draw legend on final canvas
+            // Now draw legend on final canvas (scaled)
+            const padding = Math.round(20 * scaleFactor);
             finalCtx.fillStyle = '#f7fafc';
-            finalCtx.fillRect(legendX - 20, legendY - 20, legendWidth + 40, legendHeight + 40);
+            finalCtx.fillRect(legendX - padding, legendY - padding, legendWidth + 2*padding, legendHeight + 2*padding);
             finalCtx.strokeStyle = '#cbd5e0';
-            finalCtx.lineWidth = 4;
-            finalCtx.strokeRect(legendX - 20, legendY - 20, legendWidth + 40, legendHeight + 40);
+            finalCtx.lineWidth = Math.round(4 * scaleFactor);
+            finalCtx.strokeRect(legendX - padding, legendY - padding, legendWidth + 2*padding, legendHeight + 2*padding);
             
             finalCtx.fillStyle = '#2d3748';
-            finalCtx.font = 'bold 56px Arial';
+            finalCtx.font = `bold ${Math.round(56 * scaleFactor)}px Arial`;
             finalCtx.textAlign = 'left';
-            finalCtx.fillText('Legend', legendX, legendY + 50);
+            finalCtx.fillText('Legend', legendX, legendY + Math.round(50 * scaleFactor));
             
-            let yPos = legendY + 120;
-            const lineHeight = 46;
-            const sectionGap = 60;
-            const smallFont = '34px Arial';
-            const mediumFont = '38px Arial';
+            let yPos = legendY + Math.round(120 * scaleFactor);
+            const lineHeight = Math.round(46 * scaleFactor);
+            const sectionGap = Math.round(60 * scaleFactor);
+            const smallFont = `${Math.round(34 * scaleFactor)}px Arial`;
+            const mediumFont = `${Math.round(38 * scaleFactor)}px Arial`;
             
             // Modulus info
-            finalCtx.font = 'bold 46px Arial';
+            finalCtx.font = `bold ${Math.round(46 * scaleFactor)}px Arial`;
             finalCtx.fillStyle = '#667eea';
             finalCtx.fillText('Modulus', legendX, yPos);
             yPos += lineHeight + 8;
@@ -2116,20 +2218,20 @@
             
             finalCtx.font = smallFont;
             finalCtx.fillStyle = '#4a5568';
-            finalCtx.fillText(`${getPrimeFactorization(m)}`, legendX + 15, yPos);
+            finalCtx.fillText(`${getPrimeFactorization(m)}`, legendX + Math.round(15 * scaleFactor), yPos);
             yPos += lineHeight;
             
             if (isPrime(m)) {
                 finalCtx.fillStyle = '#48BB78';
-                finalCtx.fillText(`✓ Prime (Field)`, legendX + 15, yPos);
+                finalCtx.fillText(`✓ Prime (Field)`, legendX + Math.round(15 * scaleFactor), yPos);
             } else {
                 finalCtx.fillStyle = '#718096';
-                finalCtx.fillText(`Composite`, legendX + 15, yPos);
+                finalCtx.fillText(`Composite`, legendX + Math.round(15 * scaleFactor), yPos);
             }
             yPos += sectionGap;
             
             // Units
-            finalCtx.font = 'bold 46px Arial';
+            finalCtx.font = `bold ${Math.round(46 * scaleFactor)}px Arial`;
             finalCtx.fillStyle = '#667eea';
             finalCtx.fillText('Units (ℤ/mℤ)×', legendX, yPos);
             yPos += lineHeight + 8;
@@ -2142,17 +2244,17 @@
             finalCtx.font = smallFont;
             finalCtx.fillStyle = '#4a5568';
             const density = units.length / m;
-            finalCtx.fillText(`Density: ${density.toFixed(6)}`, legendX + 15, yPos);
+            finalCtx.fillText(`Density: ${density.toFixed(6)}`, legendX + Math.round(15 * scaleFactor), yPos);
             yPos += lineHeight;
             
             const baselLimit = 6 / (Math.PI * Math.PI);
-            finalCtx.fillText(`Basel: ${baselLimit.toFixed(6)}`, legendX + 15, yPos);
+            finalCtx.fillText(`Basel: ${baselLimit.toFixed(6)}`, legendX + Math.round(15 * scaleFactor), yPos);
             yPos += lineHeight;
             
             if (units.length <= 18) {
                 const unitStr = `{${units.join(',')}}`;
                 const maxLen = 35;
-                finalCtx.fillText(unitStr.length > maxLen ? unitStr.substring(0, maxLen) + '..}' : unitStr, legendX + 15, yPos);
+                finalCtx.fillText(unitStr.length > maxLen ? unitStr.substring(0, maxLen) + '..}' : unitStr, legendX + Math.round(15 * scaleFactor), yPos);
                 yPos += lineHeight;
             }
             yPos += sectionGap;
@@ -2160,7 +2262,7 @@
             // Canvas-specific metrics
             if (canvasId === 'grid') {
                 // Zero divisors
-                finalCtx.font = 'bold 46px Arial';
+                finalCtx.font = `bold ${Math.round(46 * scaleFactor)}px Arial`;
                 finalCtx.fillStyle = '#667eea';
                 finalCtx.fillText('Zero Divisors', legendX, yPos);
                 yPos += lineHeight + 8;
@@ -2172,11 +2274,11 @@
                 
                 finalCtx.font = smallFont;
                 finalCtx.fillStyle = '#4a5568';
-                finalCtx.fillText(`Density: ${(zeroDivisors.length/m).toFixed(4)}`, legendX + 15, yPos);
+                finalCtx.fillText(`Density: ${(zeroDivisors.length/m).toFixed(4)}`, legendX + Math.round(15 * scaleFactor), yPos);
                 yPos += lineHeight + sectionGap;
                 
                 // Idempotents
-                finalCtx.font = 'bold 46px Arial';
+                finalCtx.font = `bold ${Math.round(46 * scaleFactor)}px Arial`;
                 finalCtx.fillStyle = '#667eea';
                 finalCtx.fillText('Idempotents', legendX, yPos);
                 yPos += lineHeight + 8;
@@ -2189,13 +2291,13 @@
                 finalCtx.font = smallFont;
                 finalCtx.fillStyle = '#4a5568';
                 if (idempotents.length <= 12) {
-                    finalCtx.fillText(`{${idempotents.join(',')}}`, legendX + 15, yPos);
+                    finalCtx.fillText(`{${idempotents.join(',')}}`, legendX + Math.round(15 * scaleFactor), yPos);
                     yPos += lineHeight;
                 }
                 yPos += sectionGap;
                 
                 // Table info
-                finalCtx.font = 'bold 46px Arial';
+                finalCtx.font = `bold ${Math.round(46 * scaleFactor)}px Arial`;
                 finalCtx.fillStyle = '#667eea';
                 finalCtx.fillText('Table Type', legendX, yPos);
                 yPos += lineHeight + 8;
@@ -2207,12 +2309,12 @@
                 
                 finalCtx.font = smallFont;
                 finalCtx.fillStyle = '#4a5568';
-                finalCtx.fillText(`Colors: ${colorScheme}`, legendX + 15, yPos);
+                finalCtx.fillText(`Colors: ${colorScheme}`, legendX + Math.round(15 * scaleFactor), yPos);
                 yPos += lineHeight;
                 
             } else if (canvasId === 'circle') {
                 // Phase rotation
-                finalCtx.font = 'bold 46px Arial';
+                finalCtx.font = `bold ${Math.round(46 * scaleFactor)}px Arial`;
                 finalCtx.fillStyle = '#667eea';
                 finalCtx.fillText('Phase Rotation', legendX, yPos);
                 yPos += lineHeight + 8;
@@ -2224,11 +2326,11 @@
                 
                 finalCtx.font = smallFont;
                 finalCtx.fillStyle = '#4a5568';
-                finalCtx.fillText(`${phaseAngleDeg.toFixed(6)}°`, legendX + 15, yPos);
+                finalCtx.fillText(`${phaseAngleDeg.toFixed(6)}°`, legendX + Math.round(15 * scaleFactor), yPos);
                 yPos += lineHeight + sectionGap;
                 
                 // Residue layers
-                finalCtx.font = 'bold 46px Arial';
+                finalCtx.font = `bold ${Math.round(46 * scaleFactor)}px Arial`;
                 finalCtx.fillStyle = '#667eea';
                 finalCtx.fillText('Residue Layers', legendX, yPos);
                 yPos += lineHeight + 8;
@@ -2240,9 +2342,9 @@
                 
                 finalCtx.font = smallFont;
                 finalCtx.fillStyle = '#4a5568';
-                finalCtx.fillText(`Layers: 1 to ${m}`, legendX + 15, yPos);
+                finalCtx.fillText(`Layers: 1 to ${m}`, legendX + Math.round(15 * scaleFactor), yPos);
                 yPos += lineHeight;
-                finalCtx.fillText(`m(m+1)/2`, legendX + 15, yPos);
+                finalCtx.fillText(`m(m+1)/2`, legendX + Math.round(15 * scaleFactor), yPos);
                 yPos += lineHeight;
                 
             } else if (canvasId === 'gcd') {
@@ -2251,7 +2353,7 @@
                 const rotY = document.getElementById('rotationY')?.value || 45;
                 const zoom = document.getElementById('zoomLevel')?.value || 100;
                 
-                finalCtx.font = 'bold 46px Arial';
+                finalCtx.font = `bold ${Math.round(46 * scaleFactor)}px Arial`;
                 finalCtx.fillStyle = '#667eea';
                 finalCtx.fillText('3D View', legendX, yPos);
                 yPos += lineHeight + 8;
@@ -2266,7 +2368,7 @@
                 yPos += lineHeight + sectionGap;
                 
                 // Coprime pairs
-                finalCtx.font = 'bold 46px Arial';
+                finalCtx.font = `bold ${Math.round(46 * scaleFactor)}px Arial`;
                 finalCtx.fillStyle = '#667eea';
                 finalCtx.fillText('Coprime Pairs', legendX, yPos);
                 yPos += lineHeight + 8;
@@ -2279,14 +2381,14 @@
                 finalCtx.font = smallFont;
                 finalCtx.fillStyle = '#4a5568';
                 const totalPairs = m * (m - 1) / 2;
-                finalCtx.fillText(`Of ${totalPairs} pairs`, legendX + 15, yPos);
+                finalCtx.fillText(`Of ${totalPairs} pairs`, legendX + Math.round(15 * scaleFactor), yPos);
                 yPos += lineHeight;
-                finalCtx.fillText(`${(coprimePairs/totalPairs*100).toFixed(2)}%`, legendX + 15, yPos);
+                finalCtx.fillText(`${(coprimePairs/totalPairs*100).toFixed(2)}%`, legendX + Math.round(15 * scaleFactor), yPos);
                 yPos += lineHeight;
                 
             } else if (canvasId === 'density') {
                 // Basel connection
-                finalCtx.font = 'bold 46px Arial';
+                finalCtx.font = `bold ${Math.round(46 * scaleFactor)}px Arial`;
                 finalCtx.fillStyle = '#667eea';
                 finalCtx.fillText('Basel Problem', legendX, yPos);
                 yPos += lineHeight + 8;
@@ -2299,13 +2401,13 @@
                 finalCtx.font = smallFont;
                 finalCtx.fillStyle = '#4a5568';
                 const baselRatio = density / baselLimit;
-                finalCtx.fillText(`Ratio: ${baselRatio.toFixed(4)}×`, legendX + 15, yPos);
+                finalCtx.fillText(`Ratio: ${baselRatio.toFixed(4)}×`, legendX + Math.round(15 * scaleFactor), yPos);
                 yPos += lineHeight;
-                finalCtx.fillText(`Probability coprime`, legendX + 15, yPos);
+                finalCtx.fillText(`Probability coprime`, legendX + Math.round(15 * scaleFactor), yPos);
                 yPos += lineHeight + sectionGap;
                 
                 // Data range
-                finalCtx.font = 'bold 46px Arial';
+                finalCtx.font = `bold ${Math.round(46 * scaleFactor)}px Arial`;
                 finalCtx.fillStyle = '#667eea';
                 finalCtx.fillText('Data Points', legendX, yPos);
                 yPos += lineHeight + 8;
@@ -2317,7 +2419,7 @@
                 
                 finalCtx.font = smallFont;
                 finalCtx.fillStyle = '#4a5568';
-                finalCtx.fillText(`${m - 1} values`, legendX + 15, yPos);
+                finalCtx.fillText(`${m - 1} values`, legendX + Math.round(15 * scaleFactor), yPos);
                 yPos += lineHeight;
             }
             
@@ -2351,6 +2453,10 @@
             const totalResidues = (m * (m + 1)) / 2;
             const coprimeDensity = units.length / m;
             
+            // Get export resolution and scale factor
+            const baseSize = getExportResolution();
+            const scaleFactor = baseSize / 3840; // Scale relative to 4K
+            
             const canvases = [
                 { 
                     id: 'gridCanvas', 
@@ -2374,11 +2480,11 @@
                 }
             ];
             
-            // Create wider canvas to include legend
-            const margin = 250;
-            const legendWidth = 900;
-            const gridWidth = 3840 * 2;
-            const gridHeight = 3840 * 2;
+            // Create wider canvas to include legend (scaled)
+            const margin = Math.round(250 * scaleFactor);
+            const legendWidth = Math.round(900 * scaleFactor);
+            const gridWidth = baseSize * 2;
+            const gridHeight = baseSize * 2;
             
             const exportCanvas = document.createElement('canvas');
             exportCanvas.width = gridWidth + legendWidth;
@@ -2389,63 +2495,64 @@
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
             
-            // Main title
+            // Main title (scaled)
             ctx.fillStyle = '#1a202c';
-            ctx.font = 'bold 96px Arial';
+            ctx.font = `bold ${Math.round(96 * scaleFactor)}px Arial`;
             ctx.textAlign = 'center';
-            ctx.fillText('Modular Arithmetic Explorer', gridWidth / 2, 100);
+            ctx.fillText('Modular Arithmetic Explorer', gridWidth / 2, Math.round(100 * scaleFactor));
             
-            // Subtitle with m and key metrics
-            ctx.font = '56px Arial';
+            // Subtitle with m and key metrics (scaled)
+            ctx.font = `${Math.round(56 * scaleFactor)}px Arial`;
             ctx.fillStyle = '#4a5568';
-            ctx.fillText(`m = ${m} · Ring ℤ/${m}ℤ · φ(${m}) = ${units.length} · Prime: ${isPrime(m) ? 'Yes' : 'No'}`, gridWidth / 2, 180);
+            ctx.fillText(`m = ${m} · Ring ℤ/${m}ℤ · φ(${m}) = ${units.length} · Prime: ${isPrime(m) ? 'Yes' : 'No'}`, gridWidth / 2, Math.round(180 * scaleFactor));
             
             // Draw 2x2 grid of canvases
             canvases.forEach((info, idx) => {
                 const canvas = document.getElementById(info.id);
                 const col = idx % 2;
                 const row = Math.floor(idx / 2);
-                const x = col * 3840;
-                const y = row * 3840 + margin;
+                const x = col * baseSize;
+                const y = row * baseSize + margin;
                 
                 // Draw border
                 ctx.strokeStyle = '#cbd5e0';
-                ctx.lineWidth = 4;
-                ctx.strokeRect(x, y, 3840, 3840);
+                ctx.lineWidth = Math.round(4 * scaleFactor);
+                ctx.strokeRect(x, y, baseSize, baseSize);
                 
                 // Draw canvas
                 ctx.save();
                 ctx.translate(x, y);
                 const sourceCanvas = document.getElementById(info.id);
-                ctx.scale(3840 / sourceCanvas.width, 3840 / sourceCanvas.height);
+                ctx.scale(baseSize / sourceCanvas.width, baseSize / sourceCanvas.height);
                 ctx.drawImage(sourceCanvas, 0, 0);
                 ctx.restore();
                 
-                // Draw title at top of each panel
+                // Draw title at top of each panel (scaled)
                 ctx.fillStyle = '#2d3748';
-                ctx.font = 'bold 56px Arial';
+                ctx.font = `bold ${Math.round(56 * scaleFactor)}px Arial`;
                 ctx.textAlign = 'center';
-                ctx.fillText(info.title, x + 1920, y + 80);
+                ctx.fillText(info.title, x + baseSize/2, y + Math.round(80 * scaleFactor));
                 
-                // Draw metrics at bottom of each panel
-                ctx.font = '40px Arial';
+                // Draw metrics at bottom of each panel (scaled)
+                ctx.font = `${Math.round(40 * scaleFactor)}px Arial`;
                 ctx.fillStyle = '#718096';
-                ctx.fillText(info.metrics, x + 1920, y + 3760);
+                ctx.fillText(info.metrics, x + baseSize/2, y + baseSize - Math.round(80 * scaleFactor));
             });
             
-            // ========== LEGEND PANEL ON RIGHT ==========
-            const legendX = gridWidth + 50;
-            const legendY = margin + 50;
-            const legendHeight = gridHeight - 100;
+            // ========== LEGEND PANEL ON RIGHT (scaled) ==========
+            const legendX = gridWidth + Math.round(50 * scaleFactor);
+            const legendY = margin + Math.round(50 * scaleFactor);
+            const legendHeight = gridHeight - Math.round(100 * scaleFactor);
             
+            const legendPadding = Math.round(20 * scaleFactor);
             ctx.fillStyle = '#f7fafc';
-            ctx.fillRect(legendX - 20, legendY - 20, legendWidth - 60, legendHeight + 40);
+            ctx.fillRect(legendX - legendPadding, legendY - legendPadding, legendWidth - Math.round(60 * scaleFactor), legendHeight + 2*legendPadding);
             ctx.strokeStyle = '#cbd5e0';
-            ctx.lineWidth = 5;
-            ctx.strokeRect(legendX - 20, legendY - 20, legendWidth - 60, legendHeight + 40);
+            ctx.lineWidth = Math.round(5 * scaleFactor);
+            ctx.strokeRect(legendX - legendPadding, legendY - legendPadding, legendWidth - Math.round(60 * scaleFactor), legendHeight + 2*legendPadding);
             
             ctx.fillStyle = '#2d3748';
-            ctx.font = 'bold 72px Arial';
+            ctx.font = `bold ${Math.round(72 * scaleFactor)}px Arial`;
             ctx.textAlign = 'left';
             ctx.fillText('Legend', legendX, legendY + 70);
             
@@ -2597,6 +2704,10 @@
             const tableType = document.querySelector('input[name="tableType"]:checked').value;
             const colorScheme = document.querySelector('input[name="colorScheme"]:checked').value;
             
+            // Get export resolution and scale factor
+            const baseSize = getExportResolution();
+            const scaleFactor = baseSize / 3840;
+            
             const units = findUnits(m);
             const zeroDivisors = findZeroDivisors(m);
             const idempotents = findIdempotents(m);
@@ -2665,10 +2776,11 @@
                 }
             }
             
-            const margin = 250;
-            const legendWidth = 1000;
-            const gridWidth = 3840 * 2;
-            const gridHeight = 3840 * 2;
+            // Scaled dimensions
+            const margin = Math.round(250 * scaleFactor);
+            const legendWidth = Math.round(1000 * scaleFactor);
+            const gridWidth = baseSize * 2;
+            const gridHeight = baseSize * 2;
             
             const exportCanvas = document.createElement('canvas');
             exportCanvas.width = gridWidth + legendWidth;
@@ -2679,68 +2791,69 @@
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
             
-            // Title
+            // Title (scaled)
             ctx.fillStyle = '#1a202c';
-            ctx.font = 'bold 96px Arial';
+            ctx.font = `bold ${Math.round(96 * scaleFactor)}px Arial`;
             ctx.textAlign = 'center';
-            ctx.fillText('Modular Arithmetic - Complete Analysis', gridWidth / 2, 100);
+            ctx.fillText('Modular Arithmetic - Complete Analysis', gridWidth / 2, Math.round(100 * scaleFactor));
             
-            // Subtitle
-            ctx.font = '56px Arial';
+            // Subtitle (scaled)
+            ctx.font = `${Math.round(56 * scaleFactor)}px Arial`;
             ctx.fillStyle = '#4a5568';
-            ctx.fillText(`m = ${m} · Ring ℤ/${m}ℤ · φ(${m}) = ${units.length} · Prime: ${isField ? 'Yes' : 'No'}`, gridWidth / 2, 175);
+            ctx.fillText(`m = ${m} · Ring ℤ/${m}ℤ · φ(${m}) = ${units.length} · Prime: ${isField ? 'Yes' : 'No'}`, gridWidth / 2, Math.round(175 * scaleFactor));
             
             // Draw 2×2 grid of ALL canvases
             canvases.forEach((info, idx) => {
                 const canvas = document.getElementById(info.id);
                 const col = idx % 2;
                 const row = Math.floor(idx / 2);
-                const x = col * 3840;
-                const y = row * 3840 + margin;
+                const x = col * baseSize;
+                const y = row * baseSize + margin;
                 
-                // Border
+                // Border (scaled)
                 ctx.strokeStyle = '#cbd5e0';
-                ctx.lineWidth = 4;
-                ctx.strokeRect(x, y, 3840, 3840);
+                ctx.lineWidth = Math.round(4 * scaleFactor);
+                ctx.strokeRect(x, y, baseSize, baseSize);
                 
                 // Canvas
                 ctx.save();
                 ctx.translate(x, y);
                 const sourceCanvas = document.getElementById(info.id);
-                ctx.scale(3840 / sourceCanvas.width, 3840 / sourceCanvas.height);
+                ctx.scale(baseSize / sourceCanvas.width, baseSize / sourceCanvas.height);
                 ctx.drawImage(sourceCanvas, 0, 0);
                 ctx.restore();
                 
-                // Label
+                // Label (scaled)
                 ctx.fillStyle = '#2d3748';
-                ctx.font = 'bold 52px Arial';
+                ctx.font = `bold ${Math.round(52 * scaleFactor)}px Arial`;
                 ctx.textAlign = 'center';
-                ctx.fillText(info.title, x + 1920, y + 3770);
+                ctx.fillText(info.title, x + baseSize/2, y + baseSize - Math.round(70 * scaleFactor));
             });
             
-            // ========== COMPREHENSIVE ANALYSIS PANEL ==========
-            const legendX = gridWidth + 40;
+            // ========== COMPREHENSIVE ANALYSIS PANEL (scaled) ==========
+            const legendX = gridWidth + Math.round(40 * scaleFactor);
             const legendY = margin;
             
+            const legendPadding = Math.round(20 * scaleFactor);
             ctx.fillStyle = '#f7fafc';
-            ctx.fillRect(legendX - 20, legendY - 20, legendWidth - 60, gridHeight + 40);
+            ctx.fillRect(legendX - legendPadding, legendY - legendPadding, legendWidth - Math.round(60 * scaleFactor), gridHeight + 2*legendPadding);
             ctx.strokeStyle = '#cbd5e0';
-            ctx.lineWidth = 5;
-            ctx.strokeRect(legendX - 20, legendY - 20, legendWidth - 60, gridHeight + 40);
+            ctx.lineWidth = Math.round(5 * scaleFactor);
+            ctx.strokeRect(legendX - legendPadding, legendY - legendPadding, legendWidth - Math.round(60 * scaleFactor), gridHeight + 2*legendPadding);
             
             ctx.fillStyle = '#2d3748';
-            ctx.font = 'bold 64px Arial';
+            ctx.font = `bold ${Math.round(64 * scaleFactor)}px Arial`;
             ctx.textAlign = 'left';
-            ctx.fillText('Analysis', legendX, legendY + 70);
+            ctx.fillText('Analysis', legendX, legendY + Math.round(70 * scaleFactor));
             
-            let yPos = legendY + 150;
-            const lineHeight = 52;
-            const sectionGap = 65;
+            let yPos = legendY + Math.round(150 * scaleFactor);
+            const lineHeight = Math.round(52 * scaleFactor);
+            const sectionGap = Math.round(65 * scaleFactor);
             const smallFont = '38px Arial';
             const mediumFont = '44px Arial';
             
             // ========== MODULUS PROPERTIES ==========
-            ctx.font = 'bold 54px Arial';
+            ctx.font = `bold ${Math.round(54 * scaleFactor)}px Arial`;
             ctx.fillStyle = '#667eea';
             ctx.fillText('Modulus', legendX, yPos);
             yPos += lineHeight + 10;
@@ -2767,7 +2880,7 @@
             yPos += sectionGap;
             
             // ========== UNIT GROUP ==========
-            ctx.font = 'bold 54px Arial';
+            ctx.font = `bold ${Math.round(54 * scaleFactor)}px Arial`;
             ctx.fillStyle = '#667eea';
             ctx.fillText('Unit Group', legendX, yPos);
             yPos += lineHeight + 10;
@@ -2866,25 +2979,8 @@
             }
             yPos += sectionGap - lineHeight;
             
-            // ========== CANVAS DETAILS ==========
-            ctx.font = 'bold 54px Arial';
-            ctx.fillStyle = '#667eea';
-            ctx.fillText('Canvas Details', legendX, yPos);
-            yPos += lineHeight + 10;
-            
-            ctx.font = smallFont;
-            ctx.fillStyle = '#4a5568';
-            ctx.fillText(`Grid: ${tableType}, ${colorScheme}`, legendX + 20, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Circle: Phase ${phaseAngleDeg.toFixed(1)}°, ${totalResidues} res`, legendX + 20, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`GCD: View ${rotX}°×${rotY}°, zoom ${zoom}%`, legendX + 20, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Density: ${m-1} points, coprime ${coprimePairs}`, legendX + 20, yPos);
-            yPos += sectionGap;
-            
             // ========== RING CLASSIFICATION ==========
-            ctx.font = 'bold 54px Arial';
+            ctx.font = `bold ${Math.round(54 * scaleFactor)}px Arial`;
             ctx.fillStyle = '#667eea';
             ctx.fillText('Classification', legendX, yPos);
             yPos += lineHeight + 10;
@@ -2913,27 +3009,94 @@
             }
             yPos += sectionGap;
             
-            // ========== CANVAS DETAILS ==========
-            ctx.font = 'bold 46px Arial';
+            // ========== DETAILED CANVAS BREAKDOWN ==========
+            ctx.font = `bold ${Math.round(50 * scaleFactor)}px Arial`;
             ctx.fillStyle = '#667eea';
-            ctx.fillText('Canvas Details', legendX, yPos);
-            yPos += lineHeight + 10;
+            ctx.fillText('Canvas-by-Canvas Breakdown', legendX, yPos);
+            yPos += lineHeight + 15;
+            
+            // Canvas 1: Grid/Multiplication Table
+            ctx.font = 'bold 42px Arial';
+            ctx.fillStyle = '#FFD700'; // Gold for Canvas 1
+            ctx.fillText('⊗ Canvas 1: Multiplication Table', legendX, yPos);
+            yPos += lineHeight;
             
             ctx.font = smallFont;
             ctx.fillStyle = '#4a5568';
-            ctx.fillText(`⊗ Grid: ${tableType} table`, legendX + 20, yPos);
+            ctx.fillText(`• Table Type: ${tableType} (${tableType === 'cayley' ? 'units only' : 'all elements'})`, legendX + 20, yPos);
             yPos += lineHeight;
-            ctx.fillText(`○ Circle: ${totalResidues} residues`, legendX + 20, yPos);
+            ctx.fillText(`• Color Scheme: ${colorScheme}`, legendX + 20, yPos);
             yPos += lineHeight;
-            ctx.fillText(`   Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(1)}°`, legendX + 20, yPos);
+            ctx.fillText(`• Grid Size: ${tableType === 'cayley' ? units.length : m} × ${tableType === 'cayley' ? units.length : m} cells`, legendX + 20, yPos);
             yPos += lineHeight;
-            ctx.fillText(`⊚ GCD: 3D view ${rotX}°×${rotY}°`, legendX + 20, yPos);
+            ctx.fillText(`• Total Operations: ${(tableType === 'cayley' ? units.length : m) * (tableType === 'cayley' ? units.length : m)}`, legendX + 20, yPos);
             yPos += lineHeight;
-            ctx.fillText(`   ${coprimePairs} coprime pairs`, legendX + 20, yPos);
+            ctx.fillText(`• Zero Divisors Highlighted: ${zeroDivisors.length > 0 ? 'Yes' : 'None (field/domain)'}`, legendX + 20, yPos);
+            yPos += lineHeight + 10;
+            
+            // Canvas 2: Circle/Farey Channels
+            ctx.font = 'bold 42px Arial';
+            ctx.fillStyle = '#00FFFF'; // Cyan for Canvas 2
+            ctx.fillText('○ Canvas 2: Unit Circle - Farey Channels', legendX, yPos);
             yPos += lineHeight;
-            ctx.fillText(`◬ Density: ${m-1} data points`, legendX + 20, yPos);
+            
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            ctx.fillText(`• Total Residues Plotted: ${totalResidues} points (all r/m for m=1 to ${m})`, legendX + 20, yPos);
             yPos += lineHeight;
-            ctx.fillText(`   Ratio: ${(coprimeDensity/baselLimit).toFixed(4)}×`, legendX + 20, yPos);
+            ctx.fillText(`• Phase Rotation: ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(17)}°`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Coprime Points (Gold): ${units.length} on outer ring (m=${m})`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Ring Structure: ${m} concentric circles, radius = m/M × maxRadius`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Angular Mapping: θ = (2πr/m) + phase, both ±directions shown`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• GCD Coloring: gcd=1→Gold, prime gcd→Cyan, composite→gradient`, legendX + 20, yPos);
+            yPos += lineHeight + 10;
+            
+            // Canvas 3: GCD 3D Sphere
+            ctx.font = 'bold 42px Arial';
+            ctx.fillStyle = '#9F7AEA'; // Purple for Canvas 3
+            ctx.fillText('⊚ Canvas 3: GCD Structure - 3D Sphere', legendX, yPos);
+            yPos += lineHeight;
+            
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            ctx.fillText(`• View Rotation: X-axis ${rotX}°, Y-axis ${rotY}°`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Zoom Level: ${zoom}%`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Coprime Pairs (gcd=1): ${coprimePairs} pairs shown in gold`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Total Pairs Mapped: ${(m * (m-1)) / 2} unique (a,b) pairs`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Spherical Mapping: θ=2πa/m (azimuth), φ=πb/m (polar)`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Radius Scale: r = (gcd(a,b)/max_gcd) × sphere_radius`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Point Size: Depth-scaled for 3D perspective effect`, legendX + 20, yPos);
+            yPos += lineHeight + 10;
+            
+            // Canvas 4: Density Plot
+            ctx.font = 'bold 42px Arial';
+            ctx.fillStyle = '#48BB78'; // Green for Canvas 4
+            ctx.fillText('◬ Canvas 4: Coprime Density Analysis', legendX, yPos);
+            yPos += lineHeight;
+            
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            ctx.fillText(`• Data Points: ${m-1} values (n = 2 to ${m})`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Density at m=${m}: φ(${m})/${m} = ${(units.length/m).toFixed(6)}`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Basel Limit: 6/π² ≈ 0.607927 (shown as purple dashed line)`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Ratio to Basel: ${(coprimeDensity/baselLimit).toFixed(6)}× the limit`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Plot Type: φ(n)/n vs n, showing Euler totient density`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Color: Cyan points, gold highlight at n=${m}`, legendX + 20, yPos);
             yPos += lineHeight;
             
             // Footer
