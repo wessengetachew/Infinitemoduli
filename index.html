@@ -1181,6 +1181,32 @@
                     </div>
                     
                     <div style="margin-top: 20px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Point Labeling Mode:</label>
+                        <div class="radio-group" style="gap: 8px;">
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="circleLabelMode" value="none" checked onchange="updateCircleVisualization()">
+                                <span>None</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="circleLabelMode" value="r" onchange="updateCircleVisualization()">
+                                <span>r</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="circleLabelMode" value="fraction" onchange="updateCircleVisualization()">
+                                <span>r/m</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="circleLabelMode" value="theta" onchange="updateCircleVisualization()">
+                                <span>2πr/m</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="circleLabelMode" value="thetaNeg" onchange="updateCircleVisualization()">
+                                <span>-2πr/m</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
                         <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Point Size Adjustment:</label>
                         <input type="range" id="circlePointSize" min="2" max="12" step="1" value="4" 
                                style="width: 100%;" oninput="updateCircleVisualization(); document.getElementById('circlePointSizeValue').textContent = this.value + 'px'">
@@ -1305,6 +1331,24 @@
                     </div>
                     
                     <div style="margin-top: 20px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Point Labeling Mode:</label>
+                        <div class="radio-group" style="gap: 8px;">
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="gcdLabelMode" value="none" checked onchange="updateGCDVisualization()">
+                                <span>None</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="gcdLabelMode" value="pair" onchange="updateGCDVisualization()">
+                                <span>(a,b)</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="gcdLabelMode" value="gcd" onchange="updateGCDVisualization()">
+                                <span>gcd(a,b)</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
                         <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Point Size Scale:</label>
                         <input type="range" id="gcdPointSize" min="0.5" max="5" step="0.5" value="2" 
                                style="width: 100%;" oninput="updateGCDVisualization(); document.getElementById('gcdPointSizeValue').textContent = this.value + 'x'">
@@ -1415,6 +1459,32 @@
                             <input type="checkbox" id="logScaleX" onchange="updateDensityVisualization()">
                             <span style="color: var(--text-primary);">Log Scale X</span>
                         </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showDensityFractionLines" checked onchange="updateDensityVisualization()">
+                            <span style="color: var(--text-primary);">Connect Same Densities</span>
+                        </label>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Point Labeling Mode:</label>
+                        <div class="radio-group" style="gap: 8px;">
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="densityLabelMode" value="none" checked onchange="updateDensityVisualization()">
+                                <span>None</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="densityLabelMode" value="n" onchange="updateDensityVisualization()">
+                                <span>n</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="densityLabelMode" value="density" onchange="updateDensityVisualization()">
+                                <span>φ(n)/n</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="densityLabelMode" value="primes" onchange="updateDensityVisualization()">
+                                <span>Primes Only</span>
+                            </label>
+                        </div>
                     </div>
                     
                     <div style="margin-top: 20px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
@@ -2669,6 +2739,7 @@
             const showAngleMarkers = document.getElementById('showAngleMarkers')?.checked || false;
             const fadeNonCoprime = document.getElementById('fadeNonCoprime')?.checked || false;
             const pointSize = document.getElementById('circlePointSize') ? parseFloat(document.getElementById('circlePointSize').value) : 4;
+            const labelMode = document.querySelector('input[name="circleLabelMode"]:checked')?.value || 'none';
 
             // Store all points for connections
             const pointsByModulus = new Map(); // mod -> [{r, angle, x, y, gcdVal}]
@@ -2787,8 +2858,36 @@
                         ctx.fillText('m=1', x, y - 10);
                     }
                     
+                    // Label points based on mode
+                    if (labelMode !== 'none' && (mod === m || (mod > m * 0.8 && gcdVal === 1))) {
+                        ctx.fillStyle = color;
+                        ctx.font = 'bold 9px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'top';
+                        
+                        let labelText = '';
+                        if (labelMode === 'r') {
+                            labelText = r.toString();
+                        } else if (labelMode === 'fraction') {
+                            labelText = `${r}/${mod}`;
+                        } else if (labelMode === 'theta') {
+                            const thetaVal = (2 * Math.PI * r) / mod;
+                            labelText = thetaVal.toFixed(2);
+                        } else if (labelMode === 'thetaNeg') {
+                            const thetaVal = -(2 * Math.PI * r) / mod;
+                            labelText = thetaVal.toFixed(2);
+                        }
+                        
+                        if (labelText) {
+                            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+                            ctx.shadowBlur = 3;
+                            ctx.fillText(labelText, x, y + basePointSize + 3);
+                            ctx.shadowBlur = 0;
+                        }
+                    }
+                    
                     // Label important points on outer ring
-                    if (mod === m && gcdVal === 1 && r > 0) {
+                    if (mod === m && gcdVal === 1 && r > 0 && labelMode === 'none') {
                         const labelRadius = ringRadius * 1.08;
                         const labelX = centerX + labelRadius * Math.cos(angle - Math.PI / 2);
                         const labelY = centerY + labelRadius * Math.sin(angle - Math.PI / 2);
@@ -3088,6 +3187,7 @@
             const colorByGCD = document.getElementById('colorByGCDValue')?.checked !== false;
             const showGCDLabels = document.getElementById('showGCDLabels')?.checked || false;
             const pointSizeScale = document.getElementById('gcdPointSize') ? parseFloat(document.getElementById('gcdPointSize').value) : 2;
+            const gcdLabelMode = document.querySelector('input[name="gcdLabelMode"]:checked')?.value || 'none';
             
             // Update display values
             if (document.getElementById('rotXValue')) {
@@ -3267,8 +3367,29 @@
                     ctx.stroke();
                 }
                 
-                // Show GCD labels if enabled
-                if (showGCDLabels && p.g > 1 && p.scale > 0.7) {
+                // Show labels based on mode
+                if (gcdLabelMode !== 'none' && p.scale > 0.6) {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.9})`;
+                    ctx.font = 'bold 10px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                    ctx.shadowBlur = 2;
+                    
+                    let labelText = '';
+                    if (gcdLabelMode === 'pair') {
+                        labelText = `(${p.a},${p.b})`;
+                    } else if (gcdLabelMode === 'gcd') {
+                        labelText = p.g.toString();
+                    }
+                    
+                    if (labelText) {
+                        ctx.fillText(labelText, p.x2d, p.y2d - size - 4);
+                    }
+                    ctx.shadowBlur = 0;
+                }
+                
+                // Legacy GCD labels (when old checkbox is enabled)
+                if (showGCDLabels && p.g > 1 && p.scale > 0.7 && gcdLabelMode === 'none') {
                     ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
                     ctx.font = '10px Arial';
                     ctx.textAlign = 'center';
@@ -3443,6 +3564,8 @@
             const logScaleX = document.getElementById('logScaleX') ? document.getElementById('logScaleX').checked : false;
             const yMin = document.getElementById('yAxisMin') ? parseFloat(document.getElementById('yAxisMin').value) : 0;
             const yMax = document.getElementById('yAxisMax') ? parseFloat(document.getElementById('yAxisMax').value) : 1;
+            const showDensityFractionLines = document.getElementById('showDensityFractionLines')?.checked !== false;
+            const densityLabelMode = document.querySelector('input[name="densityLabelMode"]:checked')?.value || 'none';
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#0a0e1a';
@@ -3508,6 +3631,8 @@
 
             // Plot points (start from m=1)
             const densityData = [];
+            const densityGroups = new Map(); // Group by density value
+            
             for (let n = 1; n <= m; n++) {
                 const phi = euler_phi(n);
                 const density = phi / n;
@@ -3516,6 +3641,13 @@
                 const y = canvas.height - padding - ((density - yMin) / yRange) * graphHeight;
 
                 densityData.push({ n, density, x, y, isPrime: isPrime(n) });
+                
+                // Group points by density for connecting same densities
+                const densityKey = density.toFixed(6);
+                if (!densityGroups.has(densityKey)) {
+                    densityGroups.set(densityKey, []);
+                }
+                densityGroups.get(densityKey).push({ n, x, y, density });
 
                 const isCurrentM = n === m;
                 const isFirst = n === 1;
@@ -3524,6 +3656,100 @@
                 ctx.beginPath();
                 ctx.arc(x, y, isCurrentM ? pointSize * 2 : (isFirst ? pointSize * 1.5 : pointSize), 0, 2 * Math.PI);
                 ctx.fill();
+                
+                // Label points based on mode
+                if (densityLabelMode !== 'none') {
+                    let shouldLabel = false;
+                    if (densityLabelMode === 'n') {
+                        shouldLabel = true;
+                    } else if (densityLabelMode === 'density') {
+                        shouldLabel = true;
+                    } else if (densityLabelMode === 'primes') {
+                        shouldLabel = isPrime(n);
+                    }
+                    
+                    if (shouldLabel) {
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.font = 'bold 9px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'bottom';
+                        ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                        ctx.shadowBlur = 2;
+                        
+                        let labelText = '';
+                        if (densityLabelMode === 'n' || densityLabelMode === 'primes') {
+                            labelText = n.toString();
+                        } else if (densityLabelMode === 'density') {
+                            labelText = density.toFixed(3);
+                        }
+                        
+                        ctx.fillText(labelText, x, y - pointSize - 3);
+                        ctx.shadowBlur = 0;
+                    }
+                }
+            }
+            
+            // Draw lines connecting same densities
+            if (showDensityFractionLines) {
+                const drawnFractions = new Set();
+                densityGroups.forEach((points, densityKey) => {
+                    if (points.length >= 2) {
+                        // Sort points by x position
+                        points.sort((a, b) => a.n - b.n);
+                        
+                        // Find the reduced fraction for this density
+                        const density = points[0].density;
+                        let bestNum = 1, bestDen = 1, minError = 1;
+                        
+                        // Try common denominators up to 20
+                        for (let d = 1; d <= 20; d++) {
+                            const num = Math.round(density * d);
+                            const actualDensity = num / d;
+                            const error = Math.abs(actualDensity - density);
+                            if (error < minError) {
+                                minError = error;
+                                bestNum = num;
+                                bestDen = d;
+                            }
+                        }
+                        
+                        // Simplify fraction
+                        const g = gcd(bestNum, bestDen);
+                        bestNum /= g;
+                        bestDen /= g;
+                        
+                        const fractionKey = `${bestNum}/${bestDen}`;
+                        
+                        // Only draw if this fraction hasn't been drawn and error is small
+                        if (minError < 0.001 && !drawnFractions.has(fractionKey)) {
+                            drawnFractions.add(fractionKey);
+                            
+                            // Draw dashed line
+                            ctx.strokeStyle = `hsla(${(bestNum / bestDen) * 360}, 70%, 60%, 0.4)`;
+                            ctx.lineWidth = 1.5;
+                            ctx.setLineDash([5, 5]);
+                            ctx.beginPath();
+                            for (let i = 0; i < points.length; i++) {
+                                if (i === 0) {
+                                    ctx.moveTo(points[i].x, points[i].y);
+                                } else {
+                                    ctx.lineTo(points[i].x, points[i].y);
+                                }
+                            }
+                            ctx.stroke();
+                            ctx.setLineDash([]);
+                            
+                            // Label the fraction on y-axis
+                            const yPos = points[0].y;
+                            if (yPos >= padding && yPos <= canvas.height - padding) {
+                                ctx.fillStyle = `hsl(${(bestNum / bestDen) * 360}, 70%, 60%)`;
+                                ctx.font = 'bold 11px Arial';
+                                ctx.textAlign = 'right';
+                                ctx.fillText(fractionKey, padding - 8, yPos + 4);
+                            }
+                        }
+                    }
+                });
             }
             
             // Draw trendline if enabled
@@ -5062,4 +5288,4 @@
         }
     </script>
 </body>
-                            </html>
+    </html>
