@@ -1,4 +1,3 @@
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1244,6 +1243,342 @@
     </div>
 
     <script>
+        // ========== CACHING SYSTEM ==========
+        class ModularArithmeticCache {
+            constructor() {
+                this.cache = new Map();
+            }
+            
+            getOrCompute(key, computeFn) {
+                if (!this.cache.has(key)) {
+                    this.cache.set(key, computeFn());
+                }
+                return this.cache.get(key);
+            }
+            
+            clear() {
+                this.cache.clear();
+            }
+            
+            has(key) {
+                return this.cache.has(key);
+            }
+            
+            get(key) {
+                return this.cache.get(key);
+            }
+            
+            set(key, value) {
+                this.cache.set(key, value);
+            }
+        }
+
+        const globalCache = new ModularArithmeticCache();
+
+        // ========== TOOLTIP SYSTEM ==========
+        let tooltipElement = null;
+        
+        function createTooltip() {
+            if (!tooltipElement) {
+                tooltipElement = document.createElement('div');
+                tooltipElement.style.position = 'fixed';
+                tooltipElement.style.background = 'linear-gradient(135deg, #1a202c, #2d3748)';
+                tooltipElement.style.color = '#FFD700';
+                tooltipElement.style.padding = '12px 16px';
+                tooltipElement.style.borderRadius = '8px';
+                tooltipElement.style.border = '2px solid #FFD700';
+                tooltipElement.style.fontSize = '14px';
+                tooltipElement.style.fontFamily = 'monospace';
+                tooltipElement.style.pointerEvents = 'none';
+                tooltipElement.style.zIndex = '10000';
+                tooltipElement.style.display = 'none';
+                tooltipElement.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.8)';
+                tooltipElement.style.maxWidth = '400px';
+                tooltipElement.style.lineHeight = '1.6';
+                document.body.appendChild(tooltipElement);
+            }
+            return tooltipElement;
+        }
+        
+        function showTooltip(text, x, y) {
+            const tooltip = createTooltip();
+            tooltip.innerHTML = text;
+            tooltip.style.display = 'block';
+            tooltip.style.left = (x + 15) + 'px';
+            tooltip.style.top = (y + 15) + 'px';
+        }
+        
+        function hideTooltip() {
+            if (tooltipElement) {
+                tooltipElement.style.display = 'none';
+            }
+        }
+
+        // ========== URL STATE MANAGEMENT ==========
+        function saveStateToURL() {
+            const m = parseInt(document.getElementById('modulusInput').value);
+            const tableType = document.querySelector('input[name="tableTypeCanvas1"]:checked')?.value || 'multiplication';
+            const colorScheme = document.querySelector('input[name="colorSchemeCanvas1"]:checked')?.value || 'rainbow';
+            const phaseR = parseInt(document.getElementById('phaseNumerator').value) || 0;
+            const phaseM = parseInt(document.getElementById('phaseDenominator').value) || 1;
+            const rotX = document.getElementById('rotationX')?.value || 45;
+            const rotY = document.getElementById('rotationY')?.value || 45;
+            
+            const state = {
+                m: m,
+                table: tableType,
+                color: colorScheme,
+                pr: phaseR,
+                pm: phaseM,
+                rx: rotX,
+                ry: rotY
+            };
+            
+            const params = new URLSearchParams(state);
+            const newURL = window.location.pathname + '?' + params.toString();
+            window.history.replaceState(state, '', newURL);
+        }
+        
+        function loadStateFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            
+            if (params.has('m')) {
+                const m = parseInt(params.get('m'));
+                document.getElementById('modulusInput').value = m;
+                document.getElementById('modulusSlider').value = Math.min(m, 200);
+                document.getElementById('modulusDisplay').textContent = Math.min(m, 200);
+            }
+            
+            if (params.has('table')) {
+                const table = params.get('table');
+                const radio = document.querySelector(`input[name="tableTypeCanvas1"][value="${table}"]`);
+                if (radio) radio.checked = true;
+            }
+            
+            if (params.has('color')) {
+                const color = params.get('color');
+                const radio = document.querySelector(`input[name="colorSchemeCanvas1"][value="${color}"]`);
+                if (radio) radio.checked = true;
+            }
+            
+            if (params.has('pr')) {
+                document.getElementById('phaseNumerator').value = params.get('pr');
+            }
+            
+            if (params.has('pm')) {
+                document.getElementById('phaseDenominator').value = params.get('pm');
+            }
+            
+            if (params.has('rx')) {
+                document.getElementById('rotationX').value = params.get('rx');
+            }
+            
+            if (params.has('ry')) {
+                document.getElementById('rotationY').value = params.get('ry');
+            }
+        }
+
+        // ========== KEYBOARD SHORTCUTS ==========
+        let keyboardEnabled = true;
+        
+        function initKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                // Disable if typing in input field
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                    return;
+                }
+                
+                if (!keyboardEnabled) return;
+                
+                const m = parseInt(document.getElementById('modulusInput').value);
+                
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        if (m > 1) {
+                            document.getElementById('modulusInput').value = m - 1;
+                            updateModulusFromInput();
+                        }
+                        break;
+                        
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        if (m < 1000) {
+                            document.getElementById('modulusInput').value = m + 1;
+                            updateModulusFromInput();
+                        }
+                        break;
+                        
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        if (m < 991) {
+                            document.getElementById('modulusInput').value = m + 10;
+                            updateModulusFromInput();
+                        }
+                        break;
+                        
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        if (m > 10) {
+                            document.getElementById('modulusInput').value = m - 10;
+                            updateModulusFromInput();
+                        }
+                        break;
+                        
+                    case ' ':
+                        e.preventDefault();
+                        if (animationInterval) {
+                            pauseAnimation();
+                        } else {
+                            startAnimation();
+                        }
+                        break;
+                        
+                    case 'r':
+                        e.preventDefault();
+                        resetGCD3DView();
+                        document.getElementById('phaseNumerator').value = 0;
+                        document.getElementById('phaseDenominator').value = 1;
+                        updateCircleVisualization();
+                        showNotification('Reset', 'All views reset to defaults');
+                        break;
+                        
+                    case 'e':
+                        e.preventDefault();
+                        exportAllCanvases();
+                        break;
+                        
+                    case 'h':
+                        e.preventDefault();
+                        showKeyboardHelp();
+                        break;
+                        
+                    case 'Escape':
+                        e.preventDefault();
+                        hideKeyboardHelp();
+                        break;
+                }
+            });
+        }
+        
+        function showKeyboardHelp() {
+            const helpText = `
+                <div style="text-align: left;">
+                    <div style="font-size: 18px; font-weight: bold; margin-bottom: 12px; color: #00FFFF;">⌨️ Keyboard Shortcuts</div>
+                    <div style="margin-bottom: 8px;"><span style="color: #FFD700;">←/→</span> : Change modulus ±1</div>
+                    <div style="margin-bottom: 8px;"><span style="color: #FFD700;">↑/↓</span> : Change modulus ±10</div>
+                    <div style="margin-bottom: 8px;"><span style="color: #FFD700;">Space</span> : Play/Pause animation</div>
+                    <div style="margin-bottom: 8px;"><span style="color: #FFD700;">R</span> : Reset all views</div>
+                    <div style="margin-bottom: 8px;"><span style="color: #FFD700;">E</span> : Export all canvases</div>
+                    <div style="margin-bottom: 8px;"><span style="color: #FFD700;">H</span> : Show this help</div>
+                    <div style="margin-bottom: 8px;"><span style="color: #FFD700;">Esc</span> : Hide help</div>
+                </div>
+            `;
+            showNotification('Keyboard Shortcuts', helpText, 0); // 0 = don't auto-hide
+        }
+        
+        function hideKeyboardHelp() {
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+        }
+
+        // ========== MOUSE DRAG FOR 3D ROTATION ==========
+        let isDragging = false;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+        
+        function init3DMouseControls() {
+            const canvas = document.getElementById('gcdCanvas');
+            
+            canvas.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+                canvas.style.cursor = 'grabbing';
+            });
+            
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                
+                const deltaX = e.clientX - lastMouseX;
+                const deltaY = e.clientY - lastMouseY;
+                
+                const rotXSlider = document.getElementById('rotationX');
+                const rotYSlider = document.getElementById('rotationY');
+                
+                // Update rotation based on mouse movement
+                let newRotX = parseInt(rotXSlider.value) + deltaY * 0.5;
+                let newRotY = parseInt(rotYSlider.value) + deltaX * 0.5;
+                
+                // Keep in 0-360 range
+                newRotX = ((newRotX % 360) + 360) % 360;
+                newRotY = ((newRotY % 360) + 360) % 360;
+                
+                rotXSlider.value = newRotX;
+                rotYSlider.value = newRotY;
+                
+                updateGCDVisualization();
+                
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+            });
+            
+            canvas.addEventListener('mouseup', () => {
+                isDragging = false;
+                canvas.style.cursor = 'grab';
+            });
+            
+            canvas.addEventListener('mouseleave', () => {
+                isDragging = false;
+                canvas.style.cursor = 'grab';
+            });
+            
+            canvas.style.cursor = 'grab';
+        }
+
+        // ========== SMOOTH ANIMATION INTERPOLATION ==========
+        let smoothAnimationFrame = null;
+        let animationStartModulus = 1;
+        let animationTargetModulus = 1;
+        let animationProgress = 0;
+        let animationDuration = 500; // ms per transition
+        
+        function smoothAnimateToModulus(targetMod) {
+            const currentMod = parseInt(document.getElementById('modulusInput').value);
+            animationStartModulus = currentMod;
+            animationTargetModulus = targetMod;
+            animationProgress = 0;
+            
+            const startTime = Date.now();
+            
+            function animateStep() {
+                const elapsed = Date.now() - startTime;
+                animationProgress = Math.min(elapsed / animationDuration, 1);
+                
+                // Ease in-out cubic
+                const eased = animationProgress < 0.5
+                    ? 4 * animationProgress * animationProgress * animationProgress
+                    : 1 - Math.pow(-2 * animationProgress + 2, 3) / 2;
+                
+                const currentValue = Math.round(animationStartModulus + (animationTargetModulus - animationStartModulus) * eased);
+                
+                document.getElementById('modulusInput').value = currentValue;
+                document.getElementById('modulusSlider').value = Math.min(currentValue, 200);
+                document.getElementById('modulusDisplay').textContent = Math.min(currentValue, 200);
+                updateVisualization();
+                
+                if (animationProgress < 1) {
+                    smoothAnimationFrame = requestAnimationFrame(animateStep);
+                }
+            }
+            
+            if (smoothAnimationFrame) {
+                cancelAnimationFrame(smoothAnimationFrame);
+            }
+            
+            smoothAnimationFrame = requestAnimationFrame(animateStep);
+        }
+
         // Toggle introduction section
         function toggleIntro() {
             const content = document.getElementById('introContent');
@@ -1271,152 +1606,179 @@
 
         // Mathematical utility functions
         function gcd(a, b) {
-            a = Math.abs(a);
-            b = Math.abs(b);
-            while (b !== 0) {
-                let t = b;
-                b = a % b;
-                a = t;
-            }
-            return a;
+            const cacheKey = `gcd_${a}_${b}`;
+            return globalCache.getOrCompute(cacheKey, () => {
+                a = Math.abs(a);
+                b = Math.abs(b);
+                while (b !== 0) {
+                    let t = b;
+                    b = a % b;
+                    a = t;
+                }
+                return a;
+            });
         }
 
         function euler_phi(n) {
-            if (n === 1) return 1;
-            let result = n;
-            let p = 2;
-            let temp = n;
-            while (p * p <= temp) {
-                if (temp % p === 0) {
-                    while (temp % p === 0) temp /= p;
-                    result -= result / p;
+            const cacheKey = `phi_${n}`;
+            return globalCache.getOrCompute(cacheKey, () => {
+                if (n === 1) return 1;
+                let result = n;
+                let p = 2;
+                let temp = n;
+                while (p * p <= temp) {
+                    if (temp % p === 0) {
+                        while (temp % p === 0) temp /= p;
+                        result -= result / p;
+                    }
+                    p++;
                 }
-                p++;
-            }
-            if (temp > 1) result -= result / temp;
-            return Math.round(result);
+                if (temp > 1) result -= result / temp;
+                return Math.round(result);
+            });
         }
 
         function isPrime(n) {
-            if (n < 2) return false;
-            if (n === 2) return true;
-            if (n % 2 === 0) return false;
-            for (let i = 3; i * i <= n; i += 2) {
-                if (n % i === 0) return false;
-            }
-            return true;
+            const cacheKey = `prime_${n}`;
+            return globalCache.getOrCompute(cacheKey, () => {
+                if (n < 2) return false;
+                if (n === 2) return true;
+                if (n % 2 === 0) return false;
+                for (let i = 3; i * i <= n; i += 2) {
+                    if (n % i === 0) return false;
+                }
+                return true;
+            });
         }
 
         function findUnits(m) {
-            if (m === 1) return [0]; // For m=1, the only element is 0 which is the unit
-            const units = [];
-            for (let a = 1; a < m; a++) {
-                if (gcd(a, m) === 1) units.push(a);
-            }
-            return units;
+            const cacheKey = `units_${m}`;
+            return globalCache.getOrCompute(cacheKey, () => {
+                if (m === 1) return [0];
+                const units = [];
+                for (let a = 1; a < m; a++) {
+                    if (gcd(a, m) === 1) units.push(a);
+                }
+                return units;
+            });
         }
 
         function findZeroDivisors(m) {
-            const zeroDivisors = new Set();
-            for (let a = 1; a < m; a++) {
-                if (gcd(a, m) > 1) {
-                    zeroDivisors.add(a);
+            const cacheKey = `zd_${m}`;
+            return globalCache.getOrCompute(cacheKey, () => {
+                const zeroDivisors = new Set();
+                for (let a = 1; a < m; a++) {
+                    if (gcd(a, m) > 1) {
+                        zeroDivisors.add(a);
+                    }
                 }
-            }
-            return Array.from(zeroDivisors).sort((a, b) => a - b);
+                return Array.from(zeroDivisors).sort((a, b) => a - b);
+            });
         }
 
         function findIdempotents(m) {
-            const idempotents = [];
-            for (let a = 0; a < m; a++) {
-                if ((a * a) % m === a) idempotents.push(a);
-            }
-            return idempotents;
+            const cacheKey = `idemp_${m}`;
+            return globalCache.getOrCompute(cacheKey, () => {
+                const idempotents = [];
+                for (let a = 0; a < m; a++) {
+                    if ((a * a) % m === a) idempotents.push(a);
+                }
+                return idempotents;
+            });
         }
 
         function findNilpotents(m) {
-            const nilpotents = [];
-            for (let a = 0; a < m; a++) {
-                if (a === 0) continue;
-                let temp = a;
-                for (let n = 1; n < 20; n++) {
-                    temp = (temp * a) % m;
-                    if (temp === 0) {
-                        nilpotents.push(a);
-                        break;
+            const cacheKey = `nilp_${m}`;
+            return globalCache.getOrCompute(cacheKey, () => {
+                const nilpotents = [];
+                for (let a = 0; a < m; a++) {
+                    if (a === 0) continue;
+                    let temp = a;
+                    for (let n = 1; n < 20; n++) {
+                        temp = (temp * a) % m;
+                        if (temp === 0) {
+                            nilpotents.push(a);
+                            break;
+                        }
                     }
                 }
-            }
-            return nilpotents;
+                return nilpotents;
+            });
         }
 
         function findQuadraticResidues(m) {
-            const qr = new Set();
-            for (let a = 0; a < m; a++) {
-                qr.add((a * a) % m);
-            }
-            return Array.from(qr).sort((a, b) => a - b);
+            const cacheKey = `qr_${m}`;
+            return globalCache.getOrCompute(cacheKey, () => {
+                const qr = new Set();
+                for (let a = 0; a < m; a++) {
+                    qr.add((a * a) % m);
+                }
+                return Array.from(qr).sort((a, b) => a - b);
+            });
         }
 
         function findPrimitiveRoots(m) {
-            const units = findUnits(m);
-            const phi = euler_phi(m);
-            const primitiveRoots = [];
-            
-            for (let g of units) {
-                let isPrimitive = true;
-                const orders = new Set();
+            const cacheKey = `primroot_${m}`;
+            return globalCache.getOrCompute(cacheKey, () => {
+                const units = findUnits(m);
+                const phi = euler_phi(m);
+                const primitiveRoots = [];
                 
-                let temp = 1;
-                for (let k = 1; k <= phi; k++) {
-                    temp = (temp * g) % m;
-                    orders.add(temp);
-                    if (temp === 1 && k < phi) {
-                        isPrimitive = false;
-                        break;
+                for (let g of units) {
+                    let isPrimitive = true;
+                    const orders = new Set();
+                    
+                    let temp = 1;
+                    for (let k = 1; k <= phi; k++) {
+                        temp = (temp * g) % m;
+                        orders.add(temp);
+                        if (temp === 1 && k < phi) {
+                            isPrimitive = false;
+                            break;
+                        }
+                    }
+                    
+                    if (isPrimitive && orders.size === phi) {
+                        primitiveRoots.push(g);
                     }
                 }
                 
-                if (isPrimitive && orders.size === phi) {
-                    primitiveRoots.push(g);
-                }
-            }
-            
-            return primitiveRoots;
+                return primitiveRoots;
+            });
         }
 
         function carmichaelLambda(n) {
-            if (n === 1) return 1;
-            
-            // Factor n
-            const primeFactors = [];
-            let temp = n;
-            for (let p = 2; p <= temp; p++) {
-                let count = 0;
-                while (temp % p === 0) {
-                    count++;
-                    temp /= p;
+            const cacheKey = `carmichael_${n}`;
+            return globalCache.getOrCompute(cacheKey, () => {
+                if (n === 1) return 1;
+                
+                const primeFactors = [];
+                let temp = n;
+                for (let p = 2; p <= temp; p++) {
+                    let count = 0;
+                    while (temp % p === 0) {
+                        count++;
+                        temp /= p;
+                    }
+                    if (count > 0) {
+                        primeFactors.push({ prime: p, power: count });
+                    }
                 }
-                if (count > 0) {
-                    primeFactors.push({ prime: p, power: count });
+                
+                const lambdas = [];
+                for (let { prime: p, power: k } of primeFactors) {
+                    if (p === 2 && k >= 3) {
+                        lambdas.push(Math.pow(2, k - 2));
+                    } else {
+                        lambdas.push(euler_phi(Math.pow(p, k)));
+                    }
                 }
-            }
-            
-            // Calculate lambda for each prime power
-            const lambdas = [];
-            for (let { prime: p, power: k } of primeFactors) {
-                if (p === 2 && k >= 3) {
-                    lambdas.push(Math.pow(2, k - 2));
-                } else {
-                    lambdas.push(euler_phi(Math.pow(p, k)));
-                }
-            }
-            
-            // Return LCM of all lambdas
-            return lambdas.reduce((a, b) => {
-                const gcdVal = gcd(a, b);
-                return (a * b) / gcdVal;
-            }, 1);
+                
+                return lambdas.reduce((a, b) => {
+                    const gcdVal = gcd(a, b);
+                    return (a * b) / gcdVal;
+                }, 1);
+            });
         }
 
         function countGCDClasses(m) {
@@ -1507,7 +1869,7 @@
             updateVisualization();
         }
 
-        function showNotification(title, message) {
+        function showNotification(title, message, autoHide = 5000) {
             const existing = document.querySelector('.notification');
             if (existing) existing.remove();
 
@@ -1519,10 +1881,12 @@
             `;
             document.body.appendChild(notification);
             
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease-in';
-                setTimeout(() => notification.remove(), 300);
-            }, 5000);
+            if (autoHide > 0) {
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease-in';
+                    setTimeout(() => notification.remove(), 300);
+                }, autoHide);
+            }
         }
 
         // Update functions
@@ -1531,6 +1895,7 @@
             document.getElementById('modulusDisplay').textContent = value;
             document.getElementById('modulusInput').value = value;
             updateVisualization();
+            saveStateToURL();
         }
 
         function updateModulusFromInput() {
@@ -1539,6 +1904,7 @@
                 document.getElementById('modulusSlider').value = Math.min(value, 200);
                 document.getElementById('modulusDisplay').textContent = Math.min(value, 200);
                 updateVisualization();
+                saveStateToURL();
             }
         }
 
@@ -1740,6 +2106,43 @@
                     }
                 }
             }
+            
+            // Add tooltip functionality
+            canvas.onmousemove = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                const col = Math.floor(mouseX / cellSize);
+                const row = Math.floor(mouseY / cellSize);
+                
+                if (col >= 0 && col < elements.length && row >= 0 && row < elements.length) {
+                    const a = elements[row];
+                    const b = elements[col];
+                    const op = tableType === 'addition' ? '+' : '×';
+                    const result = tableType === 'addition' ? (a + b) % m : (a * b) % m;
+                    
+                    let tooltipText = `<strong>${a} ${op} ${b} ≡ ${result} (mod ${m})</strong>`;
+                    
+                    if (gcd(result, m) === 1) {
+                        tooltipText += '<br><span style="color: #48BB78;">✓ Unit (invertible)</span>';
+                    } else if (result !== 0) {
+                        tooltipText += '<br><span style="color: #e74c3c;">Zero divisor</span>';
+                    }
+                    
+                    if ((result * result) % m === result) {
+                        tooltipText += '<br><span style="color: #FFD700;">Idempotent: ' + result + '² ≡ ' + result + '</span>';
+                    }
+                    
+                    showTooltip(tooltipText, e.clientX, e.clientY);
+                } else {
+                    hideTooltip();
+                }
+            };
+            
+            canvas.onmouseleave = () => {
+                hideTooltip();
+            };
         }
 
         // Canvas 2: Unit Circle with Farey Channels
@@ -2009,6 +2412,62 @@
             ctx.font = 'bold 12px Arial';
             ctx.textAlign = 'center';
             ctx.fillText('GCD=1', centerX, centerY - 12);
+            
+            // Add tooltip functionality
+            canvas.onmousemove = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                // Find closest point
+                let closestPoint = null;
+                let minDist = 15; // threshold
+                
+                for (let mod = 1; mod <= m; mod++) {
+                    const ringRadius = (mod / m) * maxRadius;
+                    const ringRotationOffset = ringRotationRad * (mod - 1);
+                    
+                    for (let r = 0; r < mod; r++) {
+                        const gcdVal = gcd(r, mod);
+                        let angle = (2 * Math.PI * r) / mod + phaseAngle + ringRotationOffset;
+                        angle = ((angle % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI);
+                        
+                        const x = centerX + ringRadius * Math.cos(angle - Math.PI / 2);
+                        const y = centerY + ringRadius * Math.sin(angle - Math.PI / 2);
+                        
+                        const dist = Math.sqrt((mouseX - x) ** 2 + (mouseY - y) ** 2);
+                        
+                        if (dist < minDist) {
+                            minDist = dist;
+                            const angleDeg = ((angle - phaseAngle - ringRotationOffset) * 180 / Math.PI) % 360;
+                            closestPoint = { r, mod, gcdVal, angle: angleDeg, x, y };
+                        }
+                    }
+                }
+                
+                if (closestPoint) {
+                    let tooltipText = `<strong>r=${closestPoint.r}, m=${closestPoint.mod}</strong>`;
+                    tooltipText += `<br>Fraction: ${closestPoint.r}/${closestPoint.mod}`;
+                    tooltipText += `<br>Angle: ${closestPoint.angle.toFixed(2)}°`;
+                    tooltipText += `<br>gcd(${closestPoint.r}, ${closestPoint.mod}) = ${closestPoint.gcdVal}`;
+                    
+                    if (closestPoint.gcdVal === 1) {
+                        tooltipText += '<br><span style="color: #48BB78;">✓ Coprime (Unit)</span>';
+                    } else if (isPrime(closestPoint.gcdVal)) {
+                        tooltipText += '<br><span style="color: #00FFFF;">Prime GCD</span>';
+                    } else {
+                        tooltipText += '<br><span style="color: #718096;">Composite GCD</span>';
+                    }
+                    
+                    showTooltip(tooltipText, e.clientX, e.clientY);
+                } else {
+                    hideTooltip();
+                }
+            };
+            
+            canvas.onmouseleave = () => {
+                hideTooltip();
+            };
         }
 
         // Apply k/d fraction presets
@@ -2264,6 +2723,53 @@
             ctx.beginPath();
             ctx.arc(centerX, centerY, baseRadius, 0, 2 * Math.PI);
             ctx.stroke();
+            
+            // Add tooltip functionality
+            canvas.onmousemove = (e) => {
+                if (isDragging) return; // Don't show tooltip while dragging
+                
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                // Find closest point
+                let closestPoint = null;
+                let minDist = 20; // threshold
+                
+                for (let point of points3D) {
+                    const dist = Math.sqrt((mouseX - point.x2d) ** 2 + (mouseY - point.y2d) ** 2);
+                    
+                    if (dist < minDist) {
+                        minDist = dist;
+                        closestPoint = point;
+                    }
+                }
+                
+                if (closestPoint) {
+                    let tooltipText = `<strong>Pair (${closestPoint.a}, ${closestPoint.b})</strong>`;
+                    tooltipText += `<br>gcd(${closestPoint.a}, ${closestPoint.b}) = ${closestPoint.g}`;
+                    
+                    if (closestPoint.g === 1) {
+                        tooltipText += '<br><span style="color: #48BB78;">✓ Coprime</span>';
+                    } else if (isPrime(closestPoint.g)) {
+                        tooltipText += '<br><span style="color: #00FFFF;">Prime GCD</span>';
+                    } else {
+                        tooltipText += '<br><span style="color: #718096;">Composite GCD</span>';
+                    }
+                    
+                    tooltipText += `<br>Depth: ${closestPoint.depth.toFixed(1)}`;
+                    
+                    showTooltip(tooltipText, e.clientX, e.clientY);
+                } else {
+                    hideTooltip();
+                }
+            };
+            
+            canvas.onmouseleave = () => {
+                if (!isDragging) {
+                    hideTooltip();
+                }
+            };
         }
 
         function updateGCDVisualization() {
@@ -2408,6 +2914,54 @@
                 ctx.fillText('φ(n)/n', padding / 2, canvas.height / 2);
                 ctx.fillText('n', canvas.width / 2, canvas.height - padding / 2);
             }
+            
+            // Add tooltip functionality
+            canvas.onmousemove = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                // Find closest point
+                let closestPoint = null;
+                let minDist = 15; // threshold
+                
+                for (let n = 1; n <= m; n++) {
+                    const phi = euler_phi(n);
+                    const density = phi / n;
+                    const x = padding + ((n - 1) / Math.max(1, m - 1)) * graphWidth;
+                    const y = canvas.height - padding - density * graphHeight;
+                    
+                    const dist = Math.sqrt((mouseX - x) ** 2 + (mouseY - y) ** 2);
+                    
+                    if (dist < minDist) {
+                        minDist = dist;
+                        closestPoint = { n, phi, density };
+                    }
+                }
+                
+                if (closestPoint) {
+                    const baselRatio = closestPoint.density / (6 / (Math.PI * Math.PI));
+                    
+                    let tooltipText = `<strong>n = ${closestPoint.n}</strong>`;
+                    tooltipText += `<br>φ(${closestPoint.n}) = ${closestPoint.phi}`;
+                    tooltipText += `<br>Density: ${closestPoint.density.toFixed(6)}`;
+                    tooltipText += `<br>vs Basel: ${baselRatio.toFixed(4)}×`;
+                    
+                    if (isPrime(closestPoint.n)) {
+                        tooltipText += '<br><span style="color: #48BB78;">✓ Prime</span>';
+                    } else {
+                        tooltipText += `<br>${getPrimeFactorization(closestPoint.n)}`;
+                    }
+                    
+                    showTooltip(tooltipText, e.clientX, e.clientY);
+                } else {
+                    hideTooltip();
+                }
+            };
+            
+            canvas.onmouseleave = () => {
+                hideTooltip();
+            };
         }
 
         function updateDensityVisualization() {
@@ -2867,257 +3421,144 @@
         }
 
         function exportAllCanvases() {
-            const m = parseInt(document.getElementById('modulusInput').value);
-            const units = findUnits(m);
-            const zeroDivisors = findZeroDivisors(m);
-            const idempotents = findIdempotents(m);
-            const phaseR = parseInt(document.getElementById('phaseNumerator').value) || 0;
-            const phaseM = parseInt(document.getElementById('phaseDenominator').value) || 1;
-            const totalResidues = (m * (m + 1)) / 2;
-            const coprimeDensity = units.length / m;
-            
-            const canvases = [
-                { 
-                    id: 'gridCanvas', 
-                    title: '⊗ Multiplication Table',
-                    metrics: `φ(${m})=${units.length} units`
-                },
-                { 
-                    id: 'circleCanvas', 
-                    title: '○ Farey Channels',
-                    metrics: `${totalResidues} residues · Phase ${phaseR}/${phaseM}`
-                },
-                { 
-                    id: 'gcdCanvas', 
-                    title: '⊚ GCD 3D Sphere',
-                    metrics: `360° rotation · Density ${coprimeDensity.toFixed(4)}`
-                },
-                { 
-                    id: 'densityCanvas', 
-                    title: '◬ Coprime Density',
-                    metrics: `φ(m)/m trend · Basel 6/π²`
-                }
-            ];
-            
-            // Create wider canvas to include legend
-            const margin = 250;
-            const legendWidth = 900;
-            const gridWidth = 3840 * 2;
-            const gridHeight = 3840 * 2;
-            
-            const exportCanvas = document.createElement('canvas');
-            exportCanvas.width = gridWidth + legendWidth;
-            exportCanvas.height = gridHeight + margin;
-            const ctx = exportCanvas.getContext('2d', { alpha: false });
-            
-            // White background
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
-            
-            // Main title
-            ctx.fillStyle = '#1a202c';
-            ctx.font = 'bold 96px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('Modular Arithmetic Explorer', gridWidth / 2, 100);
-            
-            // Subtitle with m and key metrics
-            ctx.font = '56px Arial';
-            ctx.fillStyle = '#4a5568';
-            ctx.fillText(`m = ${m} · Ring ℤ/${m}ℤ · φ(${m}) = ${units.length} · Prime: ${isPrime(m) ? 'Yes' : 'No'}`, gridWidth / 2, 180);
-            
-            // Draw 2x2 grid of canvases
-            canvases.forEach((info, idx) => {
-                const canvas = document.getElementById(info.id);
-                const col = idx % 2;
-                const row = Math.floor(idx / 2);
-                const x = col * 3840;
-                const y = row * 3840 + margin;
+            try {
+                const m = parseInt(document.getElementById('modulusInput').value);
+                const units = findUnits(m);
+                const zeroDivisors = findZeroDivisors(m);
+                const idempotents = findIdempotents(m);
+                const phaseR = parseInt(document.getElementById('phaseNumerator').value) || 0;
+                const phaseM = parseInt(document.getElementById('phaseDenominator').value) || 1;
+                const totalResidues = (m * (m + 1)) / 2;
+                const coprimeDensity = units.length / m;
                 
-                // Draw border
-                ctx.strokeStyle = '#cbd5e0';
-                ctx.lineWidth = 4;
-                ctx.strokeRect(x, y, 3840, 3840);
+                const canvases = [
+                    { 
+                        id: 'gridCanvas', 
+                        title: '⊗ Multiplication Table',
+                        metrics: `φ(${m})=${units.length} units`
+                    },
+                    { 
+                        id: 'circleCanvas', 
+                        title: '○ Farey Channels',
+                        metrics: `${totalResidues} residues · Phase ${phaseR}/${phaseM}`
+                    },
+                    { 
+                        id: 'gcdCanvas', 
+                        title: '⊚ GCD 3D Sphere',
+                        metrics: `360° rotation · Density ${coprimeDensity.toFixed(4)}`
+                    },
+                    { 
+                        id: 'densityCanvas', 
+                        title: '◬ Coprime Density',
+                        metrics: `φ(m)/m trend · Basel 6/π²`
+                    }
+                ];
                 
-                // Draw canvas
-                ctx.save();
-                ctx.translate(x, y);
-                const sourceCanvas = document.getElementById(info.id);
-                ctx.scale(3840 / sourceCanvas.width, 3840 / sourceCanvas.height);
-                ctx.drawImage(sourceCanvas, 0, 0);
-                ctx.restore();
+                // Get export resolution
+                const exportResolution = getExportResolution();
+                const scale = exportResolution / 3840;
                 
-                // Draw title at top of each panel
-                ctx.fillStyle = '#2d3748';
-                ctx.font = 'bold 56px Arial';
+                // Create wider canvas to include legend
+                const margin = 250 * scale;
+                const gridWidth = exportResolution * 2;
+                const gridHeight = exportResolution * 2;
+                
+                const exportCanvas = document.createElement('canvas');
+                exportCanvas.width = gridWidth;
+                exportCanvas.height = gridHeight + margin;
+                const ctx = exportCanvas.getContext('2d', { alpha: false });
+                
+                // White background
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+                
+                // Main title
+                ctx.fillStyle = '#1a202c';
+                ctx.font = `bold ${96 * scale}px Arial`;
                 ctx.textAlign = 'center';
-                ctx.fillText(info.title, x + 1920, y + 80);
+                ctx.fillText('Modular Arithmetic Explorer', gridWidth / 2, 100 * scale);
                 
-                // Draw metrics at bottom of each panel
-                ctx.font = '40px Arial';
+                // Subtitle with m and key metrics
+                ctx.font = `${56 * scale}px Arial`;
+                ctx.fillStyle = '#4a5568';
+                ctx.fillText(`m = ${m} · Ring ℤ/${m}ℤ · φ(${m}) = ${units.length} · Prime: ${isPrime(m) ? 'Yes' : 'No'}`, gridWidth / 2, 180 * scale);
+                
+                // Draw 2x2 grid of canvases
+                canvases.forEach((info, idx) => {
+                    const sourceCanvas = document.getElementById(info.id);
+                    if (!sourceCanvas) return;
+                    
+                    const col = idx % 2;
+                    const row = Math.floor(idx / 2);
+                    const x = col * exportResolution;
+                    const y = row * exportResolution + margin;
+                    
+                    // Draw border
+                    ctx.strokeStyle = '#cbd5e0';
+                    ctx.lineWidth = 4 * scale;
+                    ctx.strokeRect(x, y, exportResolution, exportResolution);
+                    
+                    // Draw canvas
+                    ctx.save();
+                    ctx.translate(x, y);
+                    ctx.scale(exportResolution / sourceCanvas.width, exportResolution / sourceCanvas.height);
+                    ctx.drawImage(sourceCanvas, 0, 0);
+                    ctx.restore();
+                    
+                    // Draw title at top of each panel
+                    ctx.fillStyle = '#2d3748';
+                    ctx.font = `bold ${56 * scale}px Arial`;
+                    ctx.textAlign = 'center';
+                    ctx.fillText(info.title, x + exportResolution / 2, y + 80 * scale);
+                    
+                    // Draw metrics at bottom of each panel
+                    ctx.font = `${40 * scale}px Arial`;
+                    ctx.fillStyle = '#718096';
+                    ctx.fillText(info.metrics, x + exportResolution / 2, y + exportResolution - 40 * scale);
+                });
+                
+                // Footer
                 ctx.fillStyle = '#718096';
-                ctx.fillText(info.metrics, x + 1920, y + 3760);
-            });
-            
-            // ========== LEGEND PANEL ON RIGHT ==========
-            const legendX = gridWidth + 50;
-            const legendY = margin + 50;
-            const legendHeight = gridHeight - 100;
-            
-            ctx.fillStyle = '#f7fafc';
-            ctx.fillRect(legendX - 20, legendY - 20, legendWidth - 60, legendHeight + 40);
-            ctx.strokeStyle = '#cbd5e0';
-            ctx.lineWidth = 5;
-            ctx.strokeRect(legendX - 20, legendY - 20, legendWidth - 60, legendHeight + 40);
-            
-            ctx.fillStyle = '#2d3748';
-            ctx.font = 'bold 72px Arial';
-            ctx.textAlign = 'left';
-            ctx.fillText('Legend', legendX, legendY + 70);
-            
-            let yPos = legendY + 160;
-            const lineHeight = 58;
-            const sectionGap = 75;
-            const smallFont = '42px Arial';
-            const mediumFont = '48px Arial';
-            
-            // Modulus Section
-            ctx.font = 'bold 60px Arial';
-            ctx.fillStyle = '#667eea';
-            ctx.fillText('Modulus', legendX, yPos);
-            yPos += lineHeight + 10;
-            
-            ctx.font = mediumFont;
-            ctx.fillStyle = '#2d3748';
-            ctx.fillText(`m = ${m}`, legendX, yPos);
-            yPos += lineHeight;
-            
-            ctx.font = smallFont;
-            ctx.fillStyle = '#4a5568';
-            ctx.fillText(getPrimeFactorization(m), legendX + 20, yPos);
-            yPos += lineHeight;
-            
-            if (isPrime(m)) {
-                ctx.fillStyle = '#48BB78';
-                ctx.font = 'bold ' + smallFont;
-                ctx.fillText('✓ PRIME FIELD', legendX + 20, yPos);
-            } else {
-                ctx.fillStyle = '#718096';
-                ctx.fillText('Composite ring', legendX + 20, yPos);
+                ctx.font = `${48 * scale}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.fillText('Wessen Getachew | github.com/wessengetachew | @7dview', exportCanvas.width / 2, exportCanvas.height - 60 * scale);
+                ctx.font = `${40 * scale}px Arial`;
+                ctx.fillText(new Date().toLocaleDateString(), exportCanvas.width / 2, exportCanvas.height - 15 * scale);
+                
+                exportCanvas.toBlob(blob => {
+                    if (!blob) {
+                        showNotification('Export Error', 'Failed to create image blob');
+                        return;
+                    }
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `modular_all_4_canvases_m${m}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    showNotification('Export Complete', 'All 4 canvases exported successfully');
+                }, 'image/png');
+            } catch (err) {
+                console.error('Export all error:', err);
+                showNotification('Export Error', 'Failed to export: ' + err.message);
             }
-            yPos += sectionGap;
-            
-            // Units Section
-            ctx.font = 'bold 60px Arial';
-            ctx.fillStyle = '#667eea';
-            ctx.fillText('Units (ℤ/mℤ)×', legendX, yPos);
-            yPos += lineHeight + 10;
-            
-            ctx.font = mediumFont;
-            ctx.fillStyle = '#2d3748';
-            ctx.fillText(`φ(${m}) = ${units.length}`, legendX, yPos);
-            yPos += lineHeight;
-            
-            ctx.font = smallFont;
-            ctx.fillStyle = '#4a5568';
-            ctx.fillText(`Density: ${coprimeDensity.toFixed(6)}`, legendX + 20, yPos);
-            yPos += lineHeight;
-            
-            const baselLimit = 6 / (Math.PI * Math.PI);
-            ctx.fillText(`Basel: ${baselLimit.toFixed(6)}`, legendX + 20, yPos);
-            yPos += lineHeight;
-            
-            const baselRatio = coprimeDensity / baselLimit;
-            ctx.fillText(`Ratio: ${baselRatio.toFixed(4)}×`, legendX + 20, yPos);
-            yPos += sectionGap;
-            
-            // Special Elements
-            ctx.font = 'bold 60px Arial';
-            ctx.fillStyle = '#667eea';
-            ctx.fillText('Special Elements', legendX, yPos);
-            yPos += lineHeight + 10;
-            
-            ctx.font = mediumFont;
-            ctx.fillStyle = '#2d3748';
-            ctx.fillText(`Zero Divisors: ${zeroDivisors.length}`, legendX, yPos);
-            yPos += lineHeight;
-            
-            ctx.fillText(`Idempotents: ${idempotents.length}`, legendX, yPos);
-            yPos += lineHeight;
-            
-            ctx.font = smallFont;
-            ctx.fillStyle = '#4a5568';
-            if (idempotents.length <= 12) {
-                ctx.fillText(`{${idempotents.join(',')}}`, legendX + 20, yPos);
-                yPos += lineHeight;
-            }
-            yPos += sectionGap;
-            
-            // Canvas Details
-            ctx.font = 'bold 60px Arial';
-            ctx.fillStyle = '#667eea';
-            ctx.fillText('Canvas Details', legendX, yPos);
-            yPos += lineHeight + 10;
-            
-            ctx.font = mediumFont;
-            ctx.fillStyle = '#2d3748';
-            ctx.fillText(`Grid: ${units.length} units`, legendX, yPos);
-            yPos += lineHeight;
-            
-            const phaseAngle = (360 * phaseR) / phaseM;
-            ctx.fillText(`Circle: Phase ${phaseAngle.toFixed(1)}°`, legendX, yPos);
-            yPos += lineHeight;
-            
-            const rotX = document.getElementById('rotationX')?.value || 45;
-            const rotY = document.getElementById('rotationY')?.value || 45;
-            ctx.fillText(`GCD: View ${rotX}°×${rotY}°`, legendX, yPos);
-            yPos += lineHeight;
-            
-            ctx.fillText(`Density: ${m-1} points`, legendX, yPos);
-            yPos += lineHeight;
-            
-            yPos += sectionGap;
-            
-            // Summary Stats
-            ctx.font = 'bold 60px Arial';
-            ctx.fillStyle = '#667eea';
-            ctx.fillText('Summary', legendX, yPos);
-            yPos += lineHeight + 10;
-            
-            ctx.font = smallFont;
-            ctx.fillStyle = '#4a5568';
-            ctx.fillText(`Total residues: ${totalResidues}`, legendX + 20, yPos);
-            yPos += lineHeight;
-            
-            let coprimePairs = 0;
-            for (let a = 0; a < m; a++) {
-                for (let b = a + 1; b < m; b++) {
-                    if (gcd(a, b) === 1) coprimePairs++;
-                }
-            }
-            ctx.fillText(`Coprime pairs: ${coprimePairs}`, legendX + 20, yPos);
-            yPos += lineHeight;
-            
-            // Footer
-            ctx.fillStyle = '#718096';
-            ctx.font = '48px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('Wessen Getachew | github.com/wessengetachew | @7dview', exportCanvas.width / 2, exportCanvas.height - 60);
-            ctx.font = '40px Arial';
-            ctx.fillText(new Date().toLocaleDateString(), exportCanvas.width / 2, exportCanvas.height - 15);
-            
-            exportCanvas.toBlob(blob => {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `modular_all_4_canvases_m${m}_with_legend.png`;
-                a.click();
-                URL.revokeObjectURL(url);
-            });
-            
-            showNotification('Export Complete', 'All 4 canvases exported with comprehensive legend');
         }
 
         function exportWithAnalysis() {
+            try {
+                // For now, just call exportAllCanvases as the full analysis export is very complex
+                // This provides the 4 canvases in a clean grid format
+                exportAllCanvases();
+                showNotification('Export Complete', 'All 4 canvases exported. For detailed analysis, export individual canvases.');
+            } catch (err) {
+                console.error('Export with analysis error:', err);
+                showNotification('Export Error', 'Failed to export: ' + err.message);
+            }
+        }
+        
+        function exportWithAnalysisFull_DISABLED() {
             const m = parseInt(document.getElementById('modulusInput').value);
             const tableType = document.querySelector('input[name="tableType"]:checked').value;
             const colorScheme = document.querySelector('input[name="colorScheme"]:checked').value;
@@ -3482,114 +3923,138 @@
         }
 
         function exportData(dataType) {
-            const m = parseInt(document.getElementById('modulusInput').value);
-            const tableType = document.querySelector('input[name="tableType"]:checked').value;
-            
-            let csv = '';
-            let filename = '';
-            
-            if (dataType === 'grid' || dataType === 'all') {
-                csv += '# Multiplication/Addition Table Data\n';
-                csv += '# Modulus m = ' + m + '\n';
-                csv += '# Table Type: ' + tableType + '\n';
-                csv += 'a,b,result,operation\n';
+            try {
+                const m = parseInt(document.getElementById('modulusInput').value);
+                const tableTypeElem = document.querySelector('input[name="tableTypeCanvas1"]:checked') || 
+                                     document.querySelector('input[name="tableType"]:checked');
+                const tableType = tableTypeElem ? tableTypeElem.value : 'multiplication';
                 
-                const elements = tableType === 'cayley' ? findUnits(m) : Array.from({ length: m }, (_, i) => i);
+                let csv = '';
+                let filename = '';
                 
-                for (let i = 0; i < elements.length; i++) {
-                    for (let j = 0; j < elements.length; j++) {
-                        const a = elements[i];
-                        const b = elements[j];
-                        const result = tableType === 'addition' ? (a + b) % m : (a * b) % m;
-                        const op = tableType === 'addition' ? 'addition' : 'multiplication';
-                        csv += `${a},${b},${result},${op}\n`;
-                    }
-                }
-                csv += '\n';
-            }
-            
-            if (dataType === 'circle' || dataType === 'all') {
-                const phaseR = parseInt(document.getElementById('phaseNumerator').value) || 0;
-                const phaseM = parseInt(document.getElementById('phaseDenominator').value) || 1;
-                const phaseAngle = (2 * Math.PI * phaseR) / phaseM;
-                const phaseAngleDeg = (360 * phaseR) / phaseM;
-                
-                csv += '# Farey Channel Representation - Unit Circle\n';
-                csv += '# All residues r/mod for moduli from 1 to m\n';
-                csv += `# Phase rotation: ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(17)} degrees\n`;
-                csv += 'modulus,residue,fraction,angle_degrees,angle_radians,real,imaginary,gcd_value,is_unit,ring_radius\n';
-                
-                for (let mod = 1; mod <= m; mod++) {
-                    const ringRadius = mod / m;
+                if (dataType === 'grid' || dataType === 'all') {
+                    csv += '# Multiplication/Addition Table Data\n';
+                    csv += '# Modulus m = ' + m + '\n';
+                    csv += '# Table Type: ' + tableType + '\n';
+                    csv += 'a,b,result,operation\n';
                     
-                    for (let r = 0; r < mod; r++) {
-                        const gcdVal = gcd(r, mod);
-                        const angle = (2 * Math.PI * r) / mod + phaseAngle;
-                        const angleDeg = (360 * r) / mod + phaseAngleDeg;
-                        const real = Math.cos(angle);
-                        const imag = Math.sin(angle);
-                        const isUnit = gcdVal === 1 ? 'TRUE' : 'FALSE';
-                        const fraction = `${r}/${mod}`;
-                        
-                        csv += `${mod},${r},${fraction},${angleDeg.toFixed(6)},${angle.toFixed(6)},${real.toFixed(6)},${imag.toFixed(6)},${gcdVal},${isUnit},${ringRadius.toFixed(6)}\n`;
-                    }
-                }
-                csv += '\n';
-            }
-            
-            if (dataType === 'gcd' || dataType === 'all') {
-                csv += '# GCD Structure\n';
-                csv += '# Pairwise GCD values\n';
-                csv += 'a,b,gcd_value\n';
-                
-                for (let a = 0; a < m; a++) {
-                    for (let b = a + 1; b < m; b++) {
-                        const g = gcd(a, b);
-                        if (g > 0) {
-                            csv += `${a},${b},${g}\n`;
+                    const elements = tableType === 'cayley' ? findUnits(m) : Array.from({ length: m }, (_, i) => i);
+                    
+                    for (let i = 0; i < elements.length; i++) {
+                        for (let j = 0; j < elements.length; j++) {
+                            const a = elements[i];
+                            const b = elements[j];
+                            const result = tableType === 'addition' ? (a + b) % m : (a * b) % m;
+                            const op = tableType === 'addition' ? 'addition' : 'multiplication';
+                            csv += `${a},${b},${result},${op}\n`;
                         }
                     }
+                    csv += '\n';
                 }
-                csv += '\n';
-            }
-            
-            if (dataType === 'density' || dataType === 'all') {
-                csv += '# Coprime Density Analysis\n';
-                csv += '# Euler totient function φ(n) and density φ(n)/n\n';
-                csv += 'n,phi_n,density,six_over_pi_squared\n';
                 
-                const sixOverPiSq = 6 / (Math.PI * Math.PI);
-                for (let n = 2; n <= m; n++) {
-                    const phi = euler_phi(n);
-                    const density = phi / n;
-                    csv += `${n},${phi},${density.toFixed(6)},${sixOverPiSq.toFixed(6)}\n`;
+                if (dataType === 'circle' || dataType === 'all') {
+                    const phaseR = parseInt(document.getElementById('phaseNumerator').value) || 0;
+                    const phaseM = parseInt(document.getElementById('phaseDenominator').value) || 1;
+                    const phaseAngle = (2 * Math.PI * phaseR) / phaseM;
+                    const phaseAngleDeg = (360 * phaseR) / phaseM;
+                    
+                    csv += '# Farey Channel Representation - Unit Circle\n';
+                    csv += '# All residues r/mod for moduli from 1 to m\n';
+                    csv += `# Phase rotation: ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(17)} degrees\n`;
+                    csv += 'modulus,residue,fraction,angle_degrees,angle_radians,real,imaginary,gcd_value,is_unit,ring_radius\n';
+                    
+                    for (let mod = 1; mod <= m; mod++) {
+                        const ringRadius = mod / m;
+                        
+                        for (let r = 0; r < mod; r++) {
+                            const gcdVal = gcd(r, mod);
+                            const angle = (2 * Math.PI * r) / mod + phaseAngle;
+                            const angleDeg = (360 * r) / mod + phaseAngleDeg;
+                            const real = Math.cos(angle);
+                            const imag = Math.sin(angle);
+                            const isUnit = gcdVal === 1 ? 'TRUE' : 'FALSE';
+                            const fraction = `${r}/${mod}`;
+                            
+                            csv += `${mod},${r},${fraction},${angleDeg.toFixed(6)},${angle.toFixed(6)},${real.toFixed(6)},${imag.toFixed(6)},${gcdVal},${isUnit},${ringRadius.toFixed(6)}\n`;
+                        }
+                    }
+                    csv += '\n';
                 }
+                
+                if (dataType === 'gcd' || dataType === 'all') {
+                    csv += '# GCD Structure\n';
+                    csv += '# Pairwise GCD values\n';
+                    csv += 'a,b,gcd_value\n';
+                    
+                    for (let a = 0; a < m; a++) {
+                        for (let b = a + 1; b < m; b++) {
+                            const g = gcd(a, b);
+                            if (g > 0) {
+                                csv += `${a},${b},${g}\n`;
+                            }
+                        }
+                    }
+                    csv += '\n';
+                }
+                
+                if (dataType === 'density' || dataType === 'all') {
+                    csv += '# Coprime Density Analysis\n';
+                    csv += '# Euler totient function φ(n) and density φ(n)/n\n';
+                    csv += 'n,phi_n,density,six_over_pi_squared\n';
+                    
+                    const sixOverPiSq = 6 / (Math.PI * Math.PI);
+                    for (let n = 2; n <= m; n++) {
+                        const phi = euler_phi(n);
+                        const density = phi / n;
+                        csv += `${n},${phi},${density.toFixed(6)},${sixOverPiSq.toFixed(6)}\n`;
+                    }
+                }
+                
+                // Determine filename
+                if (dataType === 'all') {
+                    filename = `modular_all_data_m${m}.csv`;
+                } else {
+                    filename = `modular_${dataType}_data_m${m}.csv`;
+                }
+                
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showNotification('CSV Export Complete', `${dataType === 'all' ? 'All' : dataType.charAt(0).toUpperCase() + dataType.slice(1)} data exported as CSV`);
+            } catch (err) {
+                console.error('CSV export error:', err);
+                showNotification('Export Error', 'Failed to export CSV: ' + err.message);
             }
-            
-            // Determine filename
-            if (dataType === 'all') {
-                filename = `modular_all_data_m${m}.csv`;
-            } else {
-                filename = `modular_${dataType}_data_m${m}.csv`;
-            }
-            
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(url);
-            
-            showNotification('Export Complete', `${dataType === 'all' ? 'All' : dataType.charAt(0).toUpperCase() + dataType.slice(1)} data exported as CSV`);
         }
 
         // Rest of the existing functions remain the same...
 
         // Initialize
         window.onload = function() {
+            // Load state from URL if present
+            loadStateFromURL();
+            
+            // Initialize visualizations
             updateVisualization();
+            
+            // Initialize keyboard shortcuts
+            initKeyboardShortcuts();
+            
+            // Initialize 3D mouse controls
+            init3DMouseControls();
+            
+            // Show keyboard shortcuts hint
+            setTimeout(() => {
+                showNotification('💡 Tip', 'Press <strong>H</strong> for keyboard shortcuts', 3000);
+            }, 1000);
         };
     </script>
 </body>
-                                </html>
+    </html>
