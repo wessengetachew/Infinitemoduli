@@ -777,6 +777,22 @@
                 <div class="canvas-info" id="gridInfo">
                     Multiplication table visualization with configurable color schemes
                 </div>
+                <div class="canvas-info" id="gridInfo">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showLabelsGrid" checked onchange="updateVisualization()">
+                            <span style="color: var(--text-primary);">Show Labels</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showGridLinesCanvas" onchange="updateVisualization()">
+                            <span style="color: var(--text-primary);">Grid Lines</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="highlightUnitsCanvas" onchange="updateVisualization()">
+                            <span style="color: var(--text-primary);">Highlight Units</span>
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <!-- Canvas 2: Unit Circle Representation -->
@@ -905,8 +921,25 @@
                     Visualization of Euler's totient function density
                 </div>
             </div>
+                <canvas id="densityCanvas" width="800" height="800"></canvas>
+                <div class="canvas-info" id="densityInfo">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showBaselLine" checked onchange="updateDensityVisualization()">
+                            <span style="color: var(--text-primary);">Show 6/π² Line</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showDensityGrid" checked onchange="updateDensityVisualization()">
+                            <span style="color: var(--text-primary);">Show Grid</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showDensityLabels" checked onchange="updateDensityVisualization()">
+                            <span style="color: var(--text-primary);">Show Values</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
-
         <!-- Controls Section -->
         <div class="controls-section">
             <div class="controls-header">Configuration & Parameters</div>
@@ -1291,9 +1324,11 @@
             const m = parseInt(document.getElementById('modulusInput').value);
             const tableType = document.querySelector('input[name="tableType"]:checked').value;
             const colorScheme = document.querySelector('input[name="colorScheme"]:checked').value;
-            const showLabels = document.getElementById('showLabels').checked;
-            const showGridLines = document.getElementById('showGridLines').checked;
-            const highlightUnits = document.getElementById('highlightUnits').checked;
+            
+            // Get Canvas 1 controls (with fallback to main controls)
+            const showLabels = (document.getElementById('showLabelsGrid') || document.getElementById('showLabels')).checked;
+            const showGridLines = (document.getElementById('showGridLinesCanvas') || document.getElementById('showGridLines')).checked;
+            const highlightUnits = (document.getElementById('highlightUnitsCanvas') || document.getElementById('highlightUnits')).checked;
 
             // Get special elements
             const units = findUnits(m);
@@ -1887,6 +1922,11 @@
             const canvas = document.getElementById('densityCanvas');
             const ctx = canvas.getContext('2d');
 
+            // Get control states
+            const showBaselLine = document.getElementById('showBaselLine') ? document.getElementById('showBaselLine').checked : true;
+            const showDensityGrid = document.getElementById('showDensityGrid') ? document.getElementById('showDensityGrid').checked : true;
+            const showDensityLabels = document.getElementById('showDensityLabels') ? document.getElementById('showDensityLabels').checked : true;
+
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#0a0e1a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -1895,6 +1935,26 @@
             const padding = 60;
             const graphWidth = canvas.width - 2 * padding;
             const graphHeight = canvas.height - 2 * padding;
+
+            // Draw grid if enabled
+            if (showDensityGrid) {
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i <= 10; i++) {
+                    const y = padding + (i / 10) * graphHeight;
+                    ctx.beginPath();
+                    ctx.moveTo(padding, y);
+                    ctx.lineTo(canvas.width - padding, y);
+                    ctx.stroke();
+                }
+                for (let i = 0; i <= 10; i++) {
+                    const x = padding + (i / 10) * graphWidth;
+                    ctx.beginPath();
+                    ctx.moveTo(x, padding);
+                    ctx.lineTo(x, canvas.height - padding);
+                    ctx.stroke();
+                }
+            }
 
             // Axes
             ctx.strokeStyle = '#FFD700';
@@ -1919,28 +1979,39 @@
             }
 
             // Reference line for 6/π²
-            const sixOverPiSquared = 6 / (Math.PI * Math.PI);
-            const refY = canvas.height - padding - sixOverPiSquared * graphHeight;
-            ctx.strokeStyle = '#9F7AEA';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([10, 5]);
-            ctx.beginPath();
-            ctx.moveTo(padding, refY);
-            ctx.lineTo(canvas.width - padding, refY);
-            ctx.stroke();
-            ctx.setLineDash([]);
+            if (showBaselLine) {
+                const sixOverPiSquared = 6 / (Math.PI * Math.PI);
+                const refY = canvas.height - padding - sixOverPiSquared * graphHeight;
+                ctx.strokeStyle = '#9F7AEA';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([10, 5]);
+                ctx.beginPath();
+                ctx.moveTo(padding, refY);
+                ctx.lineTo(canvas.width - padding, refY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                if (showDensityLabels) {
+                    ctx.fillStyle = '#9F7AEA';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'right';
+                    ctx.fillText('6/π² ≈ 0.608', canvas.width - padding - 10, refY - 10);
+                }
+            }
 
             // Labels
-            ctx.fillStyle = '#FFD700';
-            ctx.font = 'bold 16px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('φ(n)/n', padding / 2, canvas.height / 2);
-            ctx.fillText('n', canvas.width / 2, canvas.height - padding / 2);
-            
-            ctx.fillStyle = '#9F7AEA';
-            ctx.font = '14px Arial';
-            ctx.textAlign = 'right';
-            ctx.fillText('6/π² ≈ 0.608', canvas.width - padding - 10, refY - 10);
+            if (showDensityLabels) {
+                ctx.fillStyle = '#FFD700';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('φ(n)/n', padding / 2, canvas.height / 2);
+                ctx.fillText('n', canvas.width / 2, canvas.height - padding / 2);
+            }
+        }
+
+        function updateDensityVisualization() {
+            const m = parseInt(document.getElementById('modulusInput').value);
+            drawDensityCanvas(m);
         }
 
         // Update statistics
@@ -2866,23 +2937,6 @@
             }
             yPos += sectionGap - lineHeight;
             
-            // ========== CANVAS DETAILS ==========
-            ctx.font = 'bold 54px Arial';
-            ctx.fillStyle = '#667eea';
-            ctx.fillText('Canvas Details', legendX, yPos);
-            yPos += lineHeight + 10;
-            
-            ctx.font = smallFont;
-            ctx.fillStyle = '#4a5568';
-            ctx.fillText(`Grid: ${tableType}, ${colorScheme}`, legendX + 20, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Circle: Phase ${phaseAngleDeg.toFixed(1)}°, ${totalResidues} res`, legendX + 20, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`GCD: View ${rotX}°×${rotY}°, zoom ${zoom}%`, legendX + 20, yPos);
-            yPos += lineHeight;
-            ctx.fillText(`Density: ${m-1} points, coprime ${coprimePairs}`, legendX + 20, yPos);
-            yPos += sectionGap;
-            
             // ========== RING CLASSIFICATION ==========
             ctx.font = 'bold 54px Arial';
             ctx.fillStyle = '#667eea';
@@ -2913,27 +2967,94 @@
             }
             yPos += sectionGap;
             
-            // ========== CANVAS DETAILS ==========
-            ctx.font = 'bold 46px Arial';
+            // ========== DETAILED CANVAS BREAKDOWN ==========
+            ctx.font = 'bold 50px Arial';
             ctx.fillStyle = '#667eea';
-            ctx.fillText('Canvas Details', legendX, yPos);
-            yPos += lineHeight + 10;
+            ctx.fillText('Canvas-by-Canvas Breakdown', legendX, yPos);
+            yPos += lineHeight + 15;
+            
+            // Canvas 1: Grid/Multiplication Table
+            ctx.font = 'bold 42px Arial';
+            ctx.fillStyle = '#FFD700'; // Gold for Canvas 1
+            ctx.fillText('⊗ Canvas 1: Multiplication Table', legendX, yPos);
+            yPos += lineHeight;
             
             ctx.font = smallFont;
             ctx.fillStyle = '#4a5568';
-            ctx.fillText(`⊗ Grid: ${tableType} table`, legendX + 20, yPos);
+            ctx.fillText(`• Table Type: ${tableType} (${tableType === 'cayley' ? 'units only' : 'all elements'})`, legendX + 20, yPos);
             yPos += lineHeight;
-            ctx.fillText(`○ Circle: ${totalResidues} residues`, legendX + 20, yPos);
+            ctx.fillText(`• Color Scheme: ${colorScheme}`, legendX + 20, yPos);
             yPos += lineHeight;
-            ctx.fillText(`   Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(1)}°`, legendX + 20, yPos);
+            ctx.fillText(`• Grid Size: ${tableType === 'cayley' ? units.length : m} × ${tableType === 'cayley' ? units.length : m} cells`, legendX + 20, yPos);
             yPos += lineHeight;
-            ctx.fillText(`⊚ GCD: 3D view ${rotX}°×${rotY}°`, legendX + 20, yPos);
+            ctx.fillText(`• Total Operations: ${(tableType === 'cayley' ? units.length : m) * (tableType === 'cayley' ? units.length : m)}`, legendX + 20, yPos);
             yPos += lineHeight;
-            ctx.fillText(`   ${coprimePairs} coprime pairs`, legendX + 20, yPos);
+            ctx.fillText(`• Zero Divisors Highlighted: ${zeroDivisors.length > 0 ? 'Yes' : 'None (field/domain)'}`, legendX + 20, yPos);
+            yPos += lineHeight + 10;
+            
+            // Canvas 2: Circle/Farey Channels
+            ctx.font = 'bold 42px Arial';
+            ctx.fillStyle = '#00FFFF'; // Cyan for Canvas 2
+            ctx.fillText('○ Canvas 2: Unit Circle - Farey Channels', legendX, yPos);
             yPos += lineHeight;
-            ctx.fillText(`◬ Density: ${m-1} data points`, legendX + 20, yPos);
+            
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            ctx.fillText(`• Total Residues Plotted: ${totalResidues} points (all r/m for m=1 to ${m})`, legendX + 20, yPos);
             yPos += lineHeight;
-            ctx.fillText(`   Ratio: ${(coprimeDensity/baselLimit).toFixed(4)}×`, legendX + 20, yPos);
+            ctx.fillText(`• Phase Rotation: ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(17)}°`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Coprime Points (Gold): ${units.length} on outer ring (m=${m})`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Ring Structure: ${m} concentric circles, radius = m/M × maxRadius`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Angular Mapping: θ = (2πr/m) + phase, both ±directions shown`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• GCD Coloring: gcd=1→Gold, prime gcd→Cyan, composite→gradient`, legendX + 20, yPos);
+            yPos += lineHeight + 10;
+            
+            // Canvas 3: GCD 3D Sphere
+            ctx.font = 'bold 42px Arial';
+            ctx.fillStyle = '#9F7AEA'; // Purple for Canvas 3
+            ctx.fillText('⊚ Canvas 3: GCD Structure - 3D Sphere', legendX, yPos);
+            yPos += lineHeight;
+            
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            ctx.fillText(`• View Rotation: X-axis ${rotX}°, Y-axis ${rotY}°`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Zoom Level: ${zoom}%`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Coprime Pairs (gcd=1): ${coprimePairs} pairs shown in gold`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Total Pairs Mapped: ${(m * (m-1)) / 2} unique (a,b) pairs`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Spherical Mapping: θ=2πa/m (azimuth), φ=πb/m (polar)`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Radius Scale: r = (gcd(a,b)/max_gcd) × sphere_radius`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Point Size: Depth-scaled for 3D perspective effect`, legendX + 20, yPos);
+            yPos += lineHeight + 10;
+            
+            // Canvas 4: Density Plot
+            ctx.font = 'bold 42px Arial';
+            ctx.fillStyle = '#48BB78'; // Green for Canvas 4
+            ctx.fillText('◬ Canvas 4: Coprime Density Analysis', legendX, yPos);
+            yPos += lineHeight;
+            
+            ctx.font = smallFont;
+            ctx.fillStyle = '#4a5568';
+            ctx.fillText(`• Data Points: ${m-1} values (n = 2 to ${m})`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Density at m=${m}: φ(${m})/${m} = ${(units.length/m).toFixed(6)}`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Basel Limit: 6/π² ≈ 0.607927 (shown as purple dashed line)`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Ratio to Basel: ${(coprimeDensity/baselLimit).toFixed(6)}× the limit`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Plot Type: φ(n)/n vs n, showing Euler totient density`, legendX + 20, yPos);
+            yPos += lineHeight;
+            ctx.fillText(`• Color: Cyan points, gold highlight at n=${m}`, legendX + 20, yPos);
             yPos += lineHeight;
             
             // Footer
