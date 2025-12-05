@@ -1362,6 +1362,28 @@
                         </div>
                     </div>
                     
+                    <!-- Invert Mode Toggle -->
+                    <div style="margin-bottom: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="circleInvertMode" onchange="updateCircleVisualization()">
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">Invert Mode</span>
+                        </label>
+                        <div style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;">
+                            Reverse ring order: outer ring becomes m=1, inner ring becomes m=n
+                        </div>
+                    </div>
+                    
+                    <!-- Lock to Circle Toggle -->
+                    <div style="margin-bottom: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="circleLockToTheta" onchange="updateCircleVisualization()">
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">Lock to Circle</span>
+                        </label>
+                        <div style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;">
+                            Project all points onto the outer circle at their θ angle positions
+                        </div>
+                    </div>
+                    
                     <!-- Collapsible Controls -->
                     <div style="background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border); margin-bottom: 15px; overflow: hidden;">
                         <div onclick="toggleCanvasControls('circle')" style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)); transition: all 0.3s;">
@@ -5050,6 +5072,10 @@
             // Get line thickness
             const lineThickness = document.getElementById('lineThickness') ? parseFloat(document.getElementById('lineThickness').value) : 1.5;
             
+            // Get invert and lock modes
+            const invertMode = document.getElementById('circleInvertMode')?.checked || false;
+            const lockToCircle = document.getElementById('circleLockToTheta')?.checked || false;
+            
             // Update angle display with 17 decimal places
             document.getElementById('phaseAngleDisplay').textContent = 
                 phaseAngleDegrees.toFixed(17) + '°';
@@ -5073,12 +5099,14 @@
             const pointsByResidue = new Map(); // r -> [{mod, angle, x, y, gcdVal}]
 
             // Draw concentric rings for each modulus from 1 to m
-            if (showResidueLayers) {
+            if (showResidueLayers && !lockToCircle) {
                 for (let mod = 1; mod <= m; mod++) {
-                    const ringRadius = (mod / m) * maxRadius;
+                    // Apply invert mode: reverse the ring order
+                    const displayMod = invertMode ? (m - mod + 1) : mod;
+                    const ringRadius = (displayMod / m) * maxRadius;
                     
                     // Draw ring
-                    ctx.strokeStyle = `hsla(${(mod / m) * 360}, 60%, 50%, 0.3)`;
+                    ctx.strokeStyle = `hsla(${(displayMod / m) * 360}, 60%, 50%, 0.3)`;
                     ctx.lineWidth = lineThickness;
                     ctx.setLineDash([3, 3]);
                     ctx.beginPath();
@@ -5098,7 +5126,9 @@
 
             // Draw all residues r/mod for each modulus (including mod=1)
             for (let mod = 1; mod <= m; mod++) {
-                const ringRadius = (mod / m) * maxRadius;
+                // Apply invert mode for radius calculation
+                const displayMod = invertMode ? (m - mod + 1) : mod;
+                const ringRadius = lockToCircle ? maxRadius : (displayMod / m) * maxRadius;
                 const ringIndex = mod - 1; // 0-indexed for rotation calculation
                 const ringRotationOffset = ringRotationRad * ringIndex;
                 
@@ -5110,18 +5140,14 @@
                     const gcdVal = gcd(r, mod);
                     
                     // Calculate angle: 2πr/mod + phase rotation + per-ring rotation offset
-                    // For mod=1: angle = 0 (r=0, so 2π*0/1 = 0), at center
                     let angle = (2 * Math.PI * r) / mod + phaseAngle + ringRotationOffset;
-                    // Also map -2πr/mod
                     let angleNeg = -(2 * Math.PI * r) / mod + phaseAngle + ringRotationOffset;
                     
                     // Normalize to [0, 2π)
                     angle = ((angle % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI);
                     angleNeg = ((angleNeg % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI);
                     
-                    // Position on ring
-                    // For mod=1, r=0: ringRadius=maxRadius/m (very small), angle=phase
-                    // This places mod=1 near center at the phase rotation angle
+                    // Position on ring (or locked to outer circle)
                     const x = centerX + ringRadius * Math.cos(angle - Math.PI / 2);
                     const y = centerY + ringRadius * Math.sin(angle - Math.PI / 2);
                     
@@ -5158,8 +5184,8 @@
                         ctx.stroke();
                     }
                     
-                    // Draw point for -2πr/mod (if r > 0)
-                    if (r > 0) {
+                    // Draw point for -2πr/mod (if r > 0 and not locked to circle)
+                    if (r > 0 && !lockToCircle) {
                         ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
                         ctx.beginPath();
                         ctx.arc(xNeg, yNeg, basePointSize * 0.8, 0, 2 * Math.PI);
