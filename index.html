@@ -623,21 +623,42 @@
                     <div class="intro-card">
                         <h3>Canvas 1: Multiplication Table</h3>
                         <p>
-                            <strong>What it shows:</strong> The complete multiplication table a × b (mod m) for all elements.
-                            Each cell (i,j) shows the product of row i and column j reduced modulo m.
+                            <strong>What it shows:</strong> Complete operation tables visualizing algebraic structure of ℤ/mℤ.
+                            Each cell (i,j) displays the result of the selected operation between row i and column j, reduced modulo m.
                         </p>
                         <p>
-                            <strong>Table Types:</strong>
-                            <br>• Multiplication: Full ring multiplication a × b (mod m)
-                            <br>• Cayley (Units): Restricted to invertible elements only
-                            <br>• Addition: Addition table a + b (mod m)
+                            <strong>8 Table Types:</strong>
+                            <br>• <em>Multiplication:</em> Full ring multiplication a × b (mod m) - reveals multiplicative structure and patterns
+                            <br>• <em>Addition:</em> Addition table a + b (mod m) - always forms a cyclic group, shows additive structure
+                            <br>• <em>Cayley (Units):</em> Restricted to φ(m) invertible elements - displays the unit group (ℤ/mℤ)×
+                            <br>• <em>Power Table:</em> Shows a^b (mod m) - exponential relationships between elements
+                            <br>• <em>Element Orders:</em> Displays multiplicative order of each element - smallest k where a^k ≡ 1 (mod m)
+                            <br>• <em>GCD Matrix:</em> Shows gcd(a,b) for all pairs - visualizes divisibility structure
+                            <br>• <em>LCM Matrix:</em> Displays lcm(a,b) - least common multiples reveal factor relationships
+                            <br>• <em>Inverse Map:</em> Shows multiplicative inverse for each element (— for non-units)
                         </p>
                         <p>
-                            <strong>Color schemes:</strong>
-                            <br>• Rainbow: Color by result value (hue-based spectrum)
-                            <br>• Divisibility: Intensity by number of divisors of result
-                            <br>• Zero Divisors: Highlights non-zero elements where ab ≡ 0 (mod m)
-                            <br>• Idempotents: Elements where a² ≡ a (mod m) in gold
+                            <strong>11 Color Schemes:</strong>
+                            <br>• <em>Rainbow:</em> Color by result value using hue spectrum (0=red, m=violet)
+                            <br>• <em>Divisibility:</em> Intensity based on divisor count - more divisors = different hue
+                            <br>• <em>Zero Divisors:</em> Red highlights non-zero elements where ab ≡ 0 (mod m), blue for non-ZD
+                            <br>• <em>Idempotents:</em> Gold for elements where a² ≡ a (mod m), gray otherwise
+                            <br>• <em>Primality:</em> Green for prime results, colored by smallest prime factor for composites
+                            <br>• <em>Modular Distance:</em> Colors by distance from 0 in modular arithmetic (min(a, m-a))
+                            <br>• <em>Quadratic Residues:</em> Gold for perfect squares mod m, purple for non-residues
+                            <br>• <em>Nilpotents:</em> Colors by nilpotency degree (k where a^k ≡ 0), darker for higher degrees
+                            <br>• <em>Symmetry Pattern:</em> Gold diagonal, colors by |a-b| to reveal table symmetry
+                            <br>• <em>Heatmap:</em> Classic gradient from dark blue → cyan → yellow → red (0 to m)
+                            <br>• <em>Discrete Values:</em> 20 distinct colors cycling through results for maximum contrast
+                        </p>
+                        <p>
+                            <strong>Label Options:</strong> Choose between White (default), Black, or Auto (Contrast) labels. 
+                            Auto mode intelligently selects text color based on background brightness for optimal readability.
+                        </p>
+                        <p>
+                            <strong>Advanced Display Options:</strong> Highlight Symmetry emphasizes symmetric entries, 
+                            Highlight Diagonal marks the main diagonal (a×a or a+a), Alternate Shading creates checkerboard pattern, 
+                            Bold Labels increases font weight, Cell Opacity adjusts transparency, Transpose Table swaps rows/columns.
                         </p>
                         <p>
                             <strong>Live Statistics Dashboard:</strong> Real-time display of modulus properties including φ(m) count, density ratio, 
@@ -650,8 +671,10 @@
                             Includes "Highlight in Table" and "Show Subgroup" buttons for visual exploration.
                         </p>
                         <p>
-                            <strong>Key insight:</strong> Patterns reveal ring structure, symmetries, and special elements. Hover over cells for instant 
-                            operation details and properties.
+                            <strong>Key insight:</strong> Different table types and color schemes reveal distinct algebraic properties. 
+                            Multiplication tables show zero divisors and unit structure; addition tables are always symmetric and cyclic; 
+                            Cayley tables reveal group structure; power tables expose primitive roots; order tables identify cyclic subgroups. 
+                            Color schemes highlight specific mathematical properties for deeper analysis. Hover over cells for instant details.
                         </p>
                     </div>
 
@@ -1009,12 +1032,32 @@
                                 <span>Multiplication</span>
                             </label>
                             <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="tableTypeCanvas1" value="addition" onchange="canvasIndependentStates.grid.active ? updateIndependentCanvas('grid') : updateVisualization()">
+                                <span>Addition</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
                                 <input type="radio" name="tableTypeCanvas1" value="cayley" onchange="canvasIndependentStates.grid.active ? updateIndependentCanvas('grid') : updateVisualization()">
                                 <span>Cayley (Units)</span>
                             </label>
                             <label class="radio-option" style="padding: 8px 12px;">
-                                <input type="radio" name="tableTypeCanvas1" value="addition" onchange="canvasIndependentStates.grid.active ? updateIndependentCanvas('grid') : updateVisualization()">
-                                <span>Addition</span>
+                                <input type="radio" name="tableTypeCanvas1" value="power" onchange="canvasIndependentStates.grid.active ? updateIndependentCanvas('grid') : updateVisualization()">
+                                <span>Power Table</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="tableTypeCanvas1" value="order" onchange="canvasIndependentStates.grid.active ? updateIndependentCanvas('grid') : updateVisualization()">
+                                <span>Element Orders</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="tableTypeCanvas1" value="gcd_table" onchange="canvasIndependentStates.grid.active ? updateIndependentCanvas('grid') : updateVisualization()">
+                                <span>GCD Matrix</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="tableTypeCanvas1" value="lcm_table" onchange="canvasIndependentStates.grid.active ? updateIndependentCanvas('grid') : updateVisualization()">
+                                <span>LCM Matrix</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="tableTypeCanvas1" value="inverse" onchange="canvasIndependentStates.grid.active ? updateIndependentCanvas('grid') : updateVisualization()">
+                                <span>Inverse Map</span>
                             </label>
                         </div>
                     </div>
@@ -1036,6 +1079,53 @@
                             <label class="radio-option" style="padding: 8px 12px;">
                                 <input type="radio" name="colorSchemeCanvas1" value="idempotents" onchange="updateVisualization()">
                                 <span>Idempotents</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="colorSchemeCanvas1" value="primality" onchange="updateVisualization()">
+                                <span>Primality</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="colorSchemeCanvas1" value="modular_distance" onchange="updateVisualization()">
+                                <span>Modular Distance</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="colorSchemeCanvas1" value="quadratic_residue" onchange="updateVisualization()">
+                                <span>Quadratic Residues</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="colorSchemeCanvas1" value="nilpotent" onchange="updateVisualization()">
+                                <span>Nilpotents</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="colorSchemeCanvas1" value="symmetry" onchange="updateVisualization()">
+                                <span>Symmetry Pattern</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="colorSchemeCanvas1" value="heatmap" onchange="updateVisualization()">
+                                <span>Heatmap</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="colorSchemeCanvas1" value="discrete" onchange="updateVisualization()">
+                                <span>Discrete Values</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Label Color Options -->
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Label Color:</label>
+                        <div class="radio-group" style="gap: 8px;">
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="labelColor" value="white" checked onchange="updateVisualization()">
+                                <span>White</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="labelColor" value="black" onchange="updateVisualization()">
+                                <span>Black</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="labelColor" value="auto" onchange="updateVisualization()">
+                                <span>Auto (Contrast)</span>
                             </label>
                         </div>
                     </div>
@@ -1344,8 +1434,12 @@
                         <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Point Labeling Mode:</label>
                         <div class="radio-group" style="gap: 8px;">
                             <label class="radio-option" style="padding: 8px 12px;">
-                                <input type="radio" name="circleLabelMode" value="none" checked onchange="updateCircleVisualization()">
+                                <input type="radio" name="circleLabelMode" value="none" onchange="updateCircleVisualization()">
                                 <span>None</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="circleLabelMode" value="gcd" checked onchange="updateCircleVisualization()">
+                                <span>GCD Values</span>
                             </label>
                             <label class="radio-option" style="padding: 8px 12px;">
                                 <input type="radio" name="circleLabelMode" value="r" onchange="updateCircleVisualization()">
@@ -1364,6 +1458,31 @@
                                 <span>-2πr/m</span>
                             </label>
                         </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">GCD Filter:</label>
+                        <div class="radio-group" style="gap: 8px;">
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="gcdFilter" value="all" checked onchange="updateCircleVisualization()">
+                                <span>Show All</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="gcdFilter" value="coprime" onchange="updateCircleVisualization()">
+                                <span>GCD = 1 Only</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="gcdFilter" value="noncoprime" onchange="updateCircleVisualization()">
+                                <span>GCD > 1 Only</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Label Size:</label>
+                        <input type="range" id="circleLabelSize" min="6" max="20" step="1" value="10" 
+                               style="width: 100%;" oninput="updateCircleVisualization(); document.getElementById('circleLabelSizeValue').textContent = this.value + 'px'">
+                        <span id="circleLabelSizeValue" style="color: var(--gold); font-family: monospace;">10px</span>
                     </div>
                     
                     <div style="margin-top: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
@@ -2534,6 +2653,62 @@
         }
 
         // Color schemes
+        function getBrightness(color) {
+            // Convert color to RGB and calculate brightness
+            let r, g, b;
+            if (color.startsWith('#')) {
+                r = parseInt(color.substr(1, 2), 16);
+                g = parseInt(color.substr(3, 2), 16);
+                b = parseInt(color.substr(5, 2), 16);
+            } else if (color.startsWith('hsl')) {
+                // For HSL colors, estimate brightness from lightness
+                const match = color.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+                if (match) {
+                    return parseFloat(match[3]) * 2.55;
+                }
+                return 128;
+            } else if (color.startsWith('rgb')) {
+                const match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+                if (match) {
+                    r = parseInt(match[1]);
+                    g = parseInt(match[2]);
+                    b = parseInt(match[3]);
+                }
+            } else {
+                return 128;
+            }
+            return (r * 299 + g * 587 + b * 114) / 1000;
+        }
+        
+        function getColorForScheme(value, m, colorScheme, a, b, zeroDivisors, idempotents) {
+            switch (colorScheme) {
+                case 'rainbow':
+                    return getRainbowColor(value, m);
+                case 'divisibility':
+                    return getDivisibilityColor(value, m);
+                case 'zeroDivisors':
+                    return getZeroDivisorColor(value, m, zeroDivisors);
+                case 'idempotents':
+                    return getIdempotentColor(value, m, idempotents);
+                case 'primality':
+                    return getPrimalityColor(value, m);
+                case 'modular_distance':
+                    return getModularDistanceColor(value, m);
+                case 'quadratic_residue':
+                    return getQuadraticResidueColor(value, m);
+                case 'nilpotent':
+                    return getNilpotentColor(value, m);
+                case 'symmetry':
+                    return getSymmetryColor(a, b, m);
+                case 'heatmap':
+                    return getHeatmapColor(value, m);
+                case 'discrete':
+                    return getDiscreteColor(value, m);
+                default:
+                    return getRainbowColor(value, m);
+            }
+        }
+
         function getRainbowColor(value, m) {
             const hue = (value / m) * 360;
             return `hsl(${hue}, 80%, 60%)`;
@@ -2558,6 +2733,91 @@
         function getIdempotentColor(value, m, idempotents) {
             if (value === 0) return '#2c3e50';
             return idempotents.includes(value) ? '#FFD700' : '#95a5a6';
+        }
+        
+        function getPrimalityColor(value, m) {
+            if (value === 0) return '#1a1a2e';
+            if (value === 1) return '#16213e';
+            if (isPrime(value)) return '#48BB78';
+            // Color by smallest prime factor
+            for (let p = 2; p <= value; p++) {
+                if (value % p === 0) {
+                    const hue = (p / 20) * 360;
+                    return `hsl(${hue}, 70%, 50%)`;
+                }
+            }
+            return '#e74c3c';
+        }
+        
+        function getModularDistanceColor(value, m) {
+            // Distance from 0 in modular arithmetic
+            const distance = Math.min(value, m - value);
+            const ratio = distance / Math.floor(m / 2);
+            const hue = 240 - ratio * 240; // Blue to red
+            return `hsl(${hue}, 80%, 60%)`;
+        }
+        
+        function getQuadraticResidueColor(value, m) {
+            if (value === 0) return '#2c3e50';
+            // Check if value is a quadratic residue mod m
+            for (let a = 0; a < m; a++) {
+                if ((a * a) % m === value) {
+                    return '#FFD700'; // Gold for QR
+                }
+            }
+            return '#9b59b6'; // Purple for non-QR
+        }
+        
+        function getNilpotentColor(value, m) {
+            if (value === 0) return '#000000';
+            // Check if nilpotent
+            let temp = value;
+            for (let k = 1; k < 20; k++) {
+                temp = (temp * value) % m;
+                if (temp === 0) {
+                    // Color by nilpotency degree
+                    const hue = (k / 10) * 120;
+                    return `hsl(${hue}, 90%, 50%)`;
+                }
+            }
+            return '#34495e'; // Not nilpotent
+        }
+        
+        function getSymmetryColor(a, b, m) {
+            // Visualize symmetry: color by |a - b|
+            const diff = Math.abs(a - b);
+            if (a === b) return '#FFD700'; // Diagonal
+            const hue = (diff / m) * 360;
+            return `hsl(${hue}, 70%, 55%)`;
+        }
+        
+        function getHeatmapColor(value, m) {
+            // Classic heatmap: dark blue -> cyan -> yellow -> red
+            const ratio = value / m;
+            if (ratio < 0.25) {
+                const t = ratio * 4;
+                return `rgb(${Math.floor(t * 0)}, ${Math.floor(t * 100)}, ${Math.floor(100 + t * 155)})`;
+            } else if (ratio < 0.5) {
+                const t = (ratio - 0.25) * 4;
+                return `rgb(${Math.floor(t * 0)}, ${Math.floor(100 + t * 155)}, ${Math.floor(255 - t * 255)})`;
+            } else if (ratio < 0.75) {
+                const t = (ratio - 0.5) * 4;
+                return `rgb(${Math.floor(t * 255)}, ${255}, ${Math.floor(t * 0)})`;
+            } else {
+                const t = (ratio - 0.75) * 4;
+                return `rgb(${255}, ${Math.floor(255 - t * 100)}, ${Math.floor(t * 0)})`;
+            }
+        }
+        
+        function getDiscreteColor(value, m) {
+            // Discrete colors for each unique value
+            const colors = [
+                '#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6',
+                '#1abc9c', '#34495e', '#e67e22', '#95a5a6', '#d35400',
+                '#c0392b', '#2980b9', '#27ae60', '#f1c40f', '#8e44ad',
+                '#16a085', '#2c3e50', '#d35400', '#7f8c8d', '#c0392b'
+            ];
+            return colors[value % colors.length];
         }
 
         // Preset configurations
@@ -2763,7 +3023,18 @@
         function drawGridCanvas(m, tableType, colorScheme, showLabels, showGridLines, units, zeroDivisors, idempotents) {
             const canvas = document.getElementById('gridCanvas');
             const ctx = canvas.getContext('2d');
-            const size = tableType === 'cayley' ? units.length : m;
+            
+            // Determine elements based on table type
+            let elements;
+            if (tableType === 'cayley') {
+                elements = units;
+            } else if (tableType === 'order' || tableType === 'inverse') {
+                elements = Array.from({ length: m }, (_, i) => i);
+            } else {
+                elements = Array.from({ length: m }, (_, i) => i);
+            }
+            
+            const size = elements.length;
             const cellSize = Math.floor(canvas.width / size);
             
             // Get additional controls
@@ -2772,12 +3043,11 @@
             const alternateShading = document.getElementById('alternateShading')?.checked || false;
             const boldLabels = document.getElementById('boldLabels')?.checked || false;
             const cellOpacity = document.getElementById('cellOpacity') ? parseFloat(document.getElementById('cellOpacity').value) : 1;
+            const labelColor = document.querySelector('input[name="labelColor"]:checked')?.value || 'white';
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#0a0e1a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            const elements = tableType === 'cayley' ? units : Array.from({ length: m }, (_, i) => i);
 
             for (let i = 0; i < elements.length; i++) {
                 for (let j = 0; j < elements.length; j++) {
@@ -2787,25 +3057,49 @@
                     let value;
                     if (tableType === 'addition') {
                         value = (a + b) % m;
+                    } else if (tableType === 'multiplication' || tableType === 'cayley') {
+                        value = (a * b) % m;
+                    } else if (tableType === 'power') {
+                        // Power table: a^b mod m
+                        value = 1;
+                        for (let k = 0; k < b; k++) {
+                            value = (value * a) % m;
+                        }
+                    } else if (tableType === 'order') {
+                        // Element order: smallest k where a^k ≡ 1 (mod m)
+                        if (gcd(a, m) !== 1) {
+                            value = 0; // Not a unit
+                        } else {
+                            let temp = 1;
+                            for (let k = 1; k <= m; k++) {
+                                temp = (temp * a) % m;
+                                if (temp === 1) {
+                                    value = k;
+                                    break;
+                                }
+                            }
+                        }
+                    } else if (tableType === 'gcd_table') {
+                        value = gcd(a, b);
+                    } else if (tableType === 'lcm_table') {
+                        value = (a * b) / gcd(a, b);
+                    } else if (tableType === 'inverse') {
+                        // Show inverse: a * x ≡ 1 (mod m)
+                        if (gcd(a, m) !== 1) {
+                            value = -1; // No inverse
+                        } else {
+                            for (let x = 1; x < m; x++) {
+                                if ((a * x) % m === 1) {
+                                    value = x;
+                                    break;
+                                }
+                            }
+                        }
                     } else {
                         value = (a * b) % m;
                     }
 
-                    let color;
-                    switch (colorScheme) {
-                        case 'rainbow':
-                            color = getRainbowColor(value, m);
-                            break;
-                        case 'divisibility':
-                            color = getDivisibilityColor(value, m);
-                            break;
-                        case 'zeroDivisors':
-                            color = getZeroDivisorColor(value, m, zeroDivisors);
-                            break;
-                        case 'idempotents':
-                            color = getIdempotentColor(value, m, idempotents);
-                            break;
-                    }
+                    let color = getColorForScheme(value, m, colorScheme, a, b, zeroDivisors, idempotents);
 
                     const x = j * cellSize;
                     const y = i * cellSize;
@@ -2828,9 +3122,9 @@
                         ctx.strokeRect(x + 2, y + 2, cellSize - 5, cellSize - 5);
                     }
                     
-                    // Highlight symmetry (if a*b = b*a)
-                    if (showSymmetry && i !== j && tableType === 'multiplication') {
-                        const valueReverse = (elements[j] * elements[i]) % m;
+                    // Highlight symmetry
+                    if (showSymmetry && i !== j && (tableType === 'multiplication' || tableType === 'addition')) {
+                        const valueReverse = tableType === 'addition' ? (elements[j] + elements[i]) % m : (elements[j] * elements[i]) % m;
                         if (value === valueReverse) {
                             ctx.strokeStyle = '#00FFFF';
                             ctx.lineWidth = 1.5;
@@ -2855,13 +3149,25 @@
                     }
 
                     if (showLabels && cellSize >= 12) {
-                        ctx.fillStyle = '#ffffff';
+                        // Determine label color
+                        let textColor;
+                        if (labelColor === 'black') {
+                            textColor = '#000000';
+                        } else if (labelColor === 'white') {
+                            textColor = '#ffffff';
+                        } else {
+                            // Auto contrast
+                            textColor = getBrightness(color) > 128 ? '#000000' : '#ffffff';
+                        }
+                        
+                        ctx.fillStyle = textColor;
                         ctx.font = `${boldLabels ? 'bold' : ''} ${Math.max(8, cellSize / 3)}px Arial`;
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
-                        ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                        ctx.shadowColor = labelColor === 'black' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.8)';
                         ctx.shadowBlur = 2;
-                        ctx.fillText(value, x + cellSize / 2, y + cellSize / 2);
+                        const displayValue = tableType === 'inverse' && value === -1 ? '—' : value;
+                        ctx.fillText(displayValue, x + cellSize / 2, y + cellSize / 2);
                         ctx.shadowBlur = 0;
                     }
                 }
@@ -2971,7 +3277,9 @@
             const showAngleMarkers = document.getElementById('showAngleMarkers')?.checked || false;
             const fadeNonCoprime = document.getElementById('fadeNonCoprime')?.checked || false;
             const pointSize = document.getElementById('circlePointSize') ? parseFloat(document.getElementById('circlePointSize').value) : 4;
-            const labelMode = document.querySelector('input[name="circleLabelMode"]:checked')?.value || 'none';
+            const labelMode = document.querySelector('input[name="circleLabelMode"]:checked')?.value || 'gcd';
+            const gcdFilter = document.querySelector('input[name="gcdFilter"]:checked')?.value || 'all';
+            const circleLabelSize = document.getElementById('circleLabelSize') ? parseInt(document.getElementById('circleLabelSize').value) : 10;
 
             // Store all points for connections
             const pointsByModulus = new Map(); // mod -> [{r, angle, x, y, gcdVal}]
@@ -3014,6 +3322,10 @@
                 for (let r = 0; r < mod; r++) {
                     const gcdVal = gcd(r, mod);
                     
+                    // Apply GCD filter
+                    if (gcdFilter === 'coprime' && gcdVal !== 1) continue;
+                    if (gcdFilter === 'noncoprime' && gcdVal === 1) continue;
+                    
                     // Calculate angle: 2πr/mod + phase rotation + per-ring rotation offset
                     // For mod=1: angle = 0 (r=0, so 2π*0/1 = 0), at center
                     let angle = (2 * Math.PI * r) / mod + phaseAngle + ringRotationOffset;
@@ -3044,32 +3356,77 @@
                         color = `hsl(${hue}, 70%, 60%)`;
                     }
                     
-                    // Draw point for +2πr/mod
-                    ctx.fillStyle = color;
-                    ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
-                    ctx.beginPath();
-                    // Make mod=1 point slightly larger and more visible
-                    const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
-                    ctx.arc(x, y, basePointSize, 0, 2 * Math.PI);
-                    ctx.fill();
-                    ctx.globalAlpha = 1.0;
-                    
-                    // Add glow for mod=1
-                    if (mod === 1) {
-                        ctx.strokeStyle = color;
-                        ctx.lineWidth = 2;
-                        ctx.beginPath();
-                        ctx.arc(x, y, basePointSize + 2, 0, 2 * Math.PI);
-                        ctx.stroke();
+                    // Determine what label to show
+                    let labelText = '';
+                    if (labelMode === 'gcd') {
+                        labelText = gcdVal.toString();
+                    } else if (labelMode === 'r') {
+                        labelText = r.toString();
+                    } else if (labelMode === 'fraction') {
+                        labelText = `${r}/${mod}`;
+                    } else if (labelMode === 'theta') {
+                        const thetaVal = (2 * Math.PI * r) / mod;
+                        labelText = thetaVal.toFixed(2);
+                    } else if (labelMode === 'thetaNeg') {
+                        const thetaVal = -(2 * Math.PI * r) / mod;
+                        labelText = thetaVal.toFixed(2);
                     }
                     
-                    // Draw point for -2πr/mod (if r > 0)
-                    if (r > 0) {
-                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
+                    // Draw label instead of point for +2πr/mod
+                    if (labelMode !== 'none' && labelText) {
+                        ctx.fillStyle = color;
+                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
+                        ctx.font = `bold ${circleLabelSize}px Arial`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+                        ctx.shadowBlur = 3;
+                        ctx.fillText(labelText, x, y);
+                        ctx.shadowBlur = 0;
+                        ctx.globalAlpha = 1.0;
+                    } else {
+                        // Draw point for +2πr/mod (when no labels)
+                        ctx.fillStyle = color;
+                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
                         ctx.beginPath();
-                        ctx.arc(xNeg, yNeg, basePointSize * 0.8, 0, 2 * Math.PI);
+                        // Make mod=1 point slightly larger and more visible
+                        const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
+                        ctx.arc(x, y, basePointSize, 0, 2 * Math.PI);
                         ctx.fill();
                         ctx.globalAlpha = 1.0;
+                        
+                        // Add glow for mod=1
+                        if (mod === 1) {
+                            ctx.strokeStyle = color;
+                            ctx.lineWidth = 2;
+                            ctx.beginPath();
+                            ctx.arc(x, y, basePointSize + 2, 0, 2 * Math.PI);
+                            ctx.stroke();
+                        }
+                    }
+                    
+                    // Draw negative angle point (if r > 0) - smaller or as label
+                    if (r > 0) {
+                        if (labelMode !== 'none' && labelText) {
+                            ctx.fillStyle = color;
+                            ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
+                            ctx.font = `bold ${Math.round(circleLabelSize * 0.8)}px Arial`;
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+                            ctx.shadowBlur = 2;
+                            ctx.fillText(labelText, xNeg, yNeg);
+                            ctx.shadowBlur = 0;
+                            ctx.globalAlpha = 1.0;
+                        } else {
+                            ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
+                            ctx.fillStyle = color;
+                            ctx.beginPath();
+                            const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
+                            ctx.arc(xNeg, yNeg, basePointSize * 0.8, 0, 2 * Math.PI);
+                            ctx.fill();
+                            ctx.globalAlpha = 1.0;
+                        }
                     }
                     
                     // Store point data
@@ -3082,7 +3439,7 @@
                     pointsByResidue.get(r).push(pointData);
                     
                     // Label mod=1 point
-                    if (mod === 1) {
+                    if (mod === 1 && labelMode === 'none') {
                         ctx.fillStyle = '#FFD700';
                         ctx.font = 'bold 11px Arial';
                         ctx.textAlign = 'center';
@@ -3090,35 +3447,7 @@
                         ctx.fillText('m=1', x, y - 10);
                     }
                     
-                    // Label points based on mode
-                    if (labelMode !== 'none' && (mod === m || (mod > m * 0.8 && gcdVal === 1))) {
-                        ctx.fillStyle = color;
-                        ctx.font = 'bold 9px Arial';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'top';
-                        
-                        let labelText = '';
-                        if (labelMode === 'r') {
-                            labelText = r.toString();
-                        } else if (labelMode === 'fraction') {
-                            labelText = `${r}/${mod}`;
-                        } else if (labelMode === 'theta') {
-                            const thetaVal = (2 * Math.PI * r) / mod;
-                            labelText = thetaVal.toFixed(2);
-                        } else if (labelMode === 'thetaNeg') {
-                            const thetaVal = -(2 * Math.PI * r) / mod;
-                            labelText = thetaVal.toFixed(2);
-                        }
-                        
-                        if (labelText) {
-                            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-                            ctx.shadowBlur = 3;
-                            ctx.fillText(labelText, x, y + basePointSize + 3);
-                            ctx.shadowBlur = 0;
-                        }
-                    }
-                    
-                    // Label important points on outer ring
+                    // Label important points on outer ring (only when not showing labels on all points)
                     if (mod === m && gcdVal === 1 && r > 0 && labelMode === 'none') {
                         const labelRadius = ringRadius * 1.08;
                         const labelX = centerX + labelRadius * Math.cos(angle - Math.PI / 2);
@@ -4485,26 +4814,50 @@
                 }
             }
             
+            // Get current settings for all canvases
+            const circleLabelMode = document.querySelector('input[name="circleLabelMode"]:checked')?.value || 'gcd';
+            const gcdFilter = document.querySelector('input[name="gcdFilter"]:checked')?.value || 'all';
+            const showResidueLayers = document.getElementById('showResidueLayers')?.checked !== false;
+            const connectByR = document.getElementById('connectByR')?.checked || false;
+            const connectToNextMod = document.getElementById('connectToNextMod')?.checked || false;
+            const connectDyadicPowers = document.getElementById('connectDyadicPowers')?.checked || false;
+            
+            const rotX = document.getElementById('rotationX')?.value || 45;
+            const rotY = document.getElementById('rotationY')?.value || 45;
+            const zoom = document.getElementById('zoomLevel')?.value || 100;
+            const showGCDConnections = document.getElementById('show3DConnections')?.checked !== false;
+            const showGCDGrid = document.getElementById('showGCDSphereGrid')?.checked || false;
+            const gcdLabelMode = document.querySelector('input[name="gcdLabelMode"]:checked')?.value || 'none';
+            
+            const showBaselLine = document.getElementById('showBaselLine')?.checked !== false;
+            const showDensityGrid = document.getElementById('showDensityGrid')?.checked !== false;
+            const connectPoints = document.getElementById('connectPoints')?.checked || false;
+            const densityLabelMode = document.querySelector('input[name="densityLabelMode"]:checked')?.value || 'none';
+            
             const canvasMap = {
                 'grid': { 
                     id: 'gridCanvas', 
                     title: '⊗ Multiplication Table',
-                    subtitle: `ℤ/${m}ℤ (m=${m}) · ${tableType} · ${colorScheme} · φ(${m})=${units.length} units · ${zeroDivisors.length} zero divisors`
+                    subtitle: `ℤ/${m}ℤ (m=${m}) · ${tableType} · ${colorScheme} · φ(${m})=${units.length} units · ${zeroDivisors.length} zero divisors`,
+                    settings: `Type: ${tableType} | Colors: ${colorScheme} | Labels: ${document.querySelector('input[name="labelColor"]:checked')?.value || 'white'}`
                 },
                 'circle': { 
                     id: 'circleCanvas', 
                     title: '○ Unit Circle - Farey Channels',
-                    subtitle: `m=${m} · Layers 1→${m} (${totalResidues} residues) · Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(3)}° · φ(${m})=${units.length}`
+                    subtitle: `m=${m} · Layers 1→${m} (${totalResidues} residues) · Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(3)}° · φ(${m})=${units.length}`,
+                    settings: `Labels: ${circleLabelMode} | Filter: ${gcdFilter} | Layers: ${showResidueLayers ? 'ON' : 'OFF'} | Connections: ${[connectByR && 'r', connectToNextMod && 'radial', connectDyadicPowers && 'dyadic'].filter(Boolean).join(', ') || 'none'}`
                 },
                 'gcd': { 
                     id: 'gcdCanvas', 
                     title: '⊚ GCD Structure - 3D Sphere',
-                    subtitle: `m=${m} · 3D Spherical View · ${coprimePairs} coprime pairs · φ(${m})=${units.length} · Density ${(units.length/m).toFixed(4)}`
+                    subtitle: `m=${m} · 3D Spherical View · ${coprimePairs} coprime pairs · φ(${m})=${units.length} · Density ${(units.length/m).toFixed(4)}`,
+                    settings: `View: ${rotX}°×${rotY}° | Zoom: ${zoom}% | Labels: ${gcdLabelMode} | Connections: ${showGCDConnections ? 'ON' : 'OFF'} | Grid: ${showGCDGrid ? 'ON' : 'OFF'}`
                 },
                 'density': { 
                     id: 'densityCanvas', 
                     title: '◬ Coprime Density Analysis',
-                    subtitle: `m=${m} · φ(m)/m = ${(units.length/m).toFixed(6)} · Basel limit 6/π² ≈ 0.6079 · ${m} data points`
+                    subtitle: `m=${m} · φ(m)/m = ${(units.length/m).toFixed(6)} · Basel limit 6/π² ≈ 0.6079 · ${m} data points`,
+                    settings: `Labels: ${densityLabelMode} | Basel: ${showBaselLine ? 'ON' : 'OFF'} | Grid: ${showDensityGrid ? 'ON' : 'OFF'} | Connected: ${connectPoints ? 'YES' : 'NO'}`
                 }
             };
             
@@ -4555,6 +4908,12 @@
                 ctx.fillText(line, exportCanvas.width / 2, subtitleY);
                 subtitleY += 45;
             }
+            
+            // Draw settings info
+            ctx.font = '32px Arial';
+            ctx.fillStyle = '#718096';
+            ctx.fillText(info.settings, exportCanvas.width / 2, subtitleY + 10);
+            subtitleY += 50;
             
             // Draw canvas
             ctx.save();
@@ -5534,8 +5893,8 @@
                 icon.textContent = '▼';
                 canvasControlsExpanded[canvasId] = false;
             } else {
-                // Expand
-                controls.style.maxHeight = controls.scrollHeight + 'px';
+                // Expand - set to a large value to accommodate all content
+                controls.style.maxHeight = '5000px';
                 icon.style.transform = 'rotate(180deg)';
                 icon.textContent = '▲';
                 canvasControlsExpanded[canvasId] = true;
@@ -5793,4 +6152,4 @@
         }
     </script>
 </body>
-    </html>
+                                </html>
