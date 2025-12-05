@@ -2464,7 +2464,266 @@
             <p style="margin-top: 15px; color: var(--text-secondary); font-size: 0.9em;">
                 Exploring connections between modular arithmetic, ring theory, and geometric representations
             </p>
+            <p style="margin-top: 10px; color: var(--gold); font-size: 0.95em; font-style: italic;">
+                A philosophical exploration of optimal prime sieves for finite sets
+            </p>
+            
+            <!-- References Button -->
+            <div style="margin-top: 25px;">
+                <button class="btn btn-secondary" onclick="toggleReferences()" style="padding: 12px 30px; font-size: 1em;">
+                    📚 View References & Related Work
+                </button>
+            </div>
         </footer>
+        
+        <!-- References Modal -->
+        <div id="referencesModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 10000; overflow-y: auto; padding: 40px 20px;">
+            <div style="max-width: 1200px; margin: 0 auto; background: var(--bg-card); border-radius: 15px; border: 3px solid var(--gold); padding: 40px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid var(--border); padding-bottom: 20px;">
+                    <h2 style="color: var(--gold); font-size: 2.2em; margin: 0;">References & Related Work</h2>
+                    <button onclick="toggleReferences()" style="background: none; border: none; color: var(--text-primary); font-size: 2em; cursor: pointer; padding: 0 10px;">&times;</button>
+                </div>
+                
+                <!-- Author's Work -->
+                <div style="margin-bottom: 40px;">
+                    <h3 style="color: var(--cyan); font-size: 1.6em; margin-bottom: 20px; border-left: 4px solid var(--cyan); padding-left: 15px;">Author's Research</h3>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid var(--gold);">
+                        <h4 style="color: var(--gold); margin: 0 0 10px 0; font-size: 1.2em;">Philosophical Motivation</h4>
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            This work represents a philosophical exploration of <strong>optimal prime sieves for finite sets</strong>. 
+                            Rather than focusing on asymptotic efficiency for infinite sequences, this research examines the geometric 
+                            and algebraic structures that emerge when considering modular arithmetic as a systematic framework for 
+                            understanding coprimality, divisibility, and the distribution of primes within bounded intervals.
+                        </p>
+                    </div>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <h4 style="color: var(--text-primary); margin: 0 0 10px 0; font-size: 1.1em;">Related Projects by Wessen Getachew</h4>
+                        <ul style="color: var(--text-secondary); line-height: 2; margin: 10px 0;">
+                            <li><a href="https://wessengetachew.github.io/finite/" target="_blank" style="color: var(--cyan);">Finite Fields Explorer</a> - Interactive visualization of finite field structures</li>
+                            <li><a href="https://wessengetachew.github.io/Farey/" target="_blank" style="color: var(--cyan);">Farey Sequences & Cayley Transform</a> - Geometric representations of rational approximations</li>
+                            <li><a href="https://wessengetachew.github.io/Primes/" target="_blank" style="color: var(--cyan);">Prime Distribution Explorer</a> - Visualization tools for prime number patterns</li>
+                            <li><a href="https://wessengetachew.github.io/Goldbach/" target="_blank" style="color: var(--cyan);">Goldbach Conjecture Explorer</a> - Interactive analysis of even number decompositions</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Classical Number Theory -->
+                <div style="margin-bottom: 40px;">
+                    <h3 style="color: var(--cyan); font-size: 1.6em; margin-bottom: 20px; border-left: 4px solid var(--cyan); padding-left: 15px;">Foundational Number Theory</h3>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Euler's Totient Function φ(n)</strong><br>
+                            <em>Euler, L. (1763). "Theoremata arithmetica nova methodo demonstrata"</em><br>
+                            The totient function counts integers coprime to n, fundamental to this work's analysis of unit groups 
+                            in ℤ/nℤ. Euler's theorem (a^φ(n) ≡ 1 mod n for gcd(a,n)=1) underlies the multiplicative structure 
+                            visualized in the Cayley tables and unit circle representations.
+                        </p>
+                    </div>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Farey Sequences</strong><br>
+                            <em>Farey, J. (1816). "On a curious property of vulgar fractions"</em><br>
+                            <em>Cauchy, A.-L. (1816). "Démonstration du théorème de M. Farey"</em><br>
+                            The Farey sequence F_n consists of all reduced fractions between 0 and 1 with denominators ≤ n. 
+                            This work extends Farey's observations by visualizing all residue classes r/m for m=1 to n as 
+                            concentric rings, revealing geometric patterns in the modular lattice structure.
+                        </p>
+                    </div>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Basel Problem and Prime Density</strong><br>
+                            <em>Euler, L. (1734). Solution to the Basel problem: ζ(2) = π²/6</em><br>
+                            The limit 6/π² ≈ 0.6079 represents the probability that two random integers are coprime, connecting 
+                            the Riemann zeta function to prime distribution. This asymptotic density serves as a benchmark for 
+                            the finite-range coprime density analysis in the density canvas.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Ring Theory & Abstract Algebra -->
+                <div style="margin-bottom: 40px;">
+                    <h3 style="color: var(--cyan); font-size: 1.6em; margin-bottom: 20px; border-left: 4px solid var(--cyan); padding-left: 15px;">Ring Theory & Abstract Algebra</h3>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Modular Arithmetic and Residue Systems</strong><br>
+                            <em>Gauss, C.F. (1801). "Disquisitiones Arithmeticae"</em><br>
+                            Gauss systematically developed the theory of congruences and residue classes, establishing the 
+                            algebraic framework for ℤ/nℤ. The multiplication tables and unit group structures visualized here 
+                            directly implement Gauss's foundational concepts of modular arithmetic.
+                        </p>
+                    </div>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Chinese Remainder Theorem</strong><br>
+                            <em>Sun Tzu (3rd-5th century). "Sunzi Suanjing" (Mathematical Classic of Sun Zi)</em><br>
+                            <em>Qin, J. (1247). "Shushu Jiuzhang" (Mathematical Treatise in Nine Sections)</em><br>
+                            The CRT establishes that ℤ/mnℤ ≅ ℤ/mℤ × ℤ/nℤ when gcd(m,n)=1. This theorem predicts the number 
+                            of idempotents (2^ω(n) where ω(n) is the number of distinct prime factors), verified in the 
+                            idempotent analysis sections.
+                        </p>
+                    </div>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Zero Divisors and Ring Structure</strong><br>
+                            <em>Modern ring theory (20th century development)</em><br>
+                            An element a in ℤ/nℤ is a zero divisor iff gcd(a,n) > 1. The visualization of zero divisor 
+                            distribution reveals how composite moduli create non-integral domains, contrasting with prime 
+                            moduli that form fields (no zero divisors except 0).
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Prime Sieving Methods -->
+                <div style="margin-bottom: 40px;">
+                    <h3 style="color: var(--cyan); font-size: 1.6em; margin-bottom: 20px; border-left: 4px solid var(--cyan); padding-left: 15px;">Prime Sieving Methods</h3>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Sieve of Eratosthenes</strong><br>
+                            <em>Eratosthenes of Cyrene (c. 240 BCE)</em><br>
+                            The classical algorithm for finding all primes up to n by iteratively marking multiples of each prime. 
+                            This work reinterprets the sieve geometrically: each prime p creates a "channel" of non-prime residues 
+                            in the modular lattice, visualized in the GCD structure and Farey channel representations.
+                        </p>
+                    </div>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Wheel Factorization</strong><br>
+                            <em>Pritchard, P. (1982). "Explaining the wheel sieve"</em><br>
+                            Wheel sieves pre-eliminate multiples of small primes (2, 3, 5, ...) before sieving. The modular 
+                            arithmetic patterns visualized here provide geometric insight into why wheel structures efficiently 
+                            avoid composite numbers: they exploit the periodic structure of residue classes.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Geometric & Visual Approaches -->
+                <div style="margin-bottom: 40px;">
+                    <h3 style="color: var(--cyan); font-size: 1.6em; margin-bottom: 20px; border-left: 4px solid var(--cyan); padding-left: 15px;">Geometric & Visualization Methods</h3>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Ford Circles</strong><br>
+                            <em>Ford, L.R. (1938). "Fractions". American Mathematical Monthly</em><br>
+                            Ford circles provide a geometric representation of Farey sequences where each fraction p/q 
+                            corresponds to a circle tangent to the x-axis. The Farey channel visualization extends this by 
+                            mapping fractions to angular positions on concentric rings, creating a polar coordinate interpretation.
+                        </p>
+                    </div>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Ulam Spiral</strong><br>
+                            <em>Ulam, S. (1963). Visual patterns in prime number distributions</em><br>
+                            Ulam's spiral arranges integers in a square spiral, revealing diagonal patterns where primes cluster. 
+                            Similarly, this work's unit circle and GCD sphere representations reveal geometric structures in 
+                            coprimality that are obscured in linear number line representations.
+                        </p>
+                    </div>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Modular Multiplication Cardioids</strong><br>
+                            <em>Times table circle art (popularized by Mathologer, 3Blue1Brown)</em><br>
+                            Connecting multiples on a circle (r, 2r, 4r mod n) creates cardioid curves. The "Dyadic Powers" 
+                            mode visualizes this phenomenon across all moduli simultaneously, showing how multiplication by 
+                            powers of 2 creates self-similar geometric patterns in the modular lattice.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Modern Computational Approaches -->
+                <div style="margin-bottom: 40px;">
+                    <h3 style="color: var(--cyan); font-size: 1.6em; margin-bottom: 20px; border-left: 4px solid var(--cyan); padding-left: 15px;">Computational Number Theory</h3>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Sieve of Atkin</strong><br>
+                            <em>Atkin, A.O.L. & Bernstein, D.J. (2004). "Prime sieves using binary quadratic forms"</em><br>
+                            A modern sieve with better asymptotic complexity than Eratosthenes. While Atkin's sieve is optimized 
+                            for computational efficiency, this work prioritizes geometric intuition and visualization of the 
+                            underlying mathematical structures.
+                        </p>
+                    </div>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Analytic Number Theory Tools</strong><br>
+                            <em>Hardy, G.H. & Wright, E.M. (1979). "An Introduction to the Theory of Numbers"</em><br>
+                            <em>Apostol, T.M. (1976). "Introduction to Analytic Number Theory"</em><br>
+                            These foundational texts establish the connections between φ(n), the Möbius function μ(n), and 
+                            the distribution of primes that underlie the density analysis presented here.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Philosophical Context -->
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--cyan); font-size: 1.6em; margin-bottom: 20px; border-left: 4px solid var(--cyan); padding-left: 15px;">Philosophical & Pedagogical Context</h3>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Visual Thinking in Mathematics</strong><br>
+                            This project embodies the philosophy that <strong>geometric visualization reveals algebraic structure</strong>. 
+                            By representing abstract ring-theoretic concepts (units, zero divisors, idempotents) as visual patterns, 
+                            the tool makes advanced mathematical structures accessible and intuitive. The goal is not merely to 
+                            compute, but to <em>see</em> the mathematics.
+                        </p>
+                    </div>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Finite vs. Infinite Perspectives</strong><br>
+                            Traditional number theory often focuses on asymptotic behavior (what happens as n→∞). This work 
+                            takes the complementary view: <strong>what can we understand perfectly within finite bounds?</strong> 
+                            For any fixed modulus m, we can completely characterize the ring ℤ/mℤ, visualize its entire structure, 
+                            and understand how it relates to prime sieving in bounded intervals. This finite, computational 
+                            perspective complements the infinite, analytical tradition.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Software & Tools -->
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: var(--cyan); font-size: 1.6em; margin-bottom: 20px; border-left: 4px solid var(--cyan); padding-left: 15px;">Implementation & Tools</h3>
+                    
+                    <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px;">
+                        <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">
+                            <strong style="color: var(--text-primary);">Interactive Web-Based Mathematics</strong><br>
+                            Built with HTML5 Canvas, JavaScript, and modern web technologies to enable real-time exploration 
+                            of mathematical structures. The tool emphasizes <strong>interactive discovery</strong> over passive 
+                            observation, allowing users to manipulate parameters and immediately observe the mathematical consequences.
+                        </p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid var(--border); text-align: center;">
+                    <p style="color: var(--text-secondary); font-style: italic; line-height: 1.8;">
+                        This visualization tool is offered as a contribution to mathematical education and research,<br>
+                        with the hope that visual and interactive exploration enriches our understanding of<br>
+                        prime numbers, modular arithmetic, and the beautiful structures they create.
+                    </p>
+                    <p style="color: var(--gold); font-weight: 600; margin-top: 20px; font-size: 1.1em;">
+                        — Wessen Getachew (@7dview)
+                    </p>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-primary" onclick="toggleReferences()" style="padding: 12px 40px; font-size: 1.1em;">
+                        Close References
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -3645,7 +3904,29 @@
             toggle.textContent = '▶';
         });
 
-        // Mathematical utility functions
+        // ========== REFERENCES MODAL ==========
+        function toggleReferences() {
+            const modal = document.getElementById('referencesModal');
+            if (modal.style.display === 'none' || modal.style.display === '') {
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+        
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('referencesModal');
+                if (modal.style.display === 'block') {
+                    toggleReferences();
+                }
+            }
+        });
+        
+        // ========== MATHEMATICAL UTILITY FUNCTIONS ==========
         function gcd(a, b) {
             const cacheKey = `gcd_${a}_${b}`;
             return globalCache.getOrCompute(cacheKey, () => {
@@ -5880,12 +6161,19 @@
             // Calculate average density and count primes
             let sumDensity = 0;
             let primeCount = 0;
-            for (let n = 2; n <= m; n++) {
+            let totalCoprimePairs = 0;
+            let totalPairs = 0;
+            
+            for (let n = 1; n <= m; n++) {
                 const phi = euler_phi(n);
                 sumDensity += phi / n;
+                totalCoprimePairs += phi;
+                totalPairs += n;
                 if (isPrime(n)) primeCount++;
             }
-            const avgDensity = dataPoints > 0 ? sumDensity / dataPoints : 0;
+            
+            const avgDensity = m > 0 ? sumDensity / m : 0;
+            const cumulativeDensity = totalCoprimePairs / totalPairs;
             
             const status = currentDensity >= baselLimit ? 'Above average' : 'Below average';
             
@@ -5895,6 +6183,9 @@
             if (document.getElementById('liveDensityValue')) {
                 document.getElementById('liveDensityValue').textContent = currentDensity.toFixed(6);
             }
+            if (document.getElementById('liveDensityCumulative')) {
+                document.getElementById('liveDensityCumulative').textContent = cumulativeDensity.toFixed(6);
+            }
             if (document.getElementById('liveDensityBaselRatio')) {
                 document.getElementById('liveDensityBaselRatio').textContent = baselRatio.toFixed(4);
             }
@@ -5902,18 +6193,22 @@
             if (document.getElementById('liveDensityBaselInfo')) {
                 document.getElementById('liveDensityBaselInfo').innerHTML = `
                     • Limit: 6/π² ≈ ${baselLimit.toFixed(6)}<br>
-                    • Current: ${currentDensity.toFixed(6)} (${(baselRatio * 100).toFixed(1)}% of limit)<br>
+                    • Current m=${m}: ${currentDensity.toFixed(6)} (${(baselRatio * 100).toFixed(1)}% of limit)<br>
+                    • Cumulative (1→${m}): ${cumulativeDensity.toFixed(6)}<br>
                     • Status: ${status}<br>
                     • ζ(2) = π²/6 connection
                 `;
             }
             
             if (document.getElementById('liveDensityTrendInfo')) {
+                const cumulativeRatio = cumulativeDensity / baselLimit;
                 document.getElementById('liveDensityTrendInfo').innerHTML = `
-                    • Range: n=2 to n=${m}<br>
-                    • Average: ${avgDensity.toFixed(6)}<br>
+                    • Range: n=1 to n=${m}<br>
+                    • Average φ(n)/n: ${avgDensity.toFixed(6)}<br>
+                    • Cumulative ratio: ${cumulativeRatio.toFixed(4)}× Basel<br>
+                    • Total coprime pairs: ${totalCoprimePairs} / ${totalPairs}<br>
                     • Primes in range: ${primeCount}<br>
-                    • Convergence: ${avgDensity > 0.5 ? 'Approaching limit' : 'Early range'}
+                    • Convergence: ${cumulativeDensity > 0.5 ? 'Approaching limit' : 'Early range'}
                 `;
             }
         }
