@@ -1551,14 +1551,17 @@
                     
                     <!-- Gap-2n Connection Controls -->
                     <div style="margin-top: 20px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
-                        <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Gap-2n Parameter:</label>
+                        <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Gap Range (draw all gaps from 0 to max):</label>
                         <div style="display: flex; gap: 15px; align-items: center;">
-                            <input type="range" id="gapValue" min="1" max="20" step="1" value="2" 
+                            <input type="range" id="gapValue" min="0" max="20" step="1" value="0" 
                                    style="flex: 1;" oninput="updateCircleVisualization(); document.getElementById('gapValueDisplay').textContent = this.value">
-                            <span id="gapValueDisplay" style="color: var(--gold); font-family: monospace; font-size: 1.1em; min-width: 40px;">2</span>
+                            <span id="gapValueDisplay" style="color: var(--gold); font-family: monospace; font-size: 1.1em; min-width: 40px;">0</span>
                         </div>
                         <div style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;">
-                            Gap=2: Twin primes · Gap=4: Cousin primes · Gap=6: Sexy primes
+                            Gap=0: No lines · Gap=2: Twin primes · Gap=4: Cousin primes · Gap=6: Sexy primes
+                        </div>
+                        <div style="margin-top: 8px; color: var(--accent-purple); font-size: 0.85em; font-style: italic;">
+                            Draws all gap connections from 0 to selected value (r→r+0, r→r+1, ..., r→r+gap)
                         </div>
                     </div>
                     
@@ -2499,10 +2502,22 @@
             </div>
         </div>
 
-        <!-- Statistics Panel -->
+        <!-- Combined Statistics Panel -->
         <div class="info-panel">
-            <div class="info-title">Ring Statistics & Properties</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div class="info-title">Complete Ring Analysis & Properties</div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" onclick="exportStatisticsReport('png')" style="padding: 8px 15px; font-size: 0.9em;">
+                        Export Report (PNG)
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportStatisticsReport('csv')" style="padding: 8px 15px; font-size: 0.9em;">
+                        Export Report (CSV)
+                    </button>
+                </div>
+            </div>
+            
             <div class="stat-grid">
+                <!-- Basic Properties -->
                 <div class="stat-card">
                     <div class="stat-label">MODULUS</div>
                     <div class="stat-value" id="statModulus">12</div>
@@ -2514,6 +2529,18 @@
                     <div class="stat-details" id="statUnitsList">{1,5,7,11}</div>
                 </div>
                 <div class="stat-card">
+                    <div class="stat-label">DENSITY</div>
+                    <div class="stat-value" id="statDensity">0.33</div>
+                    <div class="stat-details">φ(m)/m ratio</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">RING TYPE</div>
+                    <div class="stat-value" id="statField">NO</div>
+                    <div class="stat-details">Field Status</div>
+                </div>
+                
+                <!-- Structure Elements -->
+                <div class="stat-card">
                     <div class="stat-label">ZERO DIVISORS</div>
                     <div class="stat-value" id="statZeroDivisors">7</div>
                     <div class="stat-details" id="statZDList">Non-invertible elements</div>
@@ -2524,36 +2551,26 @@
                     <div class="stat-details" id="statIdempList">{0,1,4,9}</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">RING TYPE</div>
-                    <div class="stat-value" id="statField">NO</div>
-                    <div class="stat-details">Field Status</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">DENSITY</div>
-                    <div class="stat-value" id="statDensity">0.33</div>
-                    <div class="stat-details">φ(m)/m ratio</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Advanced Properties Panel -->
-        <div class="info-panel">
-            <div class="info-title">Advanced Mathematical Properties</div>
-            <div class="stat-grid">
-                <div class="stat-card">
                     <div class="stat-label">NILPOTENTS</div>
                     <div class="stat-value" id="statNilpotents">0</div>
                     <div class="stat-details" id="statNilpotentsList">Elements with aⁿ ≡ 0</div>
                 </div>
+                <div class="stat-card">
+                    <div class="stat-label">QUADRATIC RESIDUES</div>
+                    <div class="stat-value" id="statQuadraticRes">0</div>
+                    <div class="stat-details" id="statQRList">Perfect squares mod m</div>
+                </div>
+                
+                <!-- Advanced Properties -->
                 <div class="stat-card">
                     <div class="stat-label">PRIMITIVE ROOTS</div>
                     <div class="stat-value" id="statPrimitiveRoots">—</div>
                     <div class="stat-details" id="statPrimitiveDetails">Generators of (ℤ/mℤ)×</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">QUADRATIC RESIDUES</div>
-                    <div class="stat-value" id="statQuadraticRes">0</div>
-                    <div class="stat-details" id="statQRList">Perfect squares mod m</div>
+                    <div class="stat-label">CARMICHAEL λ(m)</div>
+                    <div class="stat-value" id="statCarmichael">—</div>
+                    <div class="stat-details" id="statCarmichaelDetails">Exponent of (ℤ/mℤ)×</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">GCD CLASSES</div>
@@ -2564,11 +2581,6 @@
                     <div class="stat-label">EULER'S THEOREM</div>
                     <div class="stat-value" id="statEulerExp">—</div>
                     <div class="stat-details">a^φ(m) ≡ 1 (mod m)</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">CARMICHAEL λ(m)</div>
-                    <div class="stat-value" id="statCarmichael">—</div>
-                    <div class="stat-details" id="statCarmichaelDetails">Exponent of (ℤ/mℤ)×</div>
                 </div>
             </div>
         </div>
@@ -4276,6 +4288,216 @@
             }
         });
         
+        function exportStatisticsReport(format) {
+            const m = parseInt(document.getElementById('modulusInput').value);
+            const units = findUnits(m);
+            const zeroDivisors = findZeroDivisors(m);
+            const idempotents = findIdempotents(m);
+            const nilpotents = findNilpotents(m);
+            const qr = findQuadraticResidues(m);
+            const primitiveRoots = findPrimitiveRoots(m);
+            const lambda = carmichaelLambda(m);
+            const gcdClasses = countGCDClasses(m);
+            const phi = euler_phi(m);
+            const density = phi / m;
+            const isField = isPrime(m);
+            const factorization = getPrimeFactorization(m);
+            
+            if (format === 'csv') {
+                let csv = '# Complete Ring Analysis Report\n';
+                csv += `# Generated: ${new Date().toLocaleString()}\n`;
+                csv += `# Modulus m = ${m}\n\n`;
+                
+                csv += 'Property,Value,Details\n';
+                csv += `Modulus,${m},"${factorization}"\n`;
+                csv += `Is Prime,${isField ? 'YES' : 'NO'},"${isField ? 'Forms a field' : 'Composite ring'}"\n`;
+                csv += `Euler Totient φ(m),${phi},"Count of units"\n`;
+                csv += `Density,${density.toFixed(6)},"φ(m)/m ratio"\n`;
+                csv += `Basel Ratio,${(density / (6 / (Math.PI * Math.PI))).toFixed(6)},"vs 6/π²"\n\n`;
+                
+                csv += '# Unit Group\n';
+                csv += `Unit Count,${units.length}\n`;
+                csv += `Units,"${units.join(',')}"\n\n`;
+                
+                csv += '# Zero Divisor Structure\n';
+                csv += `Zero Divisor Count,${zeroDivisors.length}\n`;
+                csv += `Zero Divisors,"${zeroDivisors.join(',')}"\n\n`;
+                
+                csv += '# Idempotent Structure\n';
+                csv += `Idempotent Count,${idempotents.length}\n`;
+                csv += `Idempotents,"${idempotents.join(',')}"\n\n`;
+                
+                csv += '# Nilpotent Elements\n';
+                csv += `Nilpotent Count,${nilpotents.length}\n`;
+                csv += `Nilpotents,"${nilpotents.join(',')}"\n\n`;
+                
+                csv += '# Quadratic Residues\n';
+                csv += `QR Count,${qr.length}\n`;
+                csv += `Quadratic Residues,"${qr.join(',')}"\n\n`;
+                
+                csv += '# Advanced Properties\n';
+                csv += `Primitive Root Count,${primitiveRoots.length}\n`;
+                csv += `Primitive Roots,"${primitiveRoots.join(',')}"\n`;
+                csv += `Carmichael Lambda,${lambda}\n`;
+                csv += `GCD Classes,${gcdClasses}\n`;
+                csv += `Euler Exponent,${phi},"a^φ(m) ≡ 1 for gcd(a,m)=1"\n`;
+                
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ring_analysis_m${m}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showNotification('CSV Export Complete', `Complete analysis for m=${m} exported`);
+            } else if (format === 'png') {
+                // Create comprehensive report image
+                const canvas = document.createElement('canvas');
+                canvas.width = 2400;
+                canvas.height = 1600;
+                const ctx = canvas.getContext('2d', { alpha: false });
+                
+                // White background
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Title
+                ctx.fillStyle = '#1a202c';
+                ctx.font = 'bold 72px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`Complete Ring Analysis: ℤ/${m}ℤ`, canvas.width / 2, 80);
+                
+                // Subtitle
+                ctx.font = '42px Arial';
+                ctx.fillStyle = '#4a5568';
+                ctx.fillText(factorization, canvas.width / 2, 140);
+                
+                let yPos = 220;
+                const leftCol = 100;
+                const rightCol = 1250;
+                const lineHeight = 55;
+                
+                // Helper function for section headers
+                function drawSectionHeader(text, x, y) {
+                    ctx.font = 'bold 52px Arial';
+                    ctx.fillStyle = '#667eea';
+                    ctx.fillText(text, x, y);
+                    ctx.strokeStyle = '#cbd5e0';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.moveTo(x, y + 10);
+                    ctx.lineTo(x + 800, y + 10);
+                    ctx.stroke();
+                }
+                
+                // Helper function for properties
+                function drawProperty(label, value, x, y) {
+                    ctx.font = 'bold 38px Arial';
+                    ctx.fillStyle = '#2d3748';
+                    ctx.fillText(label + ':', x, y);
+                    ctx.font = '38px Arial';
+                    ctx.fillStyle = '#4a5568';
+                    ctx.fillText(value, x + 20, y + 45);
+                }
+                
+                // Left column
+                drawSectionHeader('Basic Properties', leftCol, yPos);
+                yPos += 70;
+                drawProperty('Modulus', `m = ${m}`, leftCol, yPos);
+                yPos += 90;
+                drawProperty('Prime Status', isField ? 'YES (Field)' : 'NO (Composite)', leftCol, yPos);
+                yPos += 90;
+                drawProperty('Euler Totient', `φ(${m}) = ${phi}`, leftCol, yPos);
+                yPos += 90;
+                drawProperty('Density', density.toFixed(6), leftCol, yPos);
+                yPos += 90;
+                drawProperty('Basel Ratio', (density / (6 / (Math.PI * Math.PI))).toFixed(6), leftCol, yPos);
+                yPos += 120;
+                
+                drawSectionHeader('Unit Group', leftCol, yPos);
+                yPos += 70;
+                drawProperty('Count', units.length.toString(), leftCol, yPos);
+                yPos += 90;
+                const unitsStr = units.length <= 20 ? `{${units.join(',')}}` : `{${units.slice(0, 20).join(',')}, ...}`;
+                ctx.font = '32px Arial';
+                ctx.fillStyle = '#4a5568';
+                ctx.fillText(unitsStr, leftCol + 20, yPos);
+                yPos += 120;
+                
+                drawSectionHeader('Zero Divisors', leftCol, yPos);
+                yPos += 70;
+                drawProperty('Count', zeroDivisors.length.toString(), leftCol, yPos);
+                yPos += 90;
+                const zdStr = zeroDivisors.length <= 20 ? `{${zeroDivisors.join(',')}}` : `{${zeroDivisors.slice(0, 20).join(',')}, ...}`;
+                ctx.font = '32px Arial';
+                ctx.fillStyle = '#4a5568';
+                ctx.fillText(zdStr, leftCol + 20, yPos);
+                
+                // Right column
+                yPos = 220;
+                drawSectionHeader('Idempotents', rightCol, yPos);
+                yPos += 70;
+                drawProperty('Count', idempotents.length.toString(), rightCol, yPos);
+                yPos += 90;
+                const idempStr = idempotents.length <= 20 ? `{${idempotents.join(',')}}` : `{${idempotents.slice(0, 20).join(',')}, ...}`;
+                ctx.font = '32px Arial';
+                ctx.fillStyle = '#4a5568';
+                ctx.fillText(idempStr, rightCol + 20, yPos);
+                yPos += 120;
+                
+                drawSectionHeader('Nilpotents', rightCol, yPos);
+                yPos += 70;
+                drawProperty('Count', nilpotents.length.toString(), rightCol, yPos);
+                yPos += 90;
+                const nilpStr = nilpotents.length > 0 && nilpotents.length <= 15 ? `{${nilpotents.join(',')}}` : nilpotents.length > 0 ? `{${nilpotents.slice(0, 10).join(',')}, ...}` : 'None';
+                ctx.font = '32px Arial';
+                ctx.fillStyle = '#4a5568';
+                ctx.fillText(nilpStr, rightCol + 20, yPos);
+                yPos += 120;
+                
+                drawSectionHeader('Quadratic Residues', rightCol, yPos);
+                yPos += 70;
+                drawProperty('Count', qr.length.toString(), rightCol, yPos);
+                yPos += 90;
+                const qrStr = qr.length <= 15 ? `{${qr.join(',')}}` : `{${qr.slice(0, 12).join(',')}, ...}`;
+                ctx.font = '32px Arial';
+                ctx.fillStyle = '#4a5568';
+                ctx.fillText(qrStr, rightCol + 20, yPos);
+                yPos += 120;
+                
+                drawSectionHeader('Advanced', rightCol, yPos);
+                yPos += 70;
+                drawProperty('Primitive Roots', primitiveRoots.length > 0 ? primitiveRoots.length.toString() : 'None', rightCol, yPos);
+                yPos += 90;
+                drawProperty('Carmichael λ(m)', lambda.toString(), rightCol, yPos);
+                yPos += 90;
+                drawProperty('GCD Classes', gcdClasses.toString(), rightCol, yPos);
+                
+                // Footer
+                ctx.fillStyle = '#718096';
+                ctx.font = '32px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Wessen Getachew | github.com/wessengetachew | @7dview', canvas.width / 2, canvas.height - 60);
+                ctx.fillText(new Date().toLocaleDateString(), canvas.width / 2, canvas.height - 20);
+                
+                canvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `ring_analysis_m${m}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                });
+                
+                showNotification('PNG Export Complete', `Complete analysis report for m=${m} exported`);
+            }
+        }
+
         // ========== MATHEMATICAL UTILITY FUNCTIONS ==========
         function gcd(a, b) {
             const cacheKey = `gcd_${a}_${b}`;
@@ -5465,31 +5687,39 @@
             }
             
             // Connect Gap-2n (r to r+gap within each ring) - Twin/Cousin/Sexy primes
+            const connectGap2n = document.getElementById('connectGap2n')?.checked || false;
             if (connectGap2n) {
-                const gap = parseInt(document.getElementById('gapValue')?.value) || 2;
+                const maxGap = parseInt(document.getElementById('gapValue')?.value) || 0;
                 
-                pointsByModulus.forEach((points, mod) => {
-                    const hue = (mod / m) * 360;
-                    ctx.strokeStyle = `hsla(${hue}, 90%, 65%, 0.5)`;
-                    ctx.lineWidth = lineThickness * 1.2;
-                    
-                    for (let point of points) {
-                        // Connect r to r+gap (mod m) within same ring
-                        const targetR = (point.r + gap) % mod;
-                        const targetPoint = points.find(p => p.r === targetR);
+                // Draw all gaps from 0 to maxGap
+                for (let gap = 0; gap <= maxGap; gap++) {
+                    pointsByModulus.forEach((points, mod) => {
+                        const hue = (mod / m + gap / maxGap * 0.3) * 360;
+                        const alpha = gap === 0 ? 0 : 0.3 + (0.3 * gap / Math.max(maxGap, 1));
+                        ctx.strokeStyle = `hsla(${hue}, 90%, 65%, ${alpha})`;
+                        ctx.lineWidth = lineThickness * (1 + gap * 0.1);
                         
-                        // Only connect coprime points
-                        if (targetPoint && gcd(point.r, mod) === 1 && gcd(targetR, mod) === 1) {
-                            ctx.beginPath();
-                            ctx.moveTo(point.x, point.y);
-                            ctx.lineTo(targetPoint.x, targetPoint.y);
-                            ctx.stroke();
+                        for (let point of points) {
+                            if (gap === 0) continue; // Skip gap=0 (self-connections)
+                            
+                            // Connect r to r+gap (mod m) within same ring
+                            const targetR = (point.r + gap) % mod;
+                            const targetPoint = points.find(p => p.r === targetR);
+                            
+                            // Only connect coprime points
+                            if (targetPoint && gcd(point.r, mod) === 1 && gcd(targetR, mod) === 1) {
+                                ctx.beginPath();
+                                ctx.moveTo(point.x, point.y);
+                                ctx.lineTo(targetPoint.x, targetPoint.y);
+                                ctx.stroke();
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
             
             // Generalized Base-b Lifts (r → b·r → b²·r → ...)
+            const connectGeneralizedLifts = document.getElementById('connectGeneralizedLifts')?.checked || false;
             if (connectGeneralizedLifts) {
                 const base = parseInt(document.getElementById('liftBase')?.value) || 2;
                 
