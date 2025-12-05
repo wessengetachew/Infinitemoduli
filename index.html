@@ -87,6 +87,7 @@
             overflow: hidden;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
             transition: all 0.3s ease;
+            min-height: 600px;
         }
 
         .canvas-panel:hover {
@@ -561,7 +562,7 @@
 <body>
     <div class="main-container">
         <header>
-            <h1>⟨ Modular Arithmetic Explorer ⟩</h1>
+            <h1>Arithmetic Progressions Explorer</h1>
             <div class="subtitle">Multi-Canvas Visualization Suite · Ring Theory · Number Theory</div>
             <div class="author">Wessen Getachew · @7dview</div>
         </header>
@@ -580,6 +581,12 @@
                         <p>
                             This interactive visualization suite provides comprehensive exploration of <strong>modular arithmetic</strong> through four synchronized canvases, 
                             each revealing different structural properties of the ring ℤ/mℤ = {0, 1, 2, ..., m-1} with addition and multiplication mod m.
+                        </p>
+                        <p>
+                            <strong>Independent Canvas Mode:</strong> Each canvas can operate independently from the global controls. Enable "Independent Mode" 
+                            for any canvas to set its own modulus value, allowing simultaneous exploration of different moduli across canvases. 
+                            For example, compare multiplication tables at m=12 and m=17, or analyze GCD structures at different scales. 
+                            The density canvas also supports custom range selection (e.g., explore n=1 to n=1000 independently of other canvases).
                         </p>
                         <p>
                             <strong>Canvas 1: Multiplication Table</strong> - Complete operation tables with multiple coloring schemes (Rainbow, Divisibility, Zero Divisors, Idempotents). 
@@ -959,7 +966,7 @@
             <div class="canvas-panel">
                 <div class="panel-header">
                     <div>
-                        <div class="panel-title">⊗ Multiplication Table</div>
+                        <div class="panel-title">Multiplication Table</div>
                         <div class="panel-subtitle">Ring ℤ/mℤ · Color-coded Structure</div>
                     </div>
                     <div style="display: flex; gap: 8px;">
@@ -973,7 +980,7 @@
                     <div style="margin-bottom: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
                         <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                             <input type="checkbox" id="gridIndependent" onchange="toggleCanvasMode('grid')">
-                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">🔓 Independent Mode</span>
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">Independent Mode</span>
                         </label>
                         <div id="gridIndependentControls" style="display: none; margin-top: 15px;">
                             <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Canvas Modulus (m):</label>
@@ -988,7 +995,7 @@
                     <!-- Collapsible Controls -->
                     <div style="background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border); margin-bottom: 15px; overflow: hidden;">
                         <div onclick="toggleCanvasControls('grid')" style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)); transition: all 0.3s;">
-                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">⚙️ Canvas Controls & Settings</span>
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">Canvas Controls & Settings</span>
                             <span id="gridToggleIcon" style="color: var(--cyan); font-size: 1.3em; transition: transform 0.3s;">▼</span>
                         </div>
                         <div id="gridControls" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;">
@@ -1154,7 +1161,7 @@
             <div class="canvas-panel">
                 <div class="panel-header">
                     <div>
-                        <div class="panel-title">○ Unit Circle - Farey Channels</div>
+                        <div class="panel-title">Unit Circle - Farey Channels</div>
                         <div class="panel-subtitle">Modular Residue Channels · Phase Rotation · Dyadic Lifting</div>
                     </div>
                     <div style="display: flex; gap: 8px;">
@@ -1168,7 +1175,7 @@
                     <div style="margin-bottom: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
                         <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                             <input type="checkbox" id="circleIndependent" onchange="toggleCanvasMode('circle')">
-                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">🔓 Independent Mode</span>
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">Independent Mode</span>
                         </label>
                         <div id="circleIndependentControls" style="display: none; margin-top: 15px;">
                             <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Canvas Modulus (m):</label>
@@ -1183,7 +1190,7 @@
                     <!-- Collapsible Controls -->
                     <div style="background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border); margin-bottom: 15px; overflow: hidden;">
                         <div onclick="toggleCanvasControls('circle')" style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)); transition: all 0.3s;">
-                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">⚙️ Canvas Controls & Settings</span>
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">Canvas Controls & Settings</span>
                             <span id="circleToggleIcon" style="color: var(--cyan); font-size: 1.3em; transition: transform 0.3s;">▼</span>
                         </div>
                         <div id="circleControls" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;">
@@ -1381,7 +1388,7 @@
             <div class="canvas-panel">
                 <div class="panel-header">
                     <div>
-                        <div class="panel-title">⊚ GCD Structure - 3D Sphere</div>
+                        <div class="panel-title">GCD Structure - 3D Sphere</div>
                         <div class="panel-subtitle">Interactive 360° View · Coprimality Network</div>
                     </div>
                     <div style="display: flex; gap: 8px;">
@@ -1395,7 +1402,7 @@
                     <div style="margin-bottom: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
                         <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                             <input type="checkbox" id="gcdIndependent" onchange="toggleCanvasMode('gcd')">
-                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">🔓 Independent Mode</span>
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">Independent Mode</span>
                         </label>
                         <div id="gcdIndependentControls" style="display: none; margin-top: 15px;">
                             <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Canvas Modulus (m):</label>
@@ -1410,7 +1417,7 @@
                     <!-- Collapsible Controls -->
                     <div style="background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border); margin-bottom: 15px; overflow: hidden;">
                         <div onclick="toggleCanvasControls('gcd')" style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)); transition: all 0.3s;">
-                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">⚙️ Canvas Controls & Settings</span>
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">Canvas Controls & Settings</span>
                             <span id="gcdToggleIcon" style="color: var(--cyan); font-size: 1.3em; transition: transform 0.3s;">▼</span>
                         </div>
                         <div id="gcdControls" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;">
@@ -1552,7 +1559,7 @@
             <div class="canvas-panel">
                 <div class="panel-header">
                     <div>
-                        <div class="panel-title">◬ Coprime Density</div>
+                        <div class="panel-title">Coprime Density</div>
                         <div class="panel-subtitle">φ(m)/m Analysis</div>
                     </div>
                     <div style="display: flex; gap: 8px;">
@@ -1566,7 +1573,7 @@
                     <div style="margin-bottom: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
                         <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                             <input type="checkbox" id="densityIndependent" onchange="toggleCanvasMode('density')">
-                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">🔓 Independent Mode</span>
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">Independent Mode</span>
                         </label>
                         <div id="densityIndependentControls" style="display: none; margin-top: 15px;">
                             <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Data Range (n):</label>
@@ -1594,7 +1601,7 @@
                     <!-- Collapsible Controls -->
                     <div style="background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border); margin-bottom: 15px; overflow: hidden;">
                         <div onclick="toggleCanvasControls('density')" style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)); transition: all 0.3s;">
-                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">⚙️ Canvas Controls & Settings</span>
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">Canvas Controls & Settings</span>
                             <span id="densityToggleIcon" style="color: var(--cyan); font-size: 1.3em; transition: transform 0.3s;">▼</span>
                         </div>
                         <div id="densityControls" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;">
@@ -5006,22 +5013,22 @@
             const canvases = [
                 { 
                     id: 'gridCanvas', 
-                    title: '⊗ Multiplication Table',
+                    title: 'Multiplication Table',
                     color: '#FF6B9D' // Pink
                 },
                 { 
                     id: 'circleCanvas', 
-                    title: '○ Farey Channels',
+                    title: 'Farey Channels',
                     color: '#4ECDC4' // Cyan
                 },
                 { 
                     id: 'gcdCanvas', 
-                    title: '⊚ GCD 3D Sphere',
+                    title: 'GCD 3D Sphere',
                     color: '#95E1D3' // Light Cyan
                 },
                 { 
                     id: 'densityCanvas', 
-                    title: '◬ Coprime Density',
+                    title: 'Coprime Density',
                     color: '#9F7AEA' // Purple
                 }
             ];
@@ -5786,4 +5793,4 @@
         }
     </script>
 </body>
-                                                            </html>
+    </html>
