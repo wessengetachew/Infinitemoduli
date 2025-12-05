@@ -2166,6 +2166,23 @@
                     <input type="number" id="modulusInput" min="1" max="1000" value="12" onchange="updateModulusFromInput()">
                 </div>
             </div>
+            
+            <!-- Quick Jump Buttons -->
+            <div style="margin-top: 15px;">
+                <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 10px;">Quick Jump:</label>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="preset-btn" onclick="jumpToModulus(2)" style="padding: 8px 15px;">m=2</button>
+                    <button class="preset-btn" onclick="jumpToModulus(5)" style="padding: 8px 15px;">m=5</button>
+                    <button class="preset-btn" onclick="jumpToModulus(10)" style="padding: 8px 15px;">m=10</button>
+                    <button class="preset-btn" onclick="jumpToModulus(12)" style="padding: 8px 15px;">m=12</button>
+                    <button class="preset-btn" onclick="jumpToModulus(20)" style="padding: 8px 15px;">m=20</button>
+                    <button class="preset-btn" onclick="jumpToModulus(50)" style="padding: 8px 15px;">m=50</button>
+                    <button class="preset-btn" onclick="jumpToModulus(100)" style="padding: 8px 15px;">m=100</button>
+                    <button class="preset-btn" onclick="jumpToModulus(200)" style="padding: 8px 15px;">m=200</button>
+                    <button class="preset-btn" onclick="findNextPrime()" style="padding: 8px 15px;">Next Prime</button>
+                    <button class="preset-btn" onclick="findPrevPrime()" style="padding: 8px 15px;">Prev Prime</button>
+                </div>
+            </div>
 
             <!-- Animation Controls -->
             <div class="section-header">Animation Player</div>
@@ -2206,23 +2223,119 @@
                 </div>
             </div>
 
-
+            <!-- Global Phase Rotation Control -->
+            <div class="section-header">Global Phase Rotation</div>
+            <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; border: 2px solid var(--border);">
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="color: var(--text-primary); font-weight: 600; display: block; margin-bottom: 5px;">
+                            Rotation (r/m):
+                        </label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="number" id="globalPhaseR" value="0" min="0" 
+                                   style="width: 80px; padding: 8px; background: var(--bg-deep); border: 2px solid var(--border); border-radius: 6px;"
+                                   onchange="syncGlobalPhase()">
+                            <span style="color: var(--gold); font-size: 1.3em; font-weight: 700;">/</span>
+                            <input type="number" id="globalPhaseM" value="1" min="1" 
+                                   style="width: 80px; padding: 8px; background: var(--bg-deep); border: 2px solid var(--border); border-radius: 6px;"
+                                   onchange="syncGlobalPhase()">
+                        </div>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="color: var(--gold); font-weight: 600; display: block; margin-bottom: 5px;">
+                            Angle (degrees):
+                        </label>
+                        <div id="globalPhaseAngle" style="font-family: 'Courier New', monospace; color: var(--text-primary); font-size: 1.1em; background: var(--bg-deep); padding: 8px; border-radius: 6px; border: 2px solid var(--border);">
+                            0.00000000000000000°
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="preset-btn" onclick="applyGlobalPhase(1, 2)" style="padding: 6px 12px;">1/2 (180°)</button>
+                    <button class="preset-btn" onclick="applyGlobalPhase(1, 3)" style="padding: 6px 12px;">1/3 (120°)</button>
+                    <button class="preset-btn" onclick="applyGlobalPhase(1, 4)" style="padding: 6px 12px;">1/4 (90°)</button>
+                    <button class="preset-btn" onclick="applyGlobalPhase(1, 6)" style="padding: 6px 12px;">1/6 (60°)</button>
+                    <button class="preset-btn" onclick="applyGlobalPhase(1, 8)" style="padding: 6px 12px;">1/8 (45°)</button>
+                    <button class="preset-btn" onclick="applyGlobalPhase(0, 1)" style="padding: 6px 12px;">Reset (0°)</button>
+                </div>
+            </div>
 
             <!-- Display Options -->
-            <div class="section-header">Display Options</div>
-            <div class="radio-group">
-                <label class="checkbox-option">
-                    <input type="checkbox" id="showLabels" checked onchange="updateVisualization()">
-                    <span>Show Labels</span>
-                </label>
-                <label class="checkbox-option">
-                    <input type="checkbox" id="showGridLines" onchange="updateVisualization()">
-                    <span>Grid Lines</span>
-                </label>
-                <label class="checkbox-option">
-                    <input type="checkbox" id="highlightUnits" onchange="updateVisualization()">
-                    <span>Highlight Units</span>
-                </label>
+            <div class="section-header">Global Display Options</div>
+            <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; border: 2px solid var(--border);">
+                <div class="radio-group">
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="showLabels" checked onchange="updateVisualization()">
+                        <span>Show Labels</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="showGridLines" onchange="updateVisualization()">
+                        <span>Grid Lines</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="highlightUnits" onchange="updateVisualization()">
+                        <span>Highlight Units</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="syncAllRotations" onchange="syncRotations()">
+                        <span>Sync All Rotations</span>
+                    </label>
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="autoUpdateAll" checked>
+                        <span>Auto-Update All</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Number Theory Calculator -->
+            <div class="section-header">Number Theory Calculator</div>
+            <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; border: 2px solid var(--border);">
+                <div class="control-row" style="margin-bottom: 15px;">
+                    <div class="control-item">
+                        <label style="color: var(--text-primary); font-weight: 600; display: block; margin-bottom: 5px;">
+                            Number:
+                        </label>
+                        <input type="number" id="calcNumber" min="1" max="10000" value="12" 
+                               style="width: 100%; padding: 10px; background: var(--bg-deep); border: 2px solid var(--border); border-radius: 6px;">
+                    </div>
+                    <div style="flex: 0; display: flex; align-items: flex-end;">
+                        <button class="btn btn-primary" onclick="calculateProperties()" style="padding: 10px 20px; white-space: nowrap;">
+                            Calculate
+                        </button>
+                    </div>
+                </div>
+                <div id="calcResults" style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-secondary); line-height: 2;">
+                    Enter a number and click Calculate to see its properties
+                </div>
+            </div>
+            
+            <!-- Comparison Tool -->
+            <div class="section-header">Modulus Comparison</div>
+            <div style="background: var(--bg-panel); padding: 20px; border-radius: 10px; border: 2px solid var(--border);">
+                <div class="control-row" style="margin-bottom: 15px;">
+                    <div class="control-item">
+                        <label style="color: var(--text-primary); font-weight: 600; display: block; margin-bottom: 5px;">
+                            Compare m₁:
+                        </label>
+                        <input type="number" id="compareM1" min="1" max="1000" value="6" 
+                               style="width: 100%; padding: 10px; background: var(--bg-deep); border: 2px solid var(--border); border-radius: 6px;">
+                    </div>
+                    <div class="control-item">
+                        <label style="color: var(--text-primary); font-weight: 600; display: block; margin-bottom: 5px;">
+                            with m₂:
+                        </label>
+                        <input type="number" id="compareM2" min="1" max="1000" value="12" 
+                               style="width: 100%; padding: 10px; background: var(--bg-deep); border: 2px solid var(--border); border-radius: 6px;">
+                    </div>
+                    <div style="flex: 0; display: flex; align-items: flex-end;">
+                        <button class="btn btn-secondary" onclick="compareModuli()" style="padding: 10px 20px; white-space: nowrap;">
+                            Compare
+                        </button>
+                    </div>
+                </div>
+                <div id="compareResults" style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border); color: var(--text-secondary); line-height: 2;">
+                    Click Compare to see detailed comparison
+                </div>
             </div>
             
             <!-- Hidden global table type and color scheme for backward compatibility -->
@@ -2387,6 +2500,216 @@
 
         const globalCache = new ModularArithmeticCache();
 
+        // ========== NEW UTILITY FUNCTIONS ==========
+        
+        // Quick Jump Functions
+        function jumpToModulus(m) {
+            document.getElementById('modulusInput').value = m;
+            document.getElementById('modulusSlider').value = Math.min(m, 200);
+            document.getElementById('modulusDisplay').textContent = Math.min(m, 200);
+            updateVisualization();
+            showNotification('Jumped to m=' + m, 'Modulus updated');
+        }
+        
+        function findNextPrime() {
+            let m = parseInt(document.getElementById('modulusInput').value);
+            let next = m + 1;
+            while (next < 10000 && !isPrime(next)) {
+                next++;
+            }
+            if (next < 10000) {
+                jumpToModulus(next);
+                showNotification('Next Prime', `Found: ${next}`);
+            } else {
+                showNotification('Limit Reached', 'No prime found below 10000');
+            }
+        }
+        
+        function findPrevPrime() {
+            let m = parseInt(document.getElementById('modulusInput').value);
+            let prev = m - 1;
+            while (prev > 1 && !isPrime(prev)) {
+                prev--;
+            }
+            if (prev > 1) {
+                jumpToModulus(prev);
+                showNotification('Previous Prime', `Found: ${prev}`);
+            } else {
+                showNotification('Limit Reached', 'No prime found above 1');
+            }
+        }
+        
+        // Global Phase Rotation
+        function syncGlobalPhase() {
+            const r = parseInt(document.getElementById('globalPhaseR').value) || 0;
+            const m = parseInt(document.getElementById('globalPhaseM').value) || 1;
+            const angle = (360 * r) / m;
+            
+            document.getElementById('globalPhaseAngle').textContent = angle.toFixed(17) + '°';
+            
+            // Update circle canvas phase
+            document.getElementById('phaseNumerator').value = r;
+            document.getElementById('phaseDenominator').value = m;
+            
+            updateCircleVisualization();
+        }
+        
+        function applyGlobalPhase(r, m) {
+            document.getElementById('globalPhaseR').value = r;
+            document.getElementById('globalPhaseM').value = m;
+            syncGlobalPhase();
+            showNotification('Phase Applied', `Global rotation: ${r}/${m} = ${(360*r/m).toFixed(1)}°`);
+        }
+        
+        // Sync All Rotations
+        function syncRotations() {
+            const syncEnabled = document.getElementById('syncAllRotations').checked;
+            if (syncEnabled) {
+                // Get current circle rotation
+                const r = parseInt(document.getElementById('phaseNumerator').value);
+                const m = parseInt(document.getElementById('phaseDenominator').value);
+                
+                // Update global controls
+                document.getElementById('globalPhaseR').value = r;
+                document.getElementById('globalPhaseM').value = m;
+                syncGlobalPhase();
+                
+                showNotification('Rotations Synced', 'All rotation controls synchronized');
+            }
+        }
+        
+        // Number Theory Calculator
+        function calculateProperties() {
+            const n = parseInt(document.getElementById('calcNumber').value);
+            if (n < 1 || n > 10000) {
+                document.getElementById('calcResults').innerHTML = 'Please enter a number between 1 and 10000';
+                return;
+            }
+            
+            const phi = euler_phi(n);
+            const isPrimeN = isPrime(n);
+            const factorization = getPrimeFactorization(n);
+            const lambda = carmichaelLambda(n);
+            const divisorCount = countDivisors(n);
+            const divisorSum = sumOfDivisors(n);
+            const isPerfect = divisorSum === 2 * n;
+            const isDeficient = divisorSum < 2 * n;
+            const isAbundant = divisorSum > 2 * n;
+            
+            let html = `<div style="line-height: 2;">`;
+            html += `<strong style="color: var(--gold); font-size: 1.2em;">n = ${n}</strong><br>`;
+            html += `<strong style="color: var(--cyan);">Prime:</strong> ${isPrimeN ? '<span style="color: #48BB78;">✓ Yes</span>' : 'No'}<br>`;
+            if (!isPrimeN) {
+                html += `<strong style="color: var(--cyan);">Factorization:</strong> ${factorization}<br>`;
+            }
+            html += `<strong style="color: var(--cyan);">φ(${n}):</strong> ${phi} (Euler totient)<br>`;
+            html += `<strong style="color: var(--cyan);">λ(${n}):</strong> ${lambda} (Carmichael)<br>`;
+            html += `<strong style="color: var(--cyan);">Divisor count:</strong> τ(${n}) = ${divisorCount}<br>`;
+            html += `<strong style="color: var(--cyan);">Divisor sum:</strong> σ(${n}) = ${divisorSum}<br>`;
+            if (isPerfect) {
+                html += `<strong style="color: var(--gold);">✓ Perfect Number</strong> (σ = 2n)<br>`;
+            } else if (isDeficient) {
+                html += `<strong style="color: var(--text-primary);">Deficient</strong> (σ < 2n)<br>`;
+            } else {
+                html += `<strong style="color: var(--accent-purple);">Abundant</strong> (σ > 2n)<br>`;
+            }
+            
+            // Check for special properties
+            if (isPowerOfTwo(n)) {
+                html += `<strong style="color: var(--accent-green);">✓ Power of 2:</strong> ${Math.log2(n)}<br>`;
+            }
+            if (isFibonacci(n)) {
+                html += `<strong style="color: var(--accent-green);">✓ Fibonacci number</strong><br>`;
+            }
+            
+            html += `</div>`;
+            document.getElementById('calcResults').innerHTML = html;
+        }
+        
+        function countDivisors(n) {
+            let count = 0;
+            for (let i = 1; i <= n; i++) {
+                if (n % i === 0) count++;
+            }
+            return count;
+        }
+        
+        function sumOfDivisors(n) {
+            let sum = 0;
+            for (let i = 1; i <= n; i++) {
+                if (n % i === 0) sum += i;
+            }
+            return sum;
+        }
+        
+        function isPowerOfTwo(n) {
+            return n > 0 && (n & (n - 1)) === 0;
+        }
+        
+        function isFibonacci(n) {
+            const phi = (1 + Math.sqrt(5)) / 2;
+            const a = phi * n;
+            return Math.abs(Math.round(a) - a) < 1 / n;
+        }
+        
+        // Comparison Tool
+        function compareModuli() {
+            const m1 = parseInt(document.getElementById('compareM1').value);
+            const m2 = parseInt(document.getElementById('compareM2').value);
+            
+            if (m1 < 1 || m1 > 1000 || m2 < 1 || m2 > 1000) {
+                document.getElementById('compareResults').innerHTML = 'Please enter valid moduli (1-1000)';
+                return;
+            }
+            
+            const phi1 = euler_phi(m1);
+            const phi2 = euler_phi(m2);
+            const density1 = phi1 / m1;
+            const density2 = phi2 / m2;
+            const isPrime1 = isPrime(m1);
+            const isPrime2 = isPrime(m2);
+            const gcdM = gcd(m1, m2);
+            const lcmM = (m1 * m2) / gcdM;
+            
+            let html = `<div style="line-height: 2;">`;
+            html += `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">`;
+            
+            // Column 1
+            html += `<div>`;
+            html += `<strong style="color: var(--gold); font-size: 1.1em;">m₁ = ${m1}</strong><br>`;
+            html += `${isPrime1 ? '<span style="color: #48BB78;">✓ Prime</span>' : getPrimeFactorization(m1)}<br>`;
+            html += `φ(${m1}) = ${phi1}<br>`;
+            html += `Density: ${density1.toFixed(6)}<br>`;
+            html += `</div>`;
+            
+            // Column 2
+            html += `<div>`;
+            html += `<strong style="color: var(--gold); font-size: 1.1em;">m₂ = ${m2}</strong><br>`;
+            html += `${isPrime2 ? '<span style="color: #48BB78;">✓ Prime</span>' : getPrimeFactorization(m2)}<br>`;
+            html += `φ(${m2}) = ${phi2}<br>`;
+            html += `Density: ${density2.toFixed(6)}<br>`;
+            html += `</div>`;
+            
+            html += `</div>`;
+            
+            // Comparison
+            html += `<div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">`;
+            html += `<strong style="color: var(--cyan);">Comparison:</strong><br>`;
+            html += `gcd(${m1}, ${m2}) = ${gcdM}<br>`;
+            html += `lcm(${m1}, ${m2}) = ${lcmM}<br>`;
+            html += `Density ratio: ${(density1/density2).toFixed(4)}<br>`;
+            if (Math.abs(phi1 - phi2) === 0) {
+                html += `<strong style="color: var(--gold);">✓ Same number of units!</strong><br>`;
+            }
+            if (gcdM === 1) {
+                html += `<strong style="color: var(--accent-green);">✓ Coprime moduli</strong><br>`;
+            }
+            html += `</div>`;
+            
+            html += `</div>`;
+            document.getElementById('compareResults').innerHTML = html;
+        }
+        
         // ========== ELEMENT HIGHLIGHTING ==========
         let highlightedElement = null;
 
@@ -4244,10 +4567,6 @@
                 for (let r = 0; r < mod; r++) {
                     const gcdVal = gcd(r, mod);
                     
-                    // Apply GCD filter
-                    if (gcdFilter === 'coprime' && gcdVal !== 1) continue;
-                    if (gcdFilter === 'noncoprime' && gcdVal === 1) continue;
-                    
                     // Calculate angle: 2πr/mod + phase rotation + per-ring rotation offset
                     // For mod=1: angle = 0 (r=0, so 2π*0/1 = 0), at center
                     let angle = (2 * Math.PI * r) / mod + phaseAngle + ringRotationOffset;
@@ -4278,77 +4597,32 @@
                         color = `hsl(${hue}, 70%, 60%)`;
                     }
                     
-                    // Determine what label to show
-                    let labelText = '';
-                    if (labelMode === 'gcd') {
-                        labelText = gcdVal.toString();
-                    } else if (labelMode === 'r') {
-                        labelText = r.toString();
-                    } else if (labelMode === 'fraction') {
-                        labelText = `${r}/${mod}`;
-                    } else if (labelMode === 'theta') {
-                        const thetaVal = (2 * Math.PI * r) / mod;
-                        labelText = thetaVal.toFixed(2);
-                    } else if (labelMode === 'thetaNeg') {
-                        const thetaVal = -(2 * Math.PI * r) / mod;
-                        labelText = thetaVal.toFixed(2);
+                    // Draw point for +2πr/mod
+                    ctx.fillStyle = color;
+                    ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
+                    ctx.beginPath();
+                    // Make mod=1 point slightly larger and more visible
+                    const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
+                    ctx.arc(x, y, basePointSize, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.globalAlpha = 1.0;
+                    
+                    // Add glow for mod=1
+                    if (mod === 1) {
+                        ctx.strokeStyle = color;
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(x, y, basePointSize + 2, 0, 2 * Math.PI);
+                        ctx.stroke();
                     }
                     
-                    // Draw label instead of point for +2πr/mod
-                    if (labelMode !== 'none' && labelText) {
-                        ctx.fillStyle = color;
-                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
-                        ctx.font = `bold ${circleLabelSize}px Arial`;
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-                        ctx.shadowBlur = 3;
-                        ctx.fillText(labelText, x, y);
-                        ctx.shadowBlur = 0;
-                        ctx.globalAlpha = 1.0;
-                    } else {
-                        // Draw point for +2πr/mod (when no labels)
-                        ctx.fillStyle = color;
-                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
+                    // Draw point for -2πr/mod (if r > 0)
+                    if (r > 0) {
+                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
                         ctx.beginPath();
-                        // Make mod=1 point slightly larger and more visible
-                        const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
-                        ctx.arc(x, y, basePointSize, 0, 2 * Math.PI);
+                        ctx.arc(xNeg, yNeg, basePointSize * 0.8, 0, 2 * Math.PI);
                         ctx.fill();
                         ctx.globalAlpha = 1.0;
-                        
-                        // Add glow for mod=1
-                        if (mod === 1) {
-                            ctx.strokeStyle = color;
-                            ctx.lineWidth = 2;
-                            ctx.beginPath();
-                            ctx.arc(x, y, basePointSize + 2, 0, 2 * Math.PI);
-                            ctx.stroke();
-                        }
-                    }
-                    
-                    // Draw negative angle point (if r > 0) - smaller or as label
-                    if (r > 0) {
-                        if (labelMode !== 'none' && labelText) {
-                            ctx.fillStyle = color;
-                            ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
-                            ctx.font = `bold ${Math.round(circleLabelSize * 0.8)}px Arial`;
-                            ctx.textAlign = 'center';
-                            ctx.textBaseline = 'middle';
-                            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-                            ctx.shadowBlur = 2;
-                            ctx.fillText(labelText, xNeg, yNeg);
-                            ctx.shadowBlur = 0;
-                            ctx.globalAlpha = 1.0;
-                        } else {
-                            ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
-                            ctx.fillStyle = color;
-                            ctx.beginPath();
-                            const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
-                            ctx.arc(xNeg, yNeg, basePointSize * 0.8, 0, 2 * Math.PI);
-                            ctx.fill();
-                            ctx.globalAlpha = 1.0;
-                        }
                     }
                     
                     // Store point data
@@ -4361,7 +4635,7 @@
                     pointsByResidue.get(r).push(pointData);
                     
                     // Label mod=1 point
-                    if (mod === 1 && labelMode === 'none') {
+                    if (mod === 1) {
                         ctx.fillStyle = '#FFD700';
                         ctx.font = 'bold 11px Arial';
                         ctx.textAlign = 'center';
@@ -4369,7 +4643,35 @@
                         ctx.fillText('m=1', x, y - 10);
                     }
                     
-                    // Label important points on outer ring (only when not showing labels on all points)
+                    // Label points based on mode
+                    if (labelMode !== 'none' && (mod === m || (mod > m * 0.8 && gcdVal === 1))) {
+                        ctx.fillStyle = color;
+                        ctx.font = 'bold 9px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'top';
+                        
+                        let labelText = '';
+                        if (labelMode === 'r') {
+                            labelText = r.toString();
+                        } else if (labelMode === 'fraction') {
+                            labelText = `${r}/${mod}`;
+                        } else if (labelMode === 'theta') {
+                            const thetaVal = (2 * Math.PI * r) / mod;
+                            labelText = thetaVal.toFixed(2);
+                        } else if (labelMode === 'thetaNeg') {
+                            const thetaVal = -(2 * Math.PI * r) / mod;
+                            labelText = thetaVal.toFixed(2);
+                        }
+                        
+                        if (labelText) {
+                            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+                            ctx.shadowBlur = 3;
+                            ctx.fillText(labelText, x, y + basePointSize + 3);
+                            ctx.shadowBlur = 0;
+                        }
+                    }
+                    
+                    // Label important points on outer ring
                     if (mod === m && gcdVal === 1 && r > 0 && labelMode === 'none') {
                         const labelRadius = ringRadius * 1.08;
                         const labelX = centerX + labelRadius * Math.cos(angle - Math.PI / 2);
@@ -5918,50 +6220,26 @@
                 }
             }
             
-            // Get current settings for all canvases
-            const circleLabelMode = document.querySelector('input[name="circleLabelMode"]:checked')?.value || 'gcd';
-            const gcdFilter = document.querySelector('input[name="gcdFilter"]:checked')?.value || 'all';
-            const showResidueLayers = document.getElementById('showResidueLayers')?.checked !== false;
-            const connectByR = document.getElementById('connectByR')?.checked || false;
-            const connectToNextMod = document.getElementById('connectToNextMod')?.checked || false;
-            const connectDyadicPowers = document.getElementById('connectDyadicPowers')?.checked || false;
-            
-            const rotX = document.getElementById('rotationX')?.value || 45;
-            const rotY = document.getElementById('rotationY')?.value || 45;
-            const zoom = document.getElementById('zoomLevel')?.value || 100;
-            const showGCDConnections = document.getElementById('show3DConnections')?.checked !== false;
-            const showGCDGrid = document.getElementById('showGCDSphereGrid')?.checked || false;
-            const gcdLabelMode = document.querySelector('input[name="gcdLabelMode"]:checked')?.value || 'none';
-            
-            const showBaselLine = document.getElementById('showBaselLine')?.checked !== false;
-            const showDensityGrid = document.getElementById('showDensityGrid')?.checked !== false;
-            const connectPoints = document.getElementById('connectPoints')?.checked || false;
-            const densityLabelMode = document.querySelector('input[name="densityLabelMode"]:checked')?.value || 'none';
-            
             const canvasMap = {
                 'grid': { 
                     id: 'gridCanvas', 
                     title: '⊗ Multiplication Table',
-                    subtitle: `ℤ/${m}ℤ (m=${m}) · ${tableType} · ${colorScheme} · φ(${m})=${units.length} units · ${zeroDivisors.length} zero divisors`,
-                    settings: `Type: ${tableType} | Colors: ${colorScheme} | Labels: ${document.querySelector('input[name="labelColor"]:checked')?.value || 'white'}`
+                    subtitle: `ℤ/${m}ℤ (m=${m}) · ${tableType} · ${colorScheme} · φ(${m})=${units.length} units · ${zeroDivisors.length} zero divisors`
                 },
                 'circle': { 
                     id: 'circleCanvas', 
                     title: '○ Unit Circle - Farey Channels',
-                    subtitle: `m=${m} · Layers 1→${m} (${totalResidues} residues) · Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(3)}° · φ(${m})=${units.length}`,
-                    settings: `Labels: ${circleLabelMode} | Filter: ${gcdFilter} | Layers: ${showResidueLayers ? 'ON' : 'OFF'} | Connections: ${[connectByR && 'r', connectToNextMod && 'radial', connectDyadicPowers && 'dyadic'].filter(Boolean).join(', ') || 'none'}`
+                    subtitle: `m=${m} · Layers 1→${m} (${totalResidues} residues) · Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(3)}° · φ(${m})=${units.length}`
                 },
                 'gcd': { 
                     id: 'gcdCanvas', 
                     title: '⊚ GCD Structure - 3D Sphere',
-                    subtitle: `m=${m} · 3D Spherical View · ${coprimePairs} coprime pairs · φ(${m})=${units.length} · Density ${(units.length/m).toFixed(4)}`,
-                    settings: `View: ${rotX}°×${rotY}° | Zoom: ${zoom}% | Labels: ${gcdLabelMode} | Connections: ${showGCDConnections ? 'ON' : 'OFF'} | Grid: ${showGCDGrid ? 'ON' : 'OFF'}`
+                    subtitle: `m=${m} · 3D Spherical View · ${coprimePairs} coprime pairs · φ(${m})=${units.length} · Density ${(units.length/m).toFixed(4)}`
                 },
                 'density': { 
                     id: 'densityCanvas', 
                     title: '◬ Coprime Density Analysis',
-                    subtitle: `m=${m} · φ(m)/m = ${(units.length/m).toFixed(6)} · Basel limit 6/π² ≈ 0.6079 · ${m} data points`,
-                    settings: `Labels: ${densityLabelMode} | Basel: ${showBaselLine ? 'ON' : 'OFF'} | Grid: ${showDensityGrid ? 'ON' : 'OFF'} | Connected: ${connectPoints ? 'YES' : 'NO'}`
+                    subtitle: `m=${m} · φ(m)/m = ${(units.length/m).toFixed(6)} · Basel limit 6/π² ≈ 0.6079 · ${m} data points`
                 }
             };
             
@@ -6012,12 +6290,6 @@
                 ctx.fillText(line, exportCanvas.width / 2, subtitleY);
                 subtitleY += 45;
             }
-            
-            // Draw settings info
-            ctx.font = '32px Arial';
-            ctx.fillStyle = '#718096';
-            ctx.fillText(info.settings, exportCanvas.width / 2, subtitleY + 10);
-            subtitleY += 50;
             
             // Draw canvas
             ctx.save();
