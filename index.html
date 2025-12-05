@@ -87,13 +87,7 @@
             font-size: 1.1em;
         }
 
-        /* Canvas Grid */
-        .viz-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
-            gap: 25px;
-            margin: 30px 0;
-        }
+        /* Canvas Grid removed - now using inline grid */
 
         .canvas-panel {
             background: var(--bg-card);
@@ -542,14 +536,13 @@
 
         /* Responsive */
         @media (max-width: 1400px) {
-            .viz-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            /* Canvases stay 2×2 on medium screens */
         }
 
         @media (max-width: 900px) {
-            .viz-grid {
-                grid-template-columns: 1fr;
+            /* Stack canvases vertically on small screens */
+            .main-container > div[style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
             }
             
             h1 {
@@ -1069,7 +1062,7 @@
         </div>
 
         <!-- Multi-Canvas Visualization Grid -->
-        <div class="viz-grid">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin: 30px 0;">
             <!-- Canvas 1: Main Multiplication Grid -->
             <div class="canvas-panel">
                 <div class="panel-header">
@@ -1328,11 +1321,7 @@
                                 Show Subgroup
                             </button>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Canvas 2: Unit Circle Representation -->
+                        <!-- Canvas 2: Unit Circle Representation -->
             <div class="canvas-panel">
                 <div class="panel-header">
                     <div>
@@ -1799,7 +1788,7 @@
         </div>
                 </div>
             </div>
-
+        
             <!-- Canvas 3: GCD Structure 3D Sphere -->
             <div class="canvas-panel">
                 <div class="panel-header">
@@ -2081,9 +2070,7 @@
                         </div>
                     </div>
                             
-                            </div>
-                        </div>
-                    </div>
+        </div>
                 </div>
             </div>
 
