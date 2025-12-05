@@ -969,19 +969,44 @@
                 </div>
                 <canvas id="gridCanvas" width="800" height="800"></canvas>
                 <div class="canvas-info" id="gridInfo">
+                    <!-- Independent Mode Toggle -->
+                    <div style="margin-bottom: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="gridIndependent" onchange="toggleCanvasMode('grid')">
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">🔓 Independent Mode</span>
+                        </label>
+                        <div id="gridIndependentControls" style="display: none; margin-top: 15px;">
+                            <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Canvas Modulus (m):</label>
+                            <input type="range" id="gridModulusSlider" min="2" max="200" value="12" 
+                                   style="width: 100%;" oninput="document.getElementById('gridModulusValue').value = this.value; updateIndependentCanvas('grid')">
+                            <input type="number" id="gridModulusValue" min="2" max="1000" value="12" 
+                                   style="width: 100%; margin-top: 8px;"
+                                   onchange="document.getElementById('gridModulusSlider').value = Math.min(this.value, 200); updateIndependentCanvas('grid')">
+                        </div>
+                    </div>
+                    
+                    <!-- Collapsible Controls -->
+                    <div style="background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border); margin-bottom: 15px; overflow: hidden;">
+                        <div onclick="toggleCanvasControls('grid')" style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)); transition: all 0.3s;">
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">⚙️ Canvas Controls & Settings</span>
+                            <span id="gridToggleIcon" style="color: var(--cyan); font-size: 1.3em; transition: transform 0.3s;">▼</span>
+                        </div>
+                        <div id="gridControls" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;">
+                            <div style="padding: 20px;">
+                    
                     <div style="margin-bottom: 20px;">
                         <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Table Type:</label>
                         <div class="radio-group" style="gap: 8px;">
                             <label class="radio-option" style="padding: 8px 12px;">
-                                <input type="radio" name="tableTypeCanvas1" value="multiplication" checked onchange="updateVisualization()">
+                                <input type="radio" name="tableTypeCanvas1" value="multiplication" checked onchange="canvasIndependentStates.grid.active ? updateIndependentCanvas('grid') : updateVisualization()">
                                 <span>Multiplication</span>
                             </label>
                             <label class="radio-option" style="padding: 8px 12px;">
-                                <input type="radio" name="tableTypeCanvas1" value="cayley" onchange="updateVisualization()">
+                                <input type="radio" name="tableTypeCanvas1" value="cayley" onchange="canvasIndependentStates.grid.active ? updateIndependentCanvas('grid') : updateVisualization()">
                                 <span>Cayley (Units)</span>
                             </label>
                             <label class="radio-option" style="padding: 8px 12px;">
-                                <input type="radio" name="tableTypeCanvas1" value="addition" onchange="updateVisualization()">
+                                <input type="radio" name="tableTypeCanvas1" value="addition" onchange="canvasIndependentStates.grid.active ? updateIndependentCanvas('grid') : updateVisualization()">
                                 <span>Addition</span>
                             </label>
                         </div>
@@ -1042,6 +1067,7 @@
                         <button class="btn btn-secondary" onclick="transposeTable()" style="padding: 10px 20px;">Transpose Table</button>
                         <button class="btn btn-secondary" onclick="compareWithAddition()" style="padding: 10px 20px;">Compare with Addition</button>
                     </div>
+                    
                     
                     <!-- Live Statistics Dashboard -->
                     <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-panel), var(--bg-card)); border-radius: 10px; border: 2px solid var(--border);">
@@ -1138,6 +1164,31 @@
                 </div>
                 <canvas id="circleCanvas" width="800" height="800"></canvas>
                 <div class="canvas-info" id="circleInfo">
+                    <!-- Independent Mode Toggle -->
+                    <div style="margin-bottom: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="circleIndependent" onchange="toggleCanvasMode('circle')">
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">🔓 Independent Mode</span>
+                        </label>
+                        <div id="circleIndependentControls" style="display: none; margin-top: 15px;">
+                            <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Canvas Modulus (m):</label>
+                            <input type="range" id="circleModulusSlider" min="2" max="200" value="12" 
+                                   style="width: 100%;" oninput="document.getElementById('circleModulusValue').value = this.value; updateIndependentCanvas('circle')">
+                            <input type="number" id="circleModulusValue" min="2" max="1000" value="12" 
+                                   style="width: 100%; margin-top: 8px;"
+                                   onchange="document.getElementById('circleModulusSlider').value = Math.min(this.value, 200); updateIndependentCanvas('circle')">
+                        </div>
+                    </div>
+                    
+                    <!-- Collapsible Controls -->
+                    <div style="background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border); margin-bottom: 15px; overflow: hidden;">
+                        <div onclick="toggleCanvasControls('circle')" style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)); transition: all 0.3s;">
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">⚙️ Canvas Controls & Settings</span>
+                            <span id="circleToggleIcon" style="color: var(--cyan); font-size: 1.3em; transition: transform 0.3s;">▼</span>
+                        </div>
+                        <div id="circleControls" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;">
+                            <div style="padding: 20px;">
+                    
                     <!-- Live Statistics Dashboard for Circle Canvas -->
                     <div style="margin-bottom: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-panel), var(--bg-card)); border-radius: 10px; border: 2px solid var(--border);">
                         <h3 style="color: var(--gold); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
@@ -1322,6 +1373,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+                </div>
+            </div>
 
             <!-- Canvas 3: GCD Structure 3D Sphere -->
             <div class="canvas-panel">
@@ -1337,6 +1391,30 @@
                 </div>
                 <canvas id="gcdCanvas" width="800" height="800"></canvas>
                 <div class="canvas-info" id="gcdInfo">
+                    <!-- Independent Mode Toggle -->
+                    <div style="margin-bottom: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="gcdIndependent" onchange="toggleCanvasMode('gcd')">
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">🔓 Independent Mode</span>
+                        </label>
+                        <div id="gcdIndependentControls" style="display: none; margin-top: 15px;">
+                            <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Canvas Modulus (m):</label>
+                            <input type="range" id="gcdModulusSlider" min="2" max="200" value="12" 
+                                   style="width: 100%;" oninput="document.getElementById('gcdModulusValue').value = this.value; updateIndependentCanvas('gcd')">
+                            <input type="number" id="gcdModulusValue" min="2" max="1000" value="12" 
+                                   style="width: 100%; margin-top: 8px;"
+                                   onchange="document.getElementById('gcdModulusSlider').value = Math.min(this.value, 200); updateIndependentCanvas('gcd')">
+                        </div>
+                    </div>
+                    
+                    <!-- Collapsible Controls -->
+                    <div style="background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border); margin-bottom: 15px; overflow: hidden;">
+                        <div onclick="toggleCanvasControls('gcd')" style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)); transition: all 0.3s;">
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">⚙️ Canvas Controls & Settings</span>
+                            <span id="gcdToggleIcon" style="color: var(--cyan); font-size: 1.3em; transition: transform 0.3s;">▼</span>
+                        </div>
+                        <div id="gcdControls" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;">
+                    
                     <!-- Live Statistics Dashboard for GCD Canvas -->
                     <div style="margin-bottom: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-panel), var(--bg-card)); border-radius: 10px; border: 2px solid var(--border);">
                         <h3 style="color: var(--gold); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
@@ -1463,6 +1541,10 @@
                         <button class="btn btn-secondary" onclick="snapToAxis('y')" style="padding: 10px 20px;">View Y-Axis</button>
                         <button class="btn btn-secondary" onclick="snapToAxis('z')" style="padding: 10px 20px;">View Z-Axis</button>
                     </div>
+                            
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1480,6 +1562,43 @@
                 </div>
                 <canvas id="densityCanvas" width="800" height="800"></canvas>
                 <div class="canvas-info" id="densityInfo">
+                    <!-- Independent Mode Toggle -->
+                    <div style="margin-bottom: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="densityIndependent" onchange="toggleCanvasMode('density')">
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">🔓 Independent Mode</span>
+                        </label>
+                        <div id="densityIndependentControls" style="display: none; margin-top: 15px;">
+                            <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Data Range (n):</label>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <div style="flex: 1;">
+                                    <label style="color: var(--text-secondary); font-size: 0.9em;">Start:</label>
+                                    <input type="number" id="densityStartValue" min="1" max="1000" value="1" 
+                                           style="width: 100%;" onchange="updateIndependentCanvas('density')">
+                                </div>
+                                <div style="flex: 1;">
+                                    <label style="color: var(--text-secondary); font-size: 0.9em;">End:</label>
+                                    <input type="number" id="densityEndValue" min="2" max="1000" value="100" 
+                                           style="width: 100%;" onchange="updateIndependentCanvas('density')">
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+                                <button class="preset-btn" onclick="setDensityRange(1, 50)" style="flex: 1; padding: 8px;">1→50</button>
+                                <button class="preset-btn" onclick="setDensityRange(1, 100)" style="flex: 1; padding: 8px;">1→100</button>
+                                <button class="preset-btn" onclick="setDensityRange(1, 500)" style="flex: 1; padding: 8px;">1→500</button>
+                                <button class="preset-btn" onclick="setDensityRange(1, 1000)" style="flex: 1; padding: 8px;">1→1000</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Collapsible Controls -->
+                    <div style="background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border); margin-bottom: 15px; overflow: hidden;">
+                        <div onclick="toggleCanvasControls('density')" style="padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)); transition: all 0.3s;">
+                            <span style="color: var(--gold); font-weight: 700; font-size: 1.1em;">⚙️ Canvas Controls & Settings</span>
+                            <span id="densityToggleIcon" style="color: var(--cyan); font-size: 1.3em; transition: transform 0.3s;">▼</span>
+                        </div>
+                        <div id="densityControls" style="max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;">
+                    
                     <!-- Live Statistics Dashboard for Density Canvas -->
                     <div style="margin-bottom: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-panel), var(--bg-card)); border-radius: 10px; border: 2px solid var(--border);">
                         <h3 style="color: var(--gold); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
@@ -1611,6 +1730,10 @@
                     <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn btn-secondary" onclick="zoomToPrimes()" style="padding: 10px 20px;">Zoom to Primes</button>
                         <button class="btn btn-secondary" onclick="fitToData()" style="padding: 10px 20px;">Fit to Data</button>
+                    </div>
+                            
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -4823,9 +4946,14 @@
         }
 
         function exportWithAnalysis() {
-            const m = parseInt(document.getElementById('modulusInput').value);
-            const tableType = document.querySelector('input[name="tableType"]:checked').value;
-            const colorScheme = document.querySelector('input[name="colorScheme"]:checked').value;
+            try {
+                const m = parseInt(document.getElementById('modulusInput').value);
+                const tableTypeElem = document.querySelector('input[name="tableTypeCanvas1"]:checked') || 
+                                     document.querySelector('input[name="tableType"]:checked');
+                const colorSchemeElem = document.querySelector('input[name="colorSchemeCanvas1"]:checked') || 
+                                       document.querySelector('input[name="colorScheme"]:checked');
+                const tableType = tableTypeElem ? tableTypeElem.value : 'multiplication';
+                const colorScheme = colorSchemeElem ? colorSchemeElem.value : 'rainbow';
             
             const units = findUnits(m);
             const zeroDivisors = findZeroDivisors(m);
@@ -4876,11 +5004,31 @@
             }
             
             const canvases = [
-                { id: 'gridCanvas', title: '⊗ Grid' },
-                { id: 'circleCanvas', title: '○ Circle' },
-                { id: 'gcdCanvas', title: '⊚ GCD' },
-                { id: 'densityCanvas', title: '◬ Density' }
+                { 
+                    id: 'gridCanvas', 
+                    title: '⊗ Multiplication Table',
+                    color: '#FF6B9D' // Pink
+                },
+                { 
+                    id: 'circleCanvas', 
+                    title: '○ Farey Channels',
+                    color: '#4ECDC4' // Cyan
+                },
+                { 
+                    id: 'gcdCanvas', 
+                    title: '⊚ GCD 3D Sphere',
+                    color: '#95E1D3' // Light Cyan
+                },
+                { 
+                    id: 'densityCanvas', 
+                    title: '◬ Coprime Density',
+                    color: '#9F7AEA' // Purple
+                }
             ];
+            
+            // Get export resolution
+            const exportResolution = getExportResolution();
+            const scale = exportResolution / 3840;
             
             // Count additional metrics
             const totalResidues = (m * (m + 1)) / 2;
@@ -4895,10 +5043,11 @@
                 }
             }
             
-            const margin = 250;
-            const legendWidth = 1000;
-            const gridWidth = 3840 * 2;
-            const gridHeight = 3840 * 2;
+            const margin = 250 * scale;
+            const legendWidth = 1000 * scale;
+            const canvasSize = exportResolution;
+            const gridWidth = canvasSize * 2;
+            const gridHeight = canvasSize * 2;
             
             const exportCanvas = document.createElement('canvas');
             exportCanvas.width = gridWidth + legendWidth;
@@ -4920,60 +5069,81 @@
             ctx.fillStyle = '#4a5568';
             ctx.fillText(`m = ${m} · Ring ℤ/${m}ℤ · φ(${m}) = ${units.length} · Prime: ${isField ? 'Yes' : 'No'}`, gridWidth / 2, 175);
             
-            // Draw 2×2 grid of ALL canvases
+            // Draw 2×2 grid of ALL canvases with colored borders
             canvases.forEach((info, idx) => {
                 const canvas = document.getElementById(info.id);
+                if (!canvas) return;
+                
                 const col = idx % 2;
                 const row = Math.floor(idx / 2);
-                const x = col * 3840;
-                const y = row * 3840 + margin;
+                const x = col * canvasSize;
+                const y = row * canvasSize + margin;
                 
-                // Border
-                ctx.strokeStyle = '#cbd5e0';
-                ctx.lineWidth = 4;
-                ctx.strokeRect(x, y, 3840, 3840);
+                // Draw colored border (thicker)
+                ctx.strokeStyle = info.color;
+                ctx.lineWidth = 12 * scale;
+                ctx.strokeRect(x, y, canvasSize, canvasSize);
                 
                 // Canvas
                 ctx.save();
                 ctx.translate(x, y);
                 const sourceCanvas = document.getElementById(info.id);
-                ctx.scale(3840 / sourceCanvas.width, 3840 / sourceCanvas.height);
+                ctx.scale(canvasSize / sourceCanvas.width, canvasSize / sourceCanvas.height);
                 ctx.drawImage(sourceCanvas, 0, 0);
                 ctx.restore();
                 
-                // Label
-                ctx.fillStyle = '#2d3748';
-                ctx.font = 'bold 52px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText(info.title, x + 1920, y + 3770);
+                // Label with matching color background
+                ctx.fillStyle = info.color;
+                ctx.fillRect(x + 20 * scale, y + 20 * scale, 600 * scale, 80 * scale);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = `bold ${52 * scale}px Arial`;
+                ctx.textAlign = 'left';
+                ctx.fillText(info.title, x + 40 * scale, y + 70 * scale);
             });
             
             // ========== COMPREHENSIVE ANALYSIS PANEL ==========
-            const legendX = gridWidth + 40;
+            const legendX = gridWidth + 40 * scale;
             const legendY = margin;
             
             ctx.fillStyle = '#f7fafc';
-            ctx.fillRect(legendX - 20, legendY - 20, legendWidth - 60, gridHeight + 40);
+            ctx.fillRect(legendX - 20 * scale, legendY - 20 * scale, legendWidth - 60 * scale, gridHeight + 40 * scale);
             ctx.strokeStyle = '#cbd5e0';
-            ctx.lineWidth = 5;
-            ctx.strokeRect(legendX - 20, legendY - 20, legendWidth - 60, gridHeight + 40);
+            ctx.lineWidth = 5 * scale;
+            ctx.strokeRect(legendX - 20 * scale, legendY - 20 * scale, legendWidth - 60 * scale, gridHeight + 40 * scale);
             
             ctx.fillStyle = '#2d3748';
-            ctx.font = 'bold 64px Arial';
+            ctx.font = `bold ${64 * scale}px Arial`;
             ctx.textAlign = 'left';
-            ctx.fillText('Analysis', legendX, legendY + 70);
+            ctx.fillText('Analysis', legendX, legendY + 70 * scale);
             
-            let yPos = legendY + 150;
-            const lineHeight = 52;
-            const sectionGap = 65;
-            const smallFont = '38px Arial';
-            const mediumFont = '44px Arial';
+            let yPos = legendY + 150 * scale;
+            const lineHeight = 52 * scale;
+            const sectionGap = 65 * scale;
+            const smallFont = `${38 * scale}px Arial`;
+            const mediumFont = `${44 * scale}px Arial`;
+            
+            // ========== CANVAS COLOR LEGEND ==========
+            ctx.font = `bold ${54 * scale}px Arial`;
+            ctx.fillStyle = '#667eea';
+            ctx.fillText('Canvas Legend', legendX, yPos);
+            yPos += lineHeight + 10 * scale;
+            
+            canvases.forEach((info) => {
+                ctx.fillStyle = info.color;
+                ctx.fillRect(legendX, yPos - 30 * scale, 40 * scale, 40 * scale);
+                
+                ctx.fillStyle = '#2d3748';
+                ctx.font = mediumFont;
+                ctx.fillText(info.title, legendX + 60 * scale, yPos);
+                yPos += lineHeight;
+            });
+            yPos += sectionGap;
             
             // ========== MODULUS PROPERTIES ==========
-            ctx.font = 'bold 54px Arial';
+            ctx.font = `bold ${54 * scale}px Arial`;
             ctx.fillStyle = '#667eea';
             ctx.fillText('Modulus', legendX, yPos);
-            yPos += lineHeight + 10;
+            yPos += lineHeight + 10 * scale;
             
             ctx.font = mediumFont;
             ctx.fillStyle = '#2d3748';
@@ -4984,23 +5154,23 @@
             ctx.fillStyle = '#4a5568';
             ctx.fillText(`Prime factorization:`, legendX, yPos);
             yPos += lineHeight;
-            ctx.fillText(`${getPrimeFactorization(m)}`, legendX + 20, yPos);
+            ctx.fillText(`${getPrimeFactorization(m)}`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
             
             if (isField) {
                 ctx.fillStyle = '#48BB78';
-                ctx.fillText(`✓ Prime: Forms a field`, legendX + 20, yPos);
+                ctx.fillText(`✓ Prime: Forms a field`, legendX + 20 * scale, yPos);
             } else {
                 ctx.fillStyle = '#718096';
-                ctx.fillText(`Composite: Has zero divisors`, legendX + 20, yPos);
+                ctx.fillText(`Composite: Has zero divisors`, legendX + 20 * scale, yPos);
             }
             yPos += sectionGap;
             
             // ========== UNIT GROUP ==========
-            ctx.font = 'bold 54px Arial';
+            ctx.font = `bold ${54 * scale}px Arial`;
             ctx.fillStyle = '#667eea';
             ctx.fillText('Unit Group', legendX, yPos);
-            yPos += lineHeight + 10;
+            yPos += lineHeight + 10 * scale;
             
             ctx.font = mediumFont;
             ctx.fillStyle = '#2d3748';
@@ -5009,27 +5179,27 @@
             
             ctx.font = smallFont;
             ctx.fillStyle = '#4a5568';
-            ctx.fillText(`Density: ${coprimeDensity.toFixed(6)}`, legendX + 20, yPos);
+            ctx.fillText(`Density: ${coprimeDensity.toFixed(6)}`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
-            ctx.fillText(`Basel limit: ${baselLimit.toFixed(6)}`, legendX + 20, yPos);
+            ctx.fillText(`Basel limit: ${baselLimit.toFixed(6)}`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
-            ctx.fillText(`Ratio: ${(coprimeDensity/baselLimit).toFixed(4)}×`, legendX + 20, yPos);
+            ctx.fillText(`Ratio: ${(coprimeDensity/baselLimit).toFixed(4)}×`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
             
             if (units.length <= 20) {
-                ctx.fillText(`Units: {${units.join(',')}}`, legendX + 20, yPos);
+                ctx.fillText(`Units: {${units.join(',')}}`, legendX + 20 * scale, yPos);
                 yPos += lineHeight;
             } else {
-                ctx.fillText(`Units: {${units.slice(0,15).join(',')}, ...}`, legendX + 20, yPos);
+                ctx.fillText(`Units: {${units.slice(0,15).join(',')}, ...}`, legendX + 20 * scale, yPos);
                 yPos += lineHeight;
             }
             yPos += sectionGap - lineHeight;
             
             // ========== ZERO DIVISORS ==========
-            ctx.font = 'bold 46px Arial';
+            ctx.font = `bold ${46 * scale}px Arial`;
             ctx.fillStyle = '#667eea';
             ctx.fillText('Zero Divisor Structure', legendX, yPos);
-            yPos += lineHeight + 10;
+            yPos += lineHeight + 10 * scale;
             
             ctx.font = mediumFont;
             ctx.fillStyle = '#2d3748';
@@ -5039,22 +5209,22 @@
             ctx.font = smallFont;
             ctx.fillStyle = '#4a5568';
             const zdDensity = zeroDivisors.length / m;
-            ctx.fillText(`Density: ${zdDensity.toFixed(6)}`, legendX + 20, yPos);
+            ctx.fillText(`Density: ${zdDensity.toFixed(6)}`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
-            ctx.fillText(`Non-zero ZD: ${zeroDivisors.filter(z => z !== 0).length}`, legendX + 20, yPos);
+            ctx.fillText(`Non-zero ZD: ${zeroDivisors.filter(z => z !== 0).length}`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
             
             if (zeroDivisors.length > 0 && zeroDivisors.length <= 15) {
-                ctx.fillText(`Set: {${zeroDivisors.join(',')}}`, legendX + 20, yPos);
+                ctx.fillText(`Set: {${zeroDivisors.join(',')}}`, legendX + 20 * scale, yPos);
                 yPos += lineHeight;
             }
             yPos += sectionGap - lineHeight;
             
             // ========== IDEMPOTENT STRUCTURE ==========
-            ctx.font = 'bold 46px Arial';
+            ctx.font = `bold ${46 * scale}px Arial`;
             ctx.fillStyle = '#667eea';
             ctx.fillText('Idempotent Structure', legendX, yPos);
-            yPos += lineHeight + 10;
+            yPos += lineHeight + 10 * scale;
             
             ctx.font = mediumFont;
             ctx.fillStyle = '#2d3748';
@@ -5065,20 +5235,20 @@
             ctx.fillStyle = '#4a5568';
             const numPrimeFactors = primeFactors.length;
             const expectedIdempotents = Math.pow(2, numPrimeFactors);
-            ctx.fillText(`Expected (2^ω(m)): ${expectedIdempotents}`, legendX + 20, yPos);
+            ctx.fillText(`Expected (2^ω(m)): ${expectedIdempotents}`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
             
             if (idempotents.length <= 15) {
-                ctx.fillText(`Set: {${idempotents.join(',')}}`, legendX + 20, yPos);
+                ctx.fillText(`Set: {${idempotents.join(',')}}`, legendX + 20 * scale, yPos);
                 yPos += lineHeight;
             }
             yPos += sectionGap - lineHeight;
             
             // ========== GCD DISTRIBUTION ==========
-            ctx.font = 'bold 46px Arial';
+            ctx.font = `bold ${46 * scale}px Arial`;
             ctx.fillStyle = '#667eea';
             ctx.fillText('GCD Distribution', legendX, yPos);
-            yPos += lineHeight + 10;
+            yPos += lineHeight + 10 * scale;
             
             ctx.font = smallFont;
             ctx.fillStyle = '#4a5568';
@@ -5086,38 +5256,38 @@
             let gcdCount = 0;
             for (let g of sortedGCDs.slice(0, 8)) {
                 const count = gcdDistribution.get(g);
-                ctx.fillText(`gcd=${g}: ${count} elements (${(count/m*100).toFixed(1)}%)`, legendX + 20, yPos);
+                ctx.fillText(`gcd=${g}: ${count} elements (${(count/m*100).toFixed(1)}%)`, legendX + 20 * scale, yPos);
                 yPos += lineHeight;
                 gcdCount++;
             }
             if (sortedGCDs.length > 8) {
-                ctx.fillText(`... and ${sortedGCDs.length - 8} more`, legendX + 20, yPos);
+                ctx.fillText(`... and ${sortedGCDs.length - 8} more`, legendX + 20 * scale, yPos);
                 yPos += lineHeight;
             }
             yPos += sectionGap - lineHeight;
             
             // ========== CANVAS DETAILS ==========
-            ctx.font = 'bold 54px Arial';
+            ctx.font = `bold ${54 * scale}px Arial`;
             ctx.fillStyle = '#667eea';
             ctx.fillText('Canvas Details', legendX, yPos);
-            yPos += lineHeight + 10;
+            yPos += lineHeight + 10 * scale;
             
             ctx.font = smallFont;
             ctx.fillStyle = '#4a5568';
-            ctx.fillText(`Grid: ${tableType}, ${colorScheme}`, legendX + 20, yPos);
+            ctx.fillText(`Grid: ${tableType}, ${colorScheme}`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
-            ctx.fillText(`Circle: Phase ${phaseAngleDeg.toFixed(1)}°, ${totalResidues} res`, legendX + 20, yPos);
+            ctx.fillText(`Circle: Phase ${phaseAngleDeg.toFixed(1)}°, ${totalResidues} res`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
-            ctx.fillText(`GCD: View ${rotX}°×${rotY}°, zoom ${zoom}%`, legendX + 20, yPos);
+            ctx.fillText(`GCD: View ${rotX}°×${rotY}°, zoom ${zoom}%`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
-            ctx.fillText(`Density: ${m-1} points, coprime ${coprimePairs}`, legendX + 20, yPos);
+            ctx.fillText(`Density: ${m-1} points, coprime ${coprimePairs}`, legendX + 20 * scale, yPos);
             yPos += sectionGap;
             
             // ========== RING CLASSIFICATION ==========
-            ctx.font = 'bold 54px Arial';
+            ctx.font = `bold ${54 * scale}px Arial`;
             ctx.fillStyle = '#667eea';
             ctx.fillText('Classification', legendX, yPos);
-            yPos += lineHeight + 10;
+            yPos += lineHeight + 10 * scale;
             
             ctx.font = mediumFont;
             ctx.fillStyle = '#2d3748';
@@ -5132,58 +5302,68 @@
             for (let i = 0; i < Math.min(classifications.length, 6); i++) {
                 ctx.font = smallFont;
                 ctx.fillStyle = '#48BB78';
-                ctx.fillText(`✓ ${classifications[i]}`, legendX + 20, yPos);
+                ctx.fillText(`✓ ${classifications[i]}`, legendX + 20 * scale, yPos);
                 yPos += lineHeight;
             }
             
             if (classifications.length === 0) {
                 ctx.fillStyle = '#718096';
-                ctx.fillText('General commutative ring', legendX + 20, yPos);
+                ctx.fillText('General commutative ring', legendX + 20 * scale, yPos);
                 yPos += lineHeight;
             }
             yPos += sectionGap;
             
             // ========== CANVAS DETAILS ==========
-            ctx.font = 'bold 46px Arial';
+            ctx.font = `bold ${46 * scale}px Arial`;
             ctx.fillStyle = '#667eea';
             ctx.fillText('Canvas Details', legendX, yPos);
-            yPos += lineHeight + 10;
+            yPos += lineHeight + 10 * scale;
             
             ctx.font = smallFont;
             ctx.fillStyle = '#4a5568';
-            ctx.fillText(`⊗ Grid: ${tableType} table`, legendX + 20, yPos);
+            ctx.fillText(`⊗ Grid: ${tableType} table`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
-            ctx.fillText(`○ Circle: ${totalResidues} residues`, legendX + 20, yPos);
+            ctx.fillText(`○ Circle: ${totalResidues} residues`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
-            ctx.fillText(`   Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(1)}°`, legendX + 20, yPos);
+            ctx.fillText(`   Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(1)}°`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
-            ctx.fillText(`⊚ GCD: 3D view ${rotX}°×${rotY}°`, legendX + 20, yPos);
+            ctx.fillText(`⊚ GCD: 3D view ${rotX}°×${rotY}°`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
-            ctx.fillText(`   ${coprimePairs} coprime pairs`, legendX + 20, yPos);
+            ctx.fillText(`   ${coprimePairs} coprime pairs`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
-            ctx.fillText(`◬ Density: ${m-1} data points`, legendX + 20, yPos);
+            ctx.fillText(`◬ Density: ${m-1} data points`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
-            ctx.fillText(`   Ratio: ${(coprimeDensity/baselLimit).toFixed(4)}×`, legendX + 20, yPos);
+            ctx.fillText(`   Ratio: ${(coprimeDensity/baselLimit).toFixed(4)}×`, legendX + 20 * scale, yPos);
             yPos += lineHeight;
             
             // Footer
             ctx.fillStyle = '#718096';
-            ctx.font = '36px Arial';
+            ctx.font = `${36 * scale}px Arial`;
             ctx.textAlign = 'center';
-            ctx.fillText('Wessen Getachew | github.com/wessengetachew | @7dview', exportCanvas.width / 2, exportCanvas.height - 50);
-            ctx.font = '32px Arial';
-            ctx.fillText(new Date().toLocaleDateString(), exportCanvas.width / 2, exportCanvas.height - 15);
+            ctx.fillText('Wessen Getachew | github.com/wessengetachew | @7dview', exportCanvas.width / 2, exportCanvas.height - 50 * scale);
+            ctx.font = `${32 * scale}px Arial`;
+            ctx.fillText(new Date().toLocaleDateString(), exportCanvas.width / 2, exportCanvas.height - 15 * scale);
             
             exportCanvas.toBlob(blob => {
+                if (!blob) {
+                    showNotification('Export Error', 'Failed to create image blob');
+                    return;
+                }
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `modular_all_4_canvases_m${m}_full_analysis.png`;
+                const resText = exportResolution === 2048 ? '2K' : exportResolution === 3840 ? '4K' : '8K';
+                a.download = `modular_all_4_canvases_m${m}_full_analysis_${resText}.png`;
+                document.body.appendChild(a);
                 a.click();
+                document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-            });
-            
-            showNotification('Export Complete', 'All 4 canvases exported with comprehensive statistical analysis panel');
+                showNotification('Export Complete', `All 4 canvases exported with comprehensive statistical analysis panel at ${resText} resolution`);
+            }, 'image/png');
+            } catch (err) {
+                console.error('Export with analysis error:', err);
+                showNotification('Export Error', 'Failed to export: ' + err.message);
+            }
         }
 
         function exportData(dataType) {
@@ -5327,6 +5507,33 @@
             gcd: { active: false, modulus: 12 },
             density: { active: false, start: 1, end: 100 }
         };
+        
+        // Track which canvas dropdowns are expanded
+        const canvasControlsExpanded = {
+            grid: false,
+            circle: false,
+            gcd: false,
+            density: false
+        };
+        
+        function toggleCanvasControls(canvasId) {
+            const controls = document.getElementById(`${canvasId}Controls`);
+            const icon = document.getElementById(`${canvasId}ToggleIcon`);
+            
+            if (canvasControlsExpanded[canvasId]) {
+                // Collapse
+                controls.style.maxHeight = '0';
+                icon.style.transform = 'rotate(0deg)';
+                icon.textContent = '▼';
+                canvasControlsExpanded[canvasId] = false;
+            } else {
+                // Expand
+                controls.style.maxHeight = controls.scrollHeight + 'px';
+                icon.style.transform = 'rotate(180deg)';
+                icon.textContent = '▲';
+                canvasControlsExpanded[canvasId] = true;
+            }
+        }
         
         function toggleCanvasMode(canvasId) {
             const checkbox = document.getElementById(`${canvasId}Independent`);
@@ -5579,4 +5786,4 @@
         }
     </script>
 </body>
-    </html>
+                                                            </html>
