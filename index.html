@@ -1527,6 +1527,92 @@
                         <button class="btn btn-secondary" onclick="resetCircleView()" style="padding: 10px 20px;">Reset View</button>
                         <button class="btn btn-secondary" onclick="highlightCoprimeRings()" style="padding: 10px 20px;">Highlight Coprime Rings</button>
                     </div>
+                    
+                    <!-- Distance Measurement Tool -->
+                    <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)); border-radius: 10px; border: 2px solid var(--border);">
+                        <h3 style="color: var(--gold); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            📏 Distance Measurement Tool
+                        </h3>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Measurement Mode:</label>
+                            <div class="radio-group" style="gap: 8px;">
+                                <label class="radio-option" style="padding: 8px 12px;">
+                                    <input type="radio" name="distanceMode" value="off" checked onchange="updateCircleVisualization()">
+                                    <span>Off</span>
+                                </label>
+                                <label class="radio-option" style="padding: 8px 12px;">
+                                    <input type="radio" name="distanceMode" value="click" onchange="updateCircleVisualization()">
+                                    <span>Click Two Points</span>
+                                </label>
+                                <label class="radio-option" style="padding: 8px 12px;">
+                                    <input type="radio" name="distanceMode" value="hover" onchange="updateCircleVisualization()">
+                                    <span>Hover Distance</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                            <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 10px;">Selected Points:</div>
+                            <div id="distancePoint1" style="color: var(--text-secondary); margin-bottom: 5px;">Point 1: Not selected</div>
+                            <div id="distancePoint2" style="color: var(--text-secondary); margin-bottom: 15px;">Point 2: Not selected</div>
+                            
+                            <div style="color: var(--accent-green); font-weight: 600; margin-bottom: 10px;">Distance Metrics:</div>
+                            <div id="distanceMetrics" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
+                                • <strong>Euclidean:</strong> <span id="distEuclidean">—</span><br>
+                                • <strong>Angular:</strong> <span id="distAngular">—</span><br>
+                                • <strong>Farey Distance:</strong> <span id="distFarey">—</span><br>
+                                • <strong>Ring Separation:</strong> <span id="distRing">—</span><br>
+                                • <strong>Mediant:</strong> <span id="distMediant">—</span>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-secondary" onclick="clearDistanceMeasurement()" style="margin-top: 15px; width: 100%;">
+                            Clear Selection
+                        </button>
+                    </div>
+                    
+                    <!-- Farey Sequence Statistics -->
+                    <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-panel), var(--bg-card)); border-radius: 10px; border: 2px solid var(--border);">
+                        <h3 style="color: var(--gold); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            📊 Farey Sequence Statistics
+                        </h3>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Farey Order</div>
+                                <div id="fareyOrder" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">F₁₂</div>
+                            </div>
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Total Fractions</div>
+                                <div id="fareyTotalFractions" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">78</div>
+                            </div>
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Coprime Pairs</div>
+                                <div id="fareyCoprimePairs" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">28</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px;">
+                            <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 10px;">Farey Properties:</div>
+                            <div id="fareyProperties" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
+                                • Sequence Length: 1 + Σφ(k) for k=1 to m<br>
+                                • Neighbors: Adjacent fractions a/b and c/d satisfy |bc - ad| = 1<br>
+                                • Mediant: For a/b, c/d: mediant = (a+c)/(b+d)<br>
+                                • Ford Circles: Tangent circles at each fraction
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                            <div style="color: var(--accent-green); font-weight: 600; margin-bottom: 10px;">Density Analysis:</div>
+                            <div id="fareyDensity" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
+                                • Average Gap: <span id="fareyAvgGap" style="color: var(--gold);">—</span><br>
+                                • Min Gap: <span id="fareyMinGap" style="color: var(--gold);">—</span><br>
+                                • Max Gap: <span id="fareyMaxGap" style="color: var(--gold);">—</span><br>
+                                • Distribution: <span id="fareyDistribution" style="color: var(--gold);">Uniform on circle</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1993,6 +2079,17 @@
                     <span>Highlight Units</span>
                 </label>
             </div>
+            
+            <!-- Hidden global table type and color scheme for backward compatibility -->
+            <div style="display: none;">
+                <input type="radio" name="tableType" value="multiplication" checked>
+                <input type="radio" name="tableType" value="cayley">
+                <input type="radio" name="tableType" value="addition">
+                <input type="radio" name="colorScheme" value="rainbow" checked>
+                <input type="radio" name="colorScheme" value="divisibility">
+                <input type="radio" name="colorScheme" value="zeroDivisors">
+                <input type="radio" name="colorScheme" value="idempotents">
+            </div>
         </div>
 
         <!-- Statistics Panel -->
@@ -2425,7 +2522,170 @@
             }
         }
 
-        // ========== PATTERN DETECTION ==========
+        // ========== DISTANCE MEASUREMENT SYSTEM ==========
+        let distanceSelectedPoints = [];
+        let lastHoverPoint = null;
+        
+        function gcdExtended(a, b) {
+            if (b === 0) return { gcd: a, x: 1, y: 0 };
+            const result = gcdExtended(b, a % b);
+            return {
+                gcd: result.gcd,
+                x: result.y,
+                y: result.x - Math.floor(a / b) * result.y
+            };
+        }
+        
+        function fareyDistance(r1, m1, r2, m2) {
+            // Farey distance is based on the determinant |r1*m2 - r2*m1|
+            // This measures how "far apart" two fractions are in the Farey sequence
+            const det = Math.abs(r1 * m2 - r2 * m1);
+            
+            // Normalized Farey distance (0 to 1)
+            const maxDet = Math.max(m1, m2);
+            const normalized = det / maxDet;
+            
+            return {
+                determinant: det,
+                normalized: normalized,
+                interpretation: det === 1 ? 'Adjacent in Farey sequence' : `Separated by ${det - 1} intermediate fractions`
+            };
+        }
+        
+        function fareyMediant(r1, m1, r2, m2) {
+            // The mediant of two fractions a/b and c/d is (a+c)/(b+d)
+            const numerator = r1 + r2;
+            const denominator = m1 + m2;
+            const g = gcd(numerator, denominator);
+            return {
+                num: numerator / g,
+                den: denominator / g,
+                fraction: `${numerator / g}/${denominator / g}`,
+                decimal: (numerator / denominator).toFixed(6)
+            };
+        }
+        
+        function calculateDistanceMetrics(point1, point2) {
+            // Euclidean distance in canvas coordinates
+            const dx = point2.x - point1.x;
+            const dy = point2.y - point1.y;
+            const euclidean = Math.sqrt(dx * dx + dy * dy);
+            
+            // Angular distance
+            let angleDiff = Math.abs(point2.angle - point1.angle);
+            if (angleDiff > Math.PI) angleDiff = 2 * Math.PI - angleDiff;
+            const angularDegrees = angleDiff * 180 / Math.PI;
+            
+            // Farey distance
+            const farey = fareyDistance(point1.r, point1.mod, point2.r, point2.mod);
+            
+            // Ring separation
+            const ringSeparation = Math.abs(point2.mod - point1.mod);
+            
+            // Mediant
+            const mediant = fareyMediant(point1.r, point1.mod, point2.r, point2.mod);
+            
+            // GCD relationship
+            const gcdBoth = gcd(point1.gcdVal, point2.gcdVal);
+            
+            return {
+                euclidean: euclidean.toFixed(2),
+                angular: angularDegrees.toFixed(2),
+                farey: farey,
+                ringSeparation: ringSeparation,
+                mediant: mediant,
+                gcdRelation: gcdBoth
+            };
+        }
+        
+        function updateDistanceDisplay(metrics) {
+            if (!metrics) {
+                document.getElementById('distEuclidean').textContent = '—';
+                document.getElementById('distAngular').textContent = '—';
+                document.getElementById('distFarey').textContent = '—';
+                document.getElementById('distRing').textContent = '—';
+                document.getElementById('distMediant').textContent = '—';
+                return;
+            }
+            
+            document.getElementById('distEuclidean').textContent = `${metrics.euclidean} px`;
+            document.getElementById('distAngular').textContent = `${metrics.angular}°`;
+            document.getElementById('distFarey').textContent = 
+                `|det| = ${metrics.farey.determinant} (${metrics.farey.interpretation})`;
+            document.getElementById('distRing').textContent = `${metrics.ringSeparation} rings`;
+            document.getElementById('distMediant').textContent = 
+                `${metrics.mediant.fraction} ≈ ${metrics.mediant.decimal}`;
+        }
+        
+        function updateDistancePointDisplay(pointNum, point) {
+            const elem = document.getElementById(`distancePoint${pointNum}`);
+            if (!point) {
+                elem.textContent = `Point ${pointNum}: Not selected`;
+                elem.style.color = 'var(--text-secondary)';
+                return;
+            }
+            
+            elem.innerHTML = `<strong>Point ${pointNum}:</strong> ${point.r}/${point.mod} (gcd=${point.gcdVal}, ring ${point.mod})`;
+            elem.style.color = 'var(--gold)';
+        }
+        
+        function clearDistanceMeasurement() {
+            distanceSelectedPoints = [];
+            lastHoverPoint = null;
+            updateDistancePointDisplay(1, null);
+            updateDistancePointDisplay(2, null);
+            updateDistanceDisplay(null);
+            updateCircleVisualization();
+        }
+        
+        function updateFareyStatistics(m) {
+            // Update Farey order
+            document.getElementById('fareyOrder').textContent = `F₍${m}₎`;
+            
+            // Total fractions (including all layers)
+            const totalFractions = (m * (m + 1)) / 2;
+            document.getElementById('fareyTotalFractions').textContent = totalFractions;
+            
+            // Count coprime pairs across all layers
+            let coprimePairs = 0;
+            for (let mod = 1; mod <= m; mod++) {
+                coprimePairs += euler_phi(mod);
+            }
+            document.getElementById('fareyCoprimePairs').textContent = coprimePairs;
+            
+            // Calculate Farey gaps
+            const fareySequence = [];
+            for (let mod = 1; mod <= m; mod++) {
+                for (let r = 0; r < mod; r++) {
+                    if (gcd(r, mod) === 1) {
+                        fareySequence.push({ r, mod, value: r / mod });
+                    }
+                }
+            }
+            
+            // Sort by value
+            fareySequence.sort((a, b) => a.value - b.value);
+            
+            // Calculate gaps
+            const gaps = [];
+            for (let i = 1; i < fareySequence.length; i++) {
+                gaps.push(fareySequence[i].value - fareySequence[i - 1].value);
+            }
+            
+            if (gaps.length > 0) {
+                const avgGap = gaps.reduce((a, b) => a + b, 0) / gaps.length;
+                const minGap = Math.min(...gaps);
+                const maxGap = Math.max(...gaps);
+                
+                document.getElementById('fareyAvgGap').textContent = avgGap.toFixed(6);
+                document.getElementById('fareyMinGap').textContent = minGap.toFixed(6);
+                document.getElementById('fareyMaxGap').textContent = maxGap.toFixed(6);
+            } else {
+                document.getElementById('fareyAvgGap').textContent = 'N/A';
+                document.getElementById('fareyMinGap').textContent = 'N/A';
+                document.getElementById('fareyMaxGap').textContent = 'N/A';
+            }
+        }
         function detectTablePatterns(elements, m, tableType) {
             const patterns = [];
             const size = elements.length;
@@ -3168,12 +3428,39 @@
             const preset = presets[presetName];
             if (!preset) return;
 
+            // Set modulus
             document.getElementById('modulusInput').value = preset.m;
-            document.getElementById('modulusSlider').value = Math.min(preset.m, 100);
-            document.getElementById('modulusDisplay').textContent = Math.min(preset.m, 100);
+            document.getElementById('modulusSlider').value = Math.min(preset.m, 200);
+            document.getElementById('modulusDisplay').textContent = preset.m;
             
-            document.querySelector(`input[name="tableType"][value="${preset.table}"]`).checked = true;
-            document.querySelector(`input[name="colorScheme"][value="${preset.color}"]`).checked = true;
+            // Set table type - try Canvas 1 controls first, then global
+            let tableRadio = document.querySelector(`input[name="tableTypeCanvas1"][value="${preset.table}"]`);
+            if (!tableRadio) {
+                tableRadio = document.querySelector(`input[name="tableType"][value="${preset.table}"]`);
+            }
+            if (tableRadio) {
+                tableRadio.checked = true;
+            }
+            
+            // Set color scheme - try Canvas 1 controls first, then global
+            let colorRadio = document.querySelector(`input[name="colorSchemeCanvas1"][value="${preset.color}"]`);
+            if (!colorRadio) {
+                colorRadio = document.querySelector(`input[name="colorScheme"][value="${preset.color}"]`);
+            }
+            if (colorRadio) {
+                colorRadio.checked = true;
+            }
+            
+            // Clear any independent canvas modes
+            ['grid', 'circle', 'gcd', 'density'].forEach(canvasId => {
+                const checkbox = document.getElementById(`${canvasId}Independent`);
+                if (checkbox && checkbox.checked) {
+                    checkbox.checked = false;
+                    canvasIndependentStates[canvasId].active = false;
+                    const controls = document.getElementById(`${canvasId}IndependentControls`);
+                    if (controls) controls.style.display = 'none';
+                }
+            });
             
             showNotification(preset.title, preset.msg);
             updateVisualization();
@@ -3201,9 +3488,13 @@
 
         // Update functions
         function updateModulus() {
-            const value = document.getElementById('modulusSlider').value;
+            const value = parseInt(document.getElementById('modulusSlider').value);
             document.getElementById('modulusDisplay').textContent = value;
             document.getElementById('modulusInput').value = value;
+            
+            // Clear distance measurement when modulus changes
+            clearDistanceMeasurement();
+            
             updateVisualization();
             saveStateToURL();
         }
@@ -3212,7 +3503,11 @@
             const value = parseInt(document.getElementById('modulusInput').value);
             if (value >= 1 && value <= 1000) {
                 document.getElementById('modulusSlider').value = Math.min(value, 200);
-                document.getElementById('modulusDisplay').textContent = Math.min(value, 200);
+                document.getElementById('modulusDisplay').textContent = value;
+                
+                // Clear distance measurement when modulus changes
+                clearDistanceMeasurement();
+                
                 updateVisualization();
                 saveStateToURL();
             }
@@ -3660,10 +3955,6 @@
                 for (let r = 0; r < mod; r++) {
                     const gcdVal = gcd(r, mod);
                     
-                    // Apply GCD filter
-                    if (gcdFilter === 'coprime' && gcdVal !== 1) continue;
-                    if (gcdFilter === 'noncoprime' && gcdVal === 1) continue;
-                    
                     // Calculate angle: 2πr/mod + phase rotation + per-ring rotation offset
                     // For mod=1: angle = 0 (r=0, so 2π*0/1 = 0), at center
                     let angle = (2 * Math.PI * r) / mod + phaseAngle + ringRotationOffset;
@@ -3694,77 +3985,32 @@
                         color = `hsl(${hue}, 70%, 60%)`;
                     }
                     
-                    // Determine what label to show
-                    let labelText = '';
-                    if (labelMode === 'gcd') {
-                        labelText = gcdVal.toString();
-                    } else if (labelMode === 'r') {
-                        labelText = r.toString();
-                    } else if (labelMode === 'fraction') {
-                        labelText = `${r}/${mod}`;
-                    } else if (labelMode === 'theta') {
-                        const thetaVal = (2 * Math.PI * r) / mod;
-                        labelText = thetaVal.toFixed(2);
-                    } else if (labelMode === 'thetaNeg') {
-                        const thetaVal = -(2 * Math.PI * r) / mod;
-                        labelText = thetaVal.toFixed(2);
+                    // Draw point for +2πr/mod
+                    ctx.fillStyle = color;
+                    ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
+                    ctx.beginPath();
+                    // Make mod=1 point slightly larger and more visible
+                    const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
+                    ctx.arc(x, y, basePointSize, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.globalAlpha = 1.0;
+                    
+                    // Add glow for mod=1
+                    if (mod === 1) {
+                        ctx.strokeStyle = color;
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(x, y, basePointSize + 2, 0, 2 * Math.PI);
+                        ctx.stroke();
                     }
                     
-                    // Draw label instead of point for +2πr/mod
-                    if (labelMode !== 'none' && labelText) {
-                        ctx.fillStyle = color;
-                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
-                        ctx.font = `bold ${circleLabelSize}px Arial`;
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-                        ctx.shadowBlur = 3;
-                        ctx.fillText(labelText, x, y);
-                        ctx.shadowBlur = 0;
-                        ctx.globalAlpha = 1.0;
-                    } else {
-                        // Draw point for +2πr/mod (when no labels)
-                        ctx.fillStyle = color;
-                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
+                    // Draw point for -2πr/mod (if r > 0)
+                    if (r > 0) {
+                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
                         ctx.beginPath();
-                        // Make mod=1 point slightly larger and more visible
-                        const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
-                        ctx.arc(x, y, basePointSize, 0, 2 * Math.PI);
+                        ctx.arc(xNeg, yNeg, basePointSize * 0.8, 0, 2 * Math.PI);
                         ctx.fill();
                         ctx.globalAlpha = 1.0;
-                        
-                        // Add glow for mod=1
-                        if (mod === 1) {
-                            ctx.strokeStyle = color;
-                            ctx.lineWidth = 2;
-                            ctx.beginPath();
-                            ctx.arc(x, y, basePointSize + 2, 0, 2 * Math.PI);
-                            ctx.stroke();
-                        }
-                    }
-                    
-                    // Draw negative angle point (if r > 0) - smaller or as label
-                    if (r > 0) {
-                        if (labelMode !== 'none' && labelText) {
-                            ctx.fillStyle = color;
-                            ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
-                            ctx.font = `bold ${Math.round(circleLabelSize * 0.8)}px Arial`;
-                            ctx.textAlign = 'center';
-                            ctx.textBaseline = 'middle';
-                            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-                            ctx.shadowBlur = 2;
-                            ctx.fillText(labelText, xNeg, yNeg);
-                            ctx.shadowBlur = 0;
-                            ctx.globalAlpha = 1.0;
-                        } else {
-                            ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
-                            ctx.fillStyle = color;
-                            ctx.beginPath();
-                            const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
-                            ctx.arc(xNeg, yNeg, basePointSize * 0.8, 0, 2 * Math.PI);
-                            ctx.fill();
-                            ctx.globalAlpha = 1.0;
-                        }
                     }
                     
                     // Store point data
@@ -3777,7 +4023,7 @@
                     pointsByResidue.get(r).push(pointData);
                     
                     // Label mod=1 point
-                    if (mod === 1 && labelMode === 'none') {
+                    if (mod === 1) {
                         ctx.fillStyle = '#FFD700';
                         ctx.font = 'bold 11px Arial';
                         ctx.textAlign = 'center';
@@ -3785,7 +4031,35 @@
                         ctx.fillText('m=1', x, y - 10);
                     }
                     
-                    // Label important points on outer ring (only when not showing labels on all points)
+                    // Label points based on mode
+                    if (labelMode !== 'none' && (mod === m || (mod > m * 0.8 && gcdVal === 1))) {
+                        ctx.fillStyle = color;
+                        ctx.font = 'bold 9px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'top';
+                        
+                        let labelText = '';
+                        if (labelMode === 'r') {
+                            labelText = r.toString();
+                        } else if (labelMode === 'fraction') {
+                            labelText = `${r}/${mod}`;
+                        } else if (labelMode === 'theta') {
+                            const thetaVal = (2 * Math.PI * r) / mod;
+                            labelText = thetaVal.toFixed(2);
+                        } else if (labelMode === 'thetaNeg') {
+                            const thetaVal = -(2 * Math.PI * r) / mod;
+                            labelText = thetaVal.toFixed(2);
+                        }
+                        
+                        if (labelText) {
+                            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+                            ctx.shadowBlur = 3;
+                            ctx.fillText(labelText, x, y + basePointSize + 3);
+                            ctx.shadowBlur = 0;
+                        }
+                    }
+                    
+                    // Label important points on outer ring
                     if (mod === m && gcdVal === 1 && r > 0 && labelMode === 'none') {
                         const labelRadius = ringRadius * 1.08;
                         const labelX = centerX + labelRadius * Math.cos(angle - Math.PI / 2);
@@ -4082,6 +4356,9 @@
                     • Sum Formula: m(m+1)/2
                 `;
             }
+            
+            // Update Farey statistics
+            updateFareyStatistics(m);
         }
 
 
@@ -4349,6 +4626,59 @@
             ctx.beginPath();
             ctx.arc(centerX, centerY, baseRadius, 0, 2 * Math.PI);
             ctx.stroke();
+            
+            // Draw distance measurement connections if active
+            if (distanceSelectedPoints.length === 2) {
+                const p1 = distanceSelectedPoints[0];
+                const p2 = distanceSelectedPoints[1];
+                
+                // Highlight selected points
+                ctx.fillStyle = '#FF1493';
+                ctx.strokeStyle = '#FFD700';
+                ctx.lineWidth = 3;
+                
+                // Find the projected positions for visualization
+                for (let pt of distanceSelectedPoints) {
+                    // Draw a marker on the circle
+                    const ringRadius = (pt.mod / m) * maxRadius;
+                    const angle = (2 * Math.PI * pt.r) / pt.mod + phaseAngle;
+                    const x = centerX + ringRadius * Math.cos(angle - Math.PI / 2);
+                    const y = centerY + ringRadius * Math.sin(angle - Math.PI / 2);
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, 8, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // Label
+                    ctx.fillStyle = '#FFD700';
+                    ctx.font = 'bold 14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`${pt.r}/${pt.mod}`, x, y - 12);
+                }
+                
+                // Draw connection line
+                if (distanceSelectedPoints.length === 2) {
+                    const ringRadius1 = (p1.mod / m) * maxRadius;
+                    const angle1 = (2 * Math.PI * p1.r) / p1.mod + phaseAngle;
+                    const x1 = centerX + ringRadius1 * Math.cos(angle1 - Math.PI / 2);
+                    const y1 = centerY + ringRadius1 * Math.sin(angle1 - Math.PI / 2);
+                    
+                    const ringRadius2 = (p2.mod / m) * maxRadius;
+                    const angle2 = (2 * Math.PI * p2.r) / p2.mod + phaseAngle;
+                    const x2 = centerX + ringRadius2 * Math.cos(angle2 - Math.PI / 2);
+                    const y2 = centerY + ringRadius2 * Math.sin(angle2 - Math.PI / 2);
+                    
+                    ctx.strokeStyle = '#FF1493';
+                    ctx.lineWidth = 3;
+                    ctx.setLineDash([10, 5]);
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+            }
             
             // Add tooltip functionality
             canvas.onmousemove = (e) => {
@@ -5193,50 +5523,26 @@
                 }
             }
             
-            // Get current settings for all canvases
-            const circleLabelMode = document.querySelector('input[name="circleLabelMode"]:checked')?.value || 'gcd';
-            const gcdFilter = document.querySelector('input[name="gcdFilter"]:checked')?.value || 'all';
-            const showResidueLayers = document.getElementById('showResidueLayers')?.checked !== false;
-            const connectByR = document.getElementById('connectByR')?.checked || false;
-            const connectToNextMod = document.getElementById('connectToNextMod')?.checked || false;
-            const connectDyadicPowers = document.getElementById('connectDyadicPowers')?.checked || false;
-            
-            const rotX = document.getElementById('rotationX')?.value || 45;
-            const rotY = document.getElementById('rotationY')?.value || 45;
-            const zoom = document.getElementById('zoomLevel')?.value || 100;
-            const showGCDConnections = document.getElementById('show3DConnections')?.checked !== false;
-            const showGCDGrid = document.getElementById('showGCDSphereGrid')?.checked || false;
-            const gcdLabelMode = document.querySelector('input[name="gcdLabelMode"]:checked')?.value || 'none';
-            
-            const showBaselLine = document.getElementById('showBaselLine')?.checked !== false;
-            const showDensityGrid = document.getElementById('showDensityGrid')?.checked !== false;
-            const connectPoints = document.getElementById('connectPoints')?.checked || false;
-            const densityLabelMode = document.querySelector('input[name="densityLabelMode"]:checked')?.value || 'none';
-            
             const canvasMap = {
                 'grid': { 
                     id: 'gridCanvas', 
                     title: '⊗ Multiplication Table',
-                    subtitle: `ℤ/${m}ℤ (m=${m}) · ${tableType} · ${colorScheme} · φ(${m})=${units.length} units · ${zeroDivisors.length} zero divisors`,
-                    settings: `Type: ${tableType} | Colors: ${colorScheme} | Labels: ${document.querySelector('input[name="labelColor"]:checked')?.value || 'white'}`
+                    subtitle: `ℤ/${m}ℤ (m=${m}) · ${tableType} · ${colorScheme} · φ(${m})=${units.length} units · ${zeroDivisors.length} zero divisors`
                 },
                 'circle': { 
                     id: 'circleCanvas', 
                     title: '○ Unit Circle - Farey Channels',
-                    subtitle: `m=${m} · Layers 1→${m} (${totalResidues} residues) · Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(3)}° · φ(${m})=${units.length}`,
-                    settings: `Labels: ${circleLabelMode} | Filter: ${gcdFilter} | Layers: ${showResidueLayers ? 'ON' : 'OFF'} | Connections: ${[connectByR && 'r', connectToNextMod && 'radial', connectDyadicPowers && 'dyadic'].filter(Boolean).join(', ') || 'none'}`
+                    subtitle: `m=${m} · Layers 1→${m} (${totalResidues} residues) · Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(3)}° · φ(${m})=${units.length}`
                 },
                 'gcd': { 
                     id: 'gcdCanvas', 
                     title: '⊚ GCD Structure - 3D Sphere',
-                    subtitle: `m=${m} · 3D Spherical View · ${coprimePairs} coprime pairs · φ(${m})=${units.length} · Density ${(units.length/m).toFixed(4)}`,
-                    settings: `View: ${rotX}°×${rotY}° | Zoom: ${zoom}% | Labels: ${gcdLabelMode} | Connections: ${showGCDConnections ? 'ON' : 'OFF'} | Grid: ${showGCDGrid ? 'ON' : 'OFF'}`
+                    subtitle: `m=${m} · 3D Spherical View · ${coprimePairs} coprime pairs · φ(${m})=${units.length} · Density ${(units.length/m).toFixed(4)}`
                 },
                 'density': { 
                     id: 'densityCanvas', 
                     title: '◬ Coprime Density Analysis',
-                    subtitle: `m=${m} · φ(m)/m = ${(units.length/m).toFixed(6)} · Basel limit 6/π² ≈ 0.6079 · ${m} data points`,
-                    settings: `Labels: ${densityLabelMode} | Basel: ${showBaselLine ? 'ON' : 'OFF'} | Grid: ${showDensityGrid ? 'ON' : 'OFF'} | Connected: ${connectPoints ? 'YES' : 'NO'}`
+                    subtitle: `m=${m} · φ(m)/m = ${(units.length/m).toFixed(6)} · Basel limit 6/π² ≈ 0.6079 · ${m} data points`
                 }
             };
             
@@ -5287,12 +5593,6 @@
                 ctx.fillText(line, exportCanvas.width / 2, subtitleY);
                 subtitleY += 45;
             }
-            
-            // Draw settings info
-            ctx.font = '32px Arial';
-            ctx.fillStyle = '#718096';
-            ctx.fillText(info.settings, exportCanvas.width / 2, subtitleY + 10);
-            subtitleY += 50;
             
             // Draw canvas
             ctx.save();
