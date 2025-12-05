@@ -19,6 +19,21 @@
             --accent-green: #48BB78;
         }
 
+        [data-theme="light"] {
+            --bg-deep: #f7fafc;
+            --bg-card: #ffffff;
+            --bg-panel: #edf2f7;
+            --gold: #d69e00;
+            --gold-dim: #b8860b;
+            --cyan: #0891b2;
+            --cyan-dim: #0e7490;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --border: #cbd5e0;
+            --accent-purple: #7c3aed;
+            --accent-green: #059669;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -565,6 +580,17 @@
             <h1>Arithmetic Progressions Explorer</h1>
             <div class="subtitle">Multi-Canvas Visualization Suite · Ring Theory · Number Theory</div>
             <div class="author">Wessen Getachew · @7dview</div>
+            <div style="margin-top: 20px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="toggleTheme()" id="themeBtn" style="padding: 10px 20px;">
+                    🌙 Dark Theme
+                </button>
+                <button class="btn btn-secondary" onclick="generateShareLink()" style="padding: 10px 20px;">
+                    🔗 Share Link
+                </button>
+                <button class="btn btn-secondary" onclick="copyShareLink()" style="padding: 10px 20px;">
+                    📋 Copy URL
+                </button>
+            </div>
         </header>
 
         <!-- Introduction Section (Collapsible) -->
@@ -1428,6 +1454,10 @@
                             <input type="checkbox" id="fadeNonCoprime" onchange="updateCircleVisualization()">
                             <span style="color: var(--text-primary);">Fade Non-Coprime</span>
                         </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="useArcConnections" onchange="updateCircleVisualization()">
+                            <span style="color: var(--text-primary);">Arc Connections (Curved)</span>
+                        </label>
                     </div>
                     
                     <div style="margin-top: 20px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
@@ -1810,6 +1840,10 @@
                             <input type="checkbox" id="showDensityFractionLines" checked onchange="updateDensityVisualization()">
                             <span style="color: var(--text-primary);">Connect Same Densities</span>
                         </label>
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="showMovingAverage" onchange="updateDensityVisualization()">
+                            <span style="color: var(--text-primary);">Moving Average (n=10)</span>
+                        </label>
                     </div>
                     
                     <div style="margin-top: 20px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
@@ -2153,7 +2187,181 @@
             }
         }
 
-        // ========== URL STATE MANAGEMENT ==========
+        // ========== THEME TOGGLE ==========
+        function toggleTheme() {
+            const html = document.documentElement;
+            const btn = document.getElementById('themeBtn');
+            const currentTheme = html.getAttribute('data-theme');
+            
+            if (currentTheme === 'light') {
+                html.removeAttribute('data-theme');
+                btn.textContent = '🌙 Dark Theme';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.setAttribute('data-theme', 'light');
+                btn.textContent = '☀️ Light Theme';
+                localStorage.setItem('theme', 'light');
+            }
+            
+            // Redraw all canvases with new theme
+            updateVisualization();
+        }
+        
+        // Load saved theme
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const btn = document.getElementById('themeBtn');
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                if (btn) btn.textContent = '☀️ Light Theme';
+            }
+        }
+        
+        // ========== SHARE LINK GENERATION ==========
+        function generateShareLink() {
+            const state = captureFullState();
+            const encoded = encodeURIComponent(JSON.stringify(state));
+            const url = window.location.origin + window.location.pathname + '?state=' + encoded;
+            
+            navigator.clipboard.writeText(url).then(() => {
+                showNotification('Share Link Generated', 'URL copied to clipboard! Share it to preserve all settings.', 5000);
+            }).catch(() => {
+                showNotification('Share Link', 'URL: ' + url, 10000);
+            });
+        }
+        
+        function copyShareLink() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                showNotification('Current URL Copied', 'Link copied to clipboard!', 3000);
+            });
+        }
+        
+        function captureFullState() {
+            const state = {
+                version: '2.0',
+                modulus: parseInt(document.getElementById('modulusInput').value),
+                canvas1: {
+                    tableType: document.querySelector('input[name="tableTypeCanvas1"]:checked')?.value,
+                    colorScheme: document.querySelector('input[name="colorSchemeCanvas1"]:checked')?.value,
+                    labelColor: document.querySelector('input[name="labelColor"]:checked')?.value,
+                    showSymmetry: document.getElementById('showTableSymmetry')?.checked,
+                    showDiagonal: document.getElementById('showDiagonal')?.checked,
+                    alternateShading: document.getElementById('alternateShading')?.checked,
+                    boldLabels: document.getElementById('boldLabels')?.checked,
+                    autoDetectPatterns: document.getElementById('autoDetectPatterns')?.checked,
+                    cellOpacity: document.getElementById('cellOpacity')?.value
+                },
+                canvas2: {
+                    phaseR: document.getElementById('phaseNumerator')?.value,
+                    phaseM: document.getElementById('phaseDenominator')?.value,
+                    ringRotation: document.getElementById('ringRotation')?.value,
+                    labelMode: document.querySelector('input[name="circleLabelMode"]:checked')?.value,
+                    gcdFilter: document.querySelector('input[name="gcdFilter"]:checked')?.value,
+                    labelSize: document.getElementById('circleLabelSize')?.value,
+                    showResidueLayers: document.getElementById('showResidueLayers')?.checked,
+                    connectByR: document.getElementById('connectByR')?.checked,
+                    connectToNextMod: document.getElementById('connectToNextMod')?.checked,
+                    connectDyadicPowers: document.getElementById('connectDyadicPowers')?.checked,
+                    useArcConnections: document.getElementById('useArcConnections')?.checked
+                },
+                canvas3: {
+                    rotX: document.getElementById('rotationX')?.value,
+                    rotY: document.getElementById('rotationY')?.value,
+                    zoom: document.getElementById('zoomLevel')?.value,
+                    labelMode: document.querySelector('input[name="gcdLabelMode"]:checked')?.value,
+                    showConnections: document.getElementById('show3DConnections')?.checked,
+                    showGrid: document.getElementById('showGCDSphereGrid')?.checked
+                },
+                canvas4: {
+                    labelMode: document.querySelector('input[name="densityLabelMode"]:checked')?.value,
+                    showBaselLine: document.getElementById('showBaselLine')?.checked,
+                    showTrendline: document.getElementById('showTrendline')?.checked,
+                    connectPoints: document.getElementById('connectPoints')?.checked,
+                    showMovingAverage: document.getElementById('showMovingAverage')?.checked,
+                    yMin: document.getElementById('yAxisMin')?.value,
+                    yMax: document.getElementById('yAxisMax')?.value
+                }
+            };
+            return state;
+        }
+        
+        function loadFromShareLink() {
+            const params = new URLSearchParams(window.location.search);
+            const stateParam = params.get('state');
+            
+            if (!stateParam) return false;
+            
+            try {
+                const state = JSON.parse(decodeURIComponent(stateParam));
+                
+                // Load modulus
+                if (state.modulus) {
+                    document.getElementById('modulusInput').value = state.modulus;
+                    document.getElementById('modulusSlider').value = Math.min(state.modulus, 200);
+                }
+                
+                // Load Canvas 1 settings
+                if (state.canvas1) {
+                    const c1 = state.canvas1;
+                    if (c1.tableType) {
+                        const radio = document.querySelector(`input[name="tableTypeCanvas1"][value="${c1.tableType}"]`);
+                        if (radio) radio.checked = true;
+                    }
+                    if (c1.colorScheme) {
+                        const radio = document.querySelector(`input[name="colorSchemeCanvas1"][value="${c1.colorScheme}"]`);
+                        if (radio) radio.checked = true;
+                    }
+                    if (c1.labelColor) {
+                        const radio = document.querySelector(`input[name="labelColor"][value="${c1.labelColor}"]`);
+                        if (radio) radio.checked = true;
+                    }
+                    if (c1.showSymmetry !== undefined) document.getElementById('showTableSymmetry').checked = c1.showSymmetry;
+                    if (c1.showDiagonal !== undefined) document.getElementById('showDiagonal').checked = c1.showDiagonal;
+                    if (c1.alternateShading !== undefined) document.getElementById('alternateShading').checked = c1.alternateShading;
+                    if (c1.autoDetectPatterns !== undefined) document.getElementById('autoDetectPatterns').checked = c1.autoDetectPatterns;
+                }
+                
+                // Load Canvas 2 settings
+                if (state.canvas2) {
+                    const c2 = state.canvas2;
+                    if (c2.phaseR !== undefined) document.getElementById('phaseNumerator').value = c2.phaseR;
+                    if (c2.phaseM !== undefined) document.getElementById('phaseDenominator').value = c2.phaseM;
+                    if (c2.ringRotation !== undefined) document.getElementById('ringRotation').value = c2.ringRotation;
+                    if (c2.labelMode) {
+                        const radio = document.querySelector(`input[name="circleLabelMode"][value="${c2.labelMode}"]`);
+                        if (radio) radio.checked = true;
+                    }
+                    if (c2.gcdFilter) {
+                        const radio = document.querySelector(`input[name="gcdFilter"][value="${c2.gcdFilter}"]`);
+                        if (radio) radio.checked = true;
+                    }
+                    if (c2.useArcConnections !== undefined) document.getElementById('useArcConnections').checked = c2.useArcConnections;
+                }
+                
+                // Load Canvas 3 settings
+                if (state.canvas3) {
+                    const c3 = state.canvas3;
+                    if (c3.rotX !== undefined) document.getElementById('rotationX').value = c3.rotX;
+                    if (c3.rotY !== undefined) document.getElementById('rotationY').value = c3.rotY;
+                    if (c3.zoom !== undefined) document.getElementById('zoomLevel').value = c3.zoom;
+                }
+                
+                // Load Canvas 4 settings
+                if (state.canvas4) {
+                    const c4 = state.canvas4;
+                    if (c4.showMovingAverage !== undefined) document.getElementById('showMovingAverage').checked = c4.showMovingAverage;
+                    if (c4.yMin !== undefined) document.getElementById('yAxisMin').value = c4.yMin;
+                    if (c4.yMax !== undefined) document.getElementById('yAxisMax').value = c4.yMax;
+                }
+                
+                showNotification('State Loaded', 'All settings restored from share link!', 4000);
+                return true;
+            } catch (e) {
+                console.error('Failed to load state:', e);
+                return false;
+            }
+        }
         function saveStateToURL() {
             const m = parseInt(document.getElementById('modulusInput').value);
             const tableType = document.querySelector('input[name="tableTypeCanvas1"]:checked')?.value || 'multiplication';
@@ -2217,7 +2425,129 @@
             }
         }
 
-        // ========== KEYBOARD SHORTCUTS ==========
+        // ========== PATTERN DETECTION ==========
+        function detectTablePatterns(elements, m, tableType) {
+            const patterns = [];
+            const size = elements.length;
+            
+            // Check for Latin square property
+            if (tableType === 'multiplication' || tableType === 'addition') {
+                let isLatinSquare = true;
+                for (let i = 0; i < size && isLatinSquare; i++) {
+                    const rowValues = new Set();
+                    const colValues = new Set();
+                    for (let j = 0; j < size; j++) {
+                        const a = elements[i], b = elements[j];
+                        const rowVal = tableType === 'addition' ? (a + b) % m : (a * b) % m;
+                        const colVal = tableType === 'addition' ? (elements[j] + elements[i]) % m : (elements[j] * elements[i]) % m;
+                        
+                        if (rowValues.has(rowVal) || colValues.has(colVal)) {
+                            isLatinSquare = false;
+                            break;
+                        }
+                        rowValues.add(rowVal);
+                        colValues.add(colVal);
+                    }
+                }
+                
+                if (isLatinSquare) {
+                    patterns.push({
+                        name: 'Latin Square',
+                        description: 'Each element appears exactly once in each row and column',
+                        color: '#48BB78'
+                    });
+                }
+            }
+            
+            // Check for perfect symmetry
+            let isSymmetric = true;
+            for (let i = 0; i < size && isSymmetric; i++) {
+                for (let j = 0; j < size && isSymmetric; j++) {
+                    const a = elements[i], b = elements[j];
+                    const val1 = tableType === 'addition' ? (a + b) % m : (a * b) % m;
+                    const val2 = tableType === 'addition' ? (b + a) % m : (b * a) % m;
+                    if (val1 !== val2) {
+                        isSymmetric = false;
+                    }
+                }
+            }
+            
+            if (isSymmetric) {
+                patterns.push({
+                    name: 'Symmetric',
+                    description: 'Table is symmetric across main diagonal',
+                    color: '#9F7AEA'
+                });
+            }
+            
+            // Detect diagonal patterns
+            const diagonalValues = [];
+            for (let i = 0; i < size; i++) {
+                const a = elements[i];
+                const val = tableType === 'addition' ? (a + a) % m : (a * a) % m;
+                diagonalValues.push(val);
+            }
+            
+            const allSame = diagonalValues.every(v => v === diagonalValues[0]);
+            if (allSame && size > 1) {
+                patterns.push({
+                    name: 'Constant Diagonal',
+                    description: `All diagonal entries equal ${diagonalValues[0]}`,
+                    color: '#FFD700'
+                });
+            }
+            
+            return patterns;
+        }
+        
+        // ========== ARC CONNECTIONS FOR CIRCLE CANVAS ==========
+        function drawArcConnection(ctx, x1, y1, x2, y2, centerX, centerY, color, lineWidth) {
+            // Calculate control point for quadratic bezier curve
+            // Place it slightly outside the circle for elegant curves
+            const midX = (x1 + x2) / 2;
+            const midY = (y1 + y2) / 2;
+            
+            // Vector from center to midpoint
+            const dx = midX - centerX;
+            const dy = midY - centerY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            
+            // Push control point outward by 10%
+            const factor = 1.1;
+            const controlX = centerX + dx * factor;
+            const controlY = centerY + dy * factor;
+            
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.quadraticCurveTo(controlX, controlY, x2, y2);
+            ctx.stroke();
+        }
+        
+        // ========== MOVING AVERAGE FOR DENSITY CANVAS ==========
+        function calculateMovingAverage(data, windowSize) {
+            const result = [];
+            for (let i = 0; i < data.length; i++) {
+                const start = Math.max(0, i - Math.floor(windowSize / 2));
+                const end = Math.min(data.length, i + Math.ceil(windowSize / 2));
+                
+                let sum = 0;
+                let count = 0;
+                for (let j = start; j < end; j++) {
+                    sum += data[j].density;
+                    count++;
+                }
+                
+                result.push({
+                    n: data[i].n,
+                    x: data[i].x,
+                    y: data[i].y,
+                    avgDensity: sum / count
+                });
+            }
+            return result;
+        }
         let keyboardEnabled = true;
         
         function initKeyboardShortcuts() {
@@ -3044,10 +3374,18 @@
             const boldLabels = document.getElementById('boldLabels')?.checked || false;
             const cellOpacity = document.getElementById('cellOpacity') ? parseFloat(document.getElementById('cellOpacity').value) : 1;
             const labelColor = document.querySelector('input[name="labelColor"]:checked')?.value || 'white';
+            const autoDetectPatterns = document.getElementById('autoDetectPatterns')?.checked || false;
+            const showRowColHighlight = document.getElementById('showRowColHighlight')?.checked || false;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#0a0e1a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Auto-detect patterns
+            let detectedPatterns = [];
+            if (autoDetectPatterns && size <= 50) {
+                detectedPatterns = detectTablePatterns(elements, m, tableType);
+            }
 
             for (let i = 0; i < elements.length; i++) {
                 for (let j = 0; j < elements.length; j++) {
@@ -3322,10 +3660,6 @@
                 for (let r = 0; r < mod; r++) {
                     const gcdVal = gcd(r, mod);
                     
-                    // Apply GCD filter
-                    if (gcdFilter === 'coprime' && gcdVal !== 1) continue;
-                    if (gcdFilter === 'noncoprime' && gcdVal === 1) continue;
-                    
                     // Calculate angle: 2πr/mod + phase rotation + per-ring rotation offset
                     // For mod=1: angle = 0 (r=0, so 2π*0/1 = 0), at center
                     let angle = (2 * Math.PI * r) / mod + phaseAngle + ringRotationOffset;
@@ -3356,77 +3690,32 @@
                         color = `hsl(${hue}, 70%, 60%)`;
                     }
                     
-                    // Determine what label to show
-                    let labelText = '';
-                    if (labelMode === 'gcd') {
-                        labelText = gcdVal.toString();
-                    } else if (labelMode === 'r') {
-                        labelText = r.toString();
-                    } else if (labelMode === 'fraction') {
-                        labelText = `${r}/${mod}`;
-                    } else if (labelMode === 'theta') {
-                        const thetaVal = (2 * Math.PI * r) / mod;
-                        labelText = thetaVal.toFixed(2);
-                    } else if (labelMode === 'thetaNeg') {
-                        const thetaVal = -(2 * Math.PI * r) / mod;
-                        labelText = thetaVal.toFixed(2);
+                    // Draw point for +2πr/mod
+                    ctx.fillStyle = color;
+                    ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
+                    ctx.beginPath();
+                    // Make mod=1 point slightly larger and more visible
+                    const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
+                    ctx.arc(x, y, basePointSize, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.globalAlpha = 1.0;
+                    
+                    // Add glow for mod=1
+                    if (mod === 1) {
+                        ctx.strokeStyle = color;
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(x, y, basePointSize + 2, 0, 2 * Math.PI);
+                        ctx.stroke();
                     }
                     
-                    // Draw label instead of point for +2πr/mod
-                    if (labelMode !== 'none' && labelText) {
-                        ctx.fillStyle = color;
-                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
-                        ctx.font = `bold ${circleLabelSize}px Arial`;
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-                        ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-                        ctx.shadowBlur = 3;
-                        ctx.fillText(labelText, x, y);
-                        ctx.shadowBlur = 0;
-                        ctx.globalAlpha = 1.0;
-                    } else {
-                        // Draw point for +2πr/mod (when no labels)
-                        ctx.fillStyle = color;
-                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
+                    // Draw point for -2πr/mod (if r > 0)
+                    if (r > 0) {
+                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
                         ctx.beginPath();
-                        // Make mod=1 point slightly larger and more visible
-                        const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
-                        ctx.arc(x, y, basePointSize, 0, 2 * Math.PI);
+                        ctx.arc(xNeg, yNeg, basePointSize * 0.8, 0, 2 * Math.PI);
                         ctx.fill();
                         ctx.globalAlpha = 1.0;
-                        
-                        // Add glow for mod=1
-                        if (mod === 1) {
-                            ctx.strokeStyle = color;
-                            ctx.lineWidth = 2;
-                            ctx.beginPath();
-                            ctx.arc(x, y, basePointSize + 2, 0, 2 * Math.PI);
-                            ctx.stroke();
-                        }
-                    }
-                    
-                    // Draw negative angle point (if r > 0) - smaller or as label
-                    if (r > 0) {
-                        if (labelMode !== 'none' && labelText) {
-                            ctx.fillStyle = color;
-                            ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
-                            ctx.font = `bold ${Math.round(circleLabelSize * 0.8)}px Arial`;
-                            ctx.textAlign = 'center';
-                            ctx.textBaseline = 'middle';
-                            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-                            ctx.shadowBlur = 2;
-                            ctx.fillText(labelText, xNeg, yNeg);
-                            ctx.shadowBlur = 0;
-                            ctx.globalAlpha = 1.0;
-                        } else {
-                            ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
-                            ctx.fillStyle = color;
-                            ctx.beginPath();
-                            const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
-                            ctx.arc(xNeg, yNeg, basePointSize * 0.8, 0, 2 * Math.PI);
-                            ctx.fill();
-                            ctx.globalAlpha = 1.0;
-                        }
                     }
                     
                     // Store point data
@@ -3439,7 +3728,7 @@
                     pointsByResidue.get(r).push(pointData);
                     
                     // Label mod=1 point
-                    if (mod === 1 && labelMode === 'none') {
+                    if (mod === 1) {
                         ctx.fillStyle = '#FFD700';
                         ctx.font = 'bold 11px Arial';
                         ctx.textAlign = 'center';
@@ -3447,7 +3736,35 @@
                         ctx.fillText('m=1', x, y - 10);
                     }
                     
-                    // Label important points on outer ring (only when not showing labels on all points)
+                    // Label points based on mode
+                    if (labelMode !== 'none' && (mod === m || (mod > m * 0.8 && gcdVal === 1))) {
+                        ctx.fillStyle = color;
+                        ctx.font = 'bold 9px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'top';
+                        
+                        let labelText = '';
+                        if (labelMode === 'r') {
+                            labelText = r.toString();
+                        } else if (labelMode === 'fraction') {
+                            labelText = `${r}/${mod}`;
+                        } else if (labelMode === 'theta') {
+                            const thetaVal = (2 * Math.PI * r) / mod;
+                            labelText = thetaVal.toFixed(2);
+                        } else if (labelMode === 'thetaNeg') {
+                            const thetaVal = -(2 * Math.PI * r) / mod;
+                            labelText = thetaVal.toFixed(2);
+                        }
+                        
+                        if (labelText) {
+                            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+                            ctx.shadowBlur = 3;
+                            ctx.fillText(labelText, x, y + basePointSize + 3);
+                            ctx.shadowBlur = 0;
+                        }
+                    }
+                    
+                    // Label important points on outer ring
                     if (mod === m && gcdVal === 1 && r > 0 && labelMode === 'none') {
                         const labelRadius = ringRadius * 1.08;
                         const labelX = centerX + labelRadius * Math.cos(angle - Math.PI / 2);
@@ -3464,24 +3781,36 @@
 
             // Connect r in each modulus
             if (connectByR) {
+                const useArcs = document.getElementById('useArcConnections')?.checked || false;
                 pointsByModulus.forEach((points, mod) => {
                     points.sort((a, b) => a.r - b.r);
                     ctx.strokeStyle = `hsla(${(mod / m) * 360}, 60%, 50%, 0.3)`;
                     ctx.lineWidth = lineThickness;
-                    ctx.beginPath();
-                    for (let i = 0; i < points.length; i++) {
-                        const p = points[i];
-                        if (i === 0) {
-                            ctx.moveTo(p.x, p.y);
-                        } else {
-                            ctx.lineTo(p.x, p.y);
+                    
+                    if (useArcs) {
+                        // Draw smooth arcs
+                        for (let i = 0; i < points.length; i++) {
+                            const p1 = points[i];
+                            const p2 = points[(i + 1) % points.length];
+                            drawArcConnection(ctx, p1.x, p1.y, p2.x, p2.y, centerX, centerY, ctx.strokeStyle, lineThickness);
                         }
+                    } else {
+                        // Draw straight lines
+                        ctx.beginPath();
+                        for (let i = 0; i < points.length; i++) {
+                            const p = points[i];
+                            if (i === 0) {
+                                ctx.moveTo(p.x, p.y);
+                            } else {
+                                ctx.lineTo(p.x, p.y);
+                            }
+                        }
+                        // Close the loop
+                        if (points.length > 0) {
+                            ctx.lineTo(points[0].x, points[0].y);
+                        }
+                        ctx.stroke();
                     }
-                    // Close the loop
-                    if (points.length > 0) {
-                        ctx.lineTo(points[0].x, points[0].y);
-                    }
-                    ctx.stroke();
                 });
             }
 
@@ -4215,6 +4544,35 @@
                 }
                 ctx.stroke();
             }
+            
+            // Calculate and draw moving average if enabled
+            const showMovingAverage = document.getElementById('showMovingAverage')?.checked || false;
+            if (showMovingAverage && densityData.length > 10) {
+                const movingAvg = calculateMovingAverage(densityData, 10);
+                
+                ctx.strokeStyle = '#FF6B9D';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([5, 3]);
+                ctx.beginPath();
+                for (let i = 0; i < movingAvg.length; i++) {
+                    const avgY = canvas.height - padding - ((movingAvg[i].avgDensity - yMin) / yRange) * graphHeight;
+                    if (i === 0) {
+                        ctx.moveTo(movingAvg[i].x, avgY);
+                    } else {
+                        ctx.lineTo(movingAvg[i].x, avgY);
+                    }
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Label moving average
+                if (showDensityLabels) {
+                    ctx.fillStyle = '#FF6B9D';
+                    ctx.font = '14px Arial';
+                    ctx.textAlign = 'right';
+                    ctx.fillText('Moving Avg (n=10)', canvas.width - padding - 10, padding + 40);
+                }
+            }
 
             // Plot points (start from startN to endN)
             const densityData = [];
@@ -4814,50 +5172,26 @@
                 }
             }
             
-            // Get current settings for all canvases
-            const circleLabelMode = document.querySelector('input[name="circleLabelMode"]:checked')?.value || 'gcd';
-            const gcdFilter = document.querySelector('input[name="gcdFilter"]:checked')?.value || 'all';
-            const showResidueLayers = document.getElementById('showResidueLayers')?.checked !== false;
-            const connectByR = document.getElementById('connectByR')?.checked || false;
-            const connectToNextMod = document.getElementById('connectToNextMod')?.checked || false;
-            const connectDyadicPowers = document.getElementById('connectDyadicPowers')?.checked || false;
-            
-            const rotX = document.getElementById('rotationX')?.value || 45;
-            const rotY = document.getElementById('rotationY')?.value || 45;
-            const zoom = document.getElementById('zoomLevel')?.value || 100;
-            const showGCDConnections = document.getElementById('show3DConnections')?.checked !== false;
-            const showGCDGrid = document.getElementById('showGCDSphereGrid')?.checked || false;
-            const gcdLabelMode = document.querySelector('input[name="gcdLabelMode"]:checked')?.value || 'none';
-            
-            const showBaselLine = document.getElementById('showBaselLine')?.checked !== false;
-            const showDensityGrid = document.getElementById('showDensityGrid')?.checked !== false;
-            const connectPoints = document.getElementById('connectPoints')?.checked || false;
-            const densityLabelMode = document.querySelector('input[name="densityLabelMode"]:checked')?.value || 'none';
-            
             const canvasMap = {
                 'grid': { 
                     id: 'gridCanvas', 
                     title: '⊗ Multiplication Table',
-                    subtitle: `ℤ/${m}ℤ (m=${m}) · ${tableType} · ${colorScheme} · φ(${m})=${units.length} units · ${zeroDivisors.length} zero divisors`,
-                    settings: `Type: ${tableType} | Colors: ${colorScheme} | Labels: ${document.querySelector('input[name="labelColor"]:checked')?.value || 'white'}`
+                    subtitle: `ℤ/${m}ℤ (m=${m}) · ${tableType} · ${colorScheme} · φ(${m})=${units.length} units · ${zeroDivisors.length} zero divisors`
                 },
                 'circle': { 
                     id: 'circleCanvas', 
                     title: '○ Unit Circle - Farey Channels',
-                    subtitle: `m=${m} · Layers 1→${m} (${totalResidues} residues) · Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(3)}° · φ(${m})=${units.length}`,
-                    settings: `Labels: ${circleLabelMode} | Filter: ${gcdFilter} | Layers: ${showResidueLayers ? 'ON' : 'OFF'} | Connections: ${[connectByR && 'r', connectToNextMod && 'radial', connectDyadicPowers && 'dyadic'].filter(Boolean).join(', ') || 'none'}`
+                    subtitle: `m=${m} · Layers 1→${m} (${totalResidues} residues) · Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(3)}° · φ(${m})=${units.length}`
                 },
                 'gcd': { 
                     id: 'gcdCanvas', 
                     title: '⊚ GCD Structure - 3D Sphere',
-                    subtitle: `m=${m} · 3D Spherical View · ${coprimePairs} coprime pairs · φ(${m})=${units.length} · Density ${(units.length/m).toFixed(4)}`,
-                    settings: `View: ${rotX}°×${rotY}° | Zoom: ${zoom}% | Labels: ${gcdLabelMode} | Connections: ${showGCDConnections ? 'ON' : 'OFF'} | Grid: ${showGCDGrid ? 'ON' : 'OFF'}`
+                    subtitle: `m=${m} · 3D Spherical View · ${coprimePairs} coprime pairs · φ(${m})=${units.length} · Density ${(units.length/m).toFixed(4)}`
                 },
                 'density': { 
                     id: 'densityCanvas', 
                     title: '◬ Coprime Density Analysis',
-                    subtitle: `m=${m} · φ(m)/m = ${(units.length/m).toFixed(6)} · Basel limit 6/π² ≈ 0.6079 · ${m} data points`,
-                    settings: `Labels: ${densityLabelMode} | Basel: ${showBaselLine ? 'ON' : 'OFF'} | Grid: ${showDensityGrid ? 'ON' : 'OFF'} | Connected: ${connectPoints ? 'YES' : 'NO'}`
+                    subtitle: `m=${m} · φ(m)/m = ${(units.length/m).toFixed(6)} · Basel limit 6/π² ≈ 0.6079 · ${m} data points`
                 }
             };
             
@@ -4908,12 +5242,6 @@
                 ctx.fillText(line, exportCanvas.width / 2, subtitleY);
                 subtitleY += 45;
             }
-            
-            // Draw settings info
-            ctx.font = '32px Arial';
-            ctx.fillStyle = '#718096';
-            ctx.fillText(info.settings, exportCanvas.width / 2, subtitleY + 10);
-            subtitleY += 50;
             
             // Draw canvas
             ctx.save();
@@ -5848,8 +6176,16 @@
 
         // Initialize
         window.onload = function() {
-            // Load state from URL if present
-            loadStateFromURL();
+            // Load theme preference
+            loadTheme();
+            
+            // Try to load from share link first
+            const loadedFromShare = loadFromShareLink();
+            
+            // If not loaded from share link, load state from old URL format
+            if (!loadedFromShare) {
+                loadStateFromURL();
+            }
             
             // Initialize visualizations
             updateVisualization();
@@ -5860,9 +6196,11 @@
             // Initialize 3D mouse controls
             init3DMouseControls();
             
-            // Show keyboard shortcuts hint
+            // Show welcome message
             setTimeout(() => {
-                showNotification('Tip', 'Press <strong>H</strong> for keyboard shortcuts', 3000);
+                if (!loadedFromShare) {
+                    showNotification('Welcome!', 'Press <strong>H</strong> for keyboard shortcuts. Click <strong>🔗 Share Link</strong> to save your configuration.', 5000);
+                }
             }, 1000);
         };
         
@@ -6152,4 +6490,4 @@
         }
     </script>
 </body>
-                                </html>
+                            </html>
