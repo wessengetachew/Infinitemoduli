@@ -530,6 +530,15 @@
         footer a:hover {
             color: var(--cyan);
         }
+        
+        /* Project Links Hover */
+        header a:hover {
+            background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+            border-color: var(--gold);
+            color: var(--bg-deep);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
 
         /* Responsive */
         @media (max-width: 1400px) {
@@ -580,15 +589,37 @@
             <h1>Arithmetic Progressions Explorer</h1>
             <div class="subtitle">Multi-Canvas Visualization Suite · Ring Theory · Number Theory</div>
             <div class="author">Wessen Getachew · @7dview</div>
-            <div style="margin-top: 20px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            
+            <div style="margin-top: 15px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; align-items: center;">
+                <a href="https://wessengetachew.github.io/finite/" target="_blank" style="color: var(--cyan); text-decoration: none; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; transition: all 0.3s; font-weight: 600;">
+                    Finite Fields
+                </a>
+                <a href="https://wessengetachew.github.io/Farey/" target="_blank" style="color: var(--cyan); text-decoration: none; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; transition: all 0.3s; font-weight: 600;">
+                    Farey Sequences
+                </a>
+                <a href="https://wessengetachew.github.io/Primes/" target="_blank" style="color: var(--cyan); text-decoration: none; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; transition: all 0.3s; font-weight: 600;">
+                    Prime Explorer
+                </a>
+                <a href="https://wessengetachew.github.io/Goldbach/" target="_blank" style="color: var(--cyan); text-decoration: none; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; transition: all 0.3s; font-weight: 600;">
+                    Goldbach Conjecture
+                </a>
+            </div>
+            
+            <div style="margin-top: 15px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                 <button class="btn btn-secondary" onclick="toggleTheme()" id="themeBtn" style="padding: 10px 20px;">
-                    🌙 Dark Theme
+                    <span id="themeIcon">Dark</span> Theme
                 </button>
                 <button class="btn btn-secondary" onclick="generateShareLink()" style="padding: 10px 20px;">
-                    🔗 Share Link
+                    Share Configuration
                 </button>
                 <button class="btn btn-secondary" onclick="copyShareLink()" style="padding: 10px 20px;">
-                    📋 Copy URL
+                    Copy URL
+                </button>
+                <button class="btn btn-secondary" onclick="showKeyboardHelp()" style="padding: 10px 20px;">
+                    Keyboard Shortcuts
+                </button>
+                <button class="btn btn-secondary" onclick="toggleFullscreen()" style="padding: 10px 20px;">
+                    Fullscreen Mode
                 </button>
             </div>
         </header>
@@ -731,7 +762,34 @@
                             <br>• Connect r in Each m: Forms polygons on each ring connecting points with same residue
                             <br>• Connect r to Next mod r: Radial lines showing how residues project through modular hierarchy
                             <br>• Dyadic Powers r×2ⁿ: Creates cardioid patterns by connecting r, 2r, 4r, 8r, 16r... (coprime points only)
+                            <br>• Arc Connections: Use smooth curved Bézier arcs instead of straight lines for elegant visualization
                             <br>• Highlight Prime GCD: Cyan coloring for points where gcd(r,m) is prime
+                        </p>
+                        <p>
+                            <strong>Distance Measurement Tool:</strong> Three modes for measuring distances between Farey fractions:
+                            <br>• <em>Click Two Points:</em> Select any two fractions to measure all distance metrics
+                            <br>• <em>Hover Distance:</em> Select one point, hover over others for real-time distance display
+                            <br>• <em>Metrics Calculated:</em> Euclidean distance (pixels), Angular distance (degrees), Farey distance (determinant |r₁m₂ - r₂m₁|), 
+                            Ring separation (number of rings), Mediant fraction ((a+c)/(b+d) automatically reduced)
+                            <br>• Visual feedback with pink highlighted points, gold outlines, and dashed connection lines
+                        </p>
+                        <p>
+                            <strong>Farey Sequence Statistics:</strong> Real-time analysis of Farey sequences across all layers:
+                            <br>• Total fractions: m(m+1)/2 formula
+                            <br>• Coprime pairs count (sum of φ(k) for k=1 to m)
+                            <br>• Gap analysis: average, minimum, and maximum gaps between consecutive Farey fractions
+                            <br>• Neighbor property verification: adjacent fractions satisfy |bc - ad| = 1
+                            <br>• Distribution analysis on unit circle
+                        </p>
+                        <p>
+                            <strong>GCD Filter Options:</strong> Choose which points to display:
+                            <br>• Show All (default)
+                            <br>• GCD = 1 Only (coprime points)
+                            <br>• GCD > 1 Only (non-coprime points)
+                        </p>
+                        <p>
+                            <strong>Point Labeling:</strong> Six label modes - None, GCD Values (default), r, r/m fractions, 2πr/m angles, -2πr/m angles. 
+                            Labels replace points and inherit their colors. Adjustable label size (6-20px).
                         </p>
                         <p>
                             <strong>Line Thickness Control:</strong> Adjustable slider (0.5-5px) for connection line width to optimize visibility.
@@ -744,6 +802,7 @@
                             <strong>Key insight:</strong> Visualizes the complete modular lattice structure, showing how residue classes 
                             relate across different moduli. Dyadic connections reveal multiplication by 2 patterns (like times table cardioids). 
                             Phase rotation exposes hidden symmetries. The center represents gcd=1 (coprimality), with φ(m) gold points on each ring. 
+                            Distance measurement enables precise Farey analysis. Arc connections provide elegant curved visualizations. 
                             Hover over points for detailed fraction, angle, and GCD information.
                         </p>
                     </div>
@@ -1531,7 +1590,7 @@
                     <!-- Distance Measurement Tool -->
                     <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)); border-radius: 10px; border: 2px solid var(--border);">
                         <h3 style="color: var(--gold); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            📏 Distance Measurement Tool
+                            Distance Measurement Tool
                         </h3>
                         
                         <div style="margin-bottom: 15px;">
@@ -1575,7 +1634,7 @@
                     <!-- Farey Sequence Statistics -->
                     <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-panel), var(--bg-card)); border-radius: 10px; border: 2px solid var(--border);">
                         <h3 style="color: var(--gold); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                            📊 Farey Sequence Statistics
+                            Farey Sequence Statistics
                         </h3>
                         
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
@@ -1782,6 +1841,92 @@
                         <button class="btn btn-secondary" onclick="snapToAxis('x')" style="padding: 10px 20px;">View X-Axis</button>
                         <button class="btn btn-secondary" onclick="snapToAxis('y')" style="padding: 10px 20px;">View Y-Axis</button>
                         <button class="btn btn-secondary" onclick="snapToAxis('z')" style="padding: 10px 20px;">View Z-Axis</button>
+                    </div>
+                    
+                    <!-- Distance Measurement Tool for GCD Sphere -->
+                    <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-card), var(--bg-panel)); border-radius: 10px; border: 2px solid var(--border);">
+                        <h3 style="color: var(--gold); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            Distance Measurement Tool
+                        </h3>
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Measurement Mode:</label>
+                            <div class="radio-group" style="gap: 8px;">
+                                <label class="radio-option" style="padding: 8px 12px;">
+                                    <input type="radio" name="gcdDistanceMode" value="off" checked onchange="updateGCDVisualization()">
+                                    <span>Off</span>
+                                </label>
+                                <label class="radio-option" style="padding: 8px 12px;">
+                                    <input type="radio" name="gcdDistanceMode" value="click" onchange="updateGCDVisualization()">
+                                    <span>Click Two Points</span>
+                                </label>
+                                <label class="radio-option" style="padding: 8px 12px;">
+                                    <input type="radio" name="gcdDistanceMode" value="hover" onchange="updateGCDVisualization()">
+                                    <span>Hover Distance</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                            <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 10px;">Selected Pairs:</div>
+                            <div id="gcdDistancePoint1" style="color: var(--text-secondary); margin-bottom: 5px;">Point 1: Not selected</div>
+                            <div id="gcdDistancePoint2" style="color: var(--text-secondary); margin-bottom: 15px;">Point 2: Not selected</div>
+                            
+                            <div style="color: var(--accent-green); font-weight: 600; margin-bottom: 10px;">Distance Metrics:</div>
+                            <div id="gcdDistanceMetrics" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
+                                • <strong>3D Euclidean:</strong> <span id="gcdDist3D">—</span><br>
+                                • <strong>2D Screen:</strong> <span id="gcdDistScreen">—</span><br>
+                                • <strong>GCD Difference:</strong> <span id="gcdDistGCD">—</span><br>
+                                • <strong>Coprimality:</strong> <span id="gcdDistCoprime">—</span><br>
+                                • <strong>LCM:</strong> <span id="gcdDistLCM">—</span>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-secondary" onclick="clearGCDDistanceMeasurement()" style="margin-top: 15px; width: 100%;">
+                            Clear Selection
+                        </button>
+                    </div>
+                    
+                    <!-- GCD Pair Statistics -->
+                    <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, var(--bg-panel), var(--bg-card)); border-radius: 10px; border: 2px solid var(--border);">
+                        <h3 style="color: var(--gold); font-size: 1.3em; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                            GCD Pair Statistics
+                        </h3>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Total Pairs</div>
+                                <div id="gcdTotalPairs" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">66</div>
+                            </div>
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Coprime (GCD=1)</div>
+                                <div id="gcdCoprimePairs" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">28</div>
+                            </div>
+                            <div style="background: var(--bg-deep); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                                <div style="color: var(--cyan); font-size: 0.85em; margin-bottom: 5px;">Max GCD</div>
+                                <div id="gcdMaxValue" style="color: var(--gold); font-size: 1.5em; font-weight: 700; font-family: 'Courier New', monospace;">6</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px;">
+                            <div style="color: var(--accent-purple); font-weight: 600; margin-bottom: 10px;">GCD Distribution:</div>
+                            <div id="gcdDistribution" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
+                                • GCD=1: 28 pairs (42.4%)<br>
+                                • GCD=2: 15 pairs (22.7%)<br>
+                                • GCD=3: 10 pairs (15.2%)<br>
+                                • GCD>3: 13 pairs (19.7%)
+                            </div>
+                        </div>
+                        
+                        <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                            <div style="color: var(--accent-green); font-weight: 600; margin-bottom: 10px;">Sphere Properties:</div>
+                            <div id="gcdSphereProperties" style="color: var(--text-secondary); line-height: 1.8; font-size: 0.95em;">
+                                • Shell Structure: GCD values map to radii<br>
+                                • Coprime pairs form outer shell<br>
+                                • Higher GCD = closer to center<br>
+                                • Spherical coords: θ = 2πa/m, φ = πb/m
+                            </div>
+                        </div>
                     </div>
                             
                             </div>
@@ -2288,15 +2433,16 @@
         function toggleTheme() {
             const html = document.documentElement;
             const btn = document.getElementById('themeBtn');
+            const icon = document.getElementById('themeIcon');
             const currentTheme = html.getAttribute('data-theme');
             
             if (currentTheme === 'light') {
                 html.removeAttribute('data-theme');
-                btn.textContent = '🌙 Dark Theme';
+                icon.textContent = 'Dark';
                 localStorage.setItem('theme', 'dark');
             } else {
                 html.setAttribute('data-theme', 'light');
-                btn.textContent = '☀️ Light Theme';
+                icon.textContent = 'Light';
                 localStorage.setItem('theme', 'light');
             }
             
@@ -2307,12 +2453,30 @@
         // Load saved theme
         function loadTheme() {
             const savedTheme = localStorage.getItem('theme');
-            const btn = document.getElementById('themeBtn');
+            const icon = document.getElementById('themeIcon');
             if (savedTheme === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
-                if (btn) btn.textContent = '☀️ Light Theme';
+                if (icon) icon.textContent = 'Light';
             }
         }
+        
+        // ========== FULLSCREEN MODE ==========
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    showNotification('Fullscreen Error', `Cannot enter fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        
+        // Listen for fullscreen changes
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                showNotification('Fullscreen Mode', 'Press ESC to exit fullscreen', 3000);
+            }
+        });
         
         // ========== SHARE LINK GENERATION ==========
         function generateShareLink() {
@@ -2522,7 +2686,132 @@
             }
         }
 
-        // ========== DISTANCE MEASUREMENT SYSTEM ==========
+        // ========== GCD DISTANCE MEASUREMENT SYSTEM ==========
+        let gcdDistanceSelectedPoints = [];
+        let gcdLastHoverPoint = null;
+        
+        function calculateGCDDistanceMetrics(point1, point2) {
+            // 3D Euclidean distance in sphere coordinates
+            const dx = point1.x3d - point2.x3d;
+            const dy = point1.y3d - point2.y3d;
+            const dz = point1.z3d - point2.z3d;
+            const dist3D = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            
+            // 2D screen distance
+            const dx2d = point1.x2d - point2.x2d;
+            const dy2d = point1.y2d - point2.y2d;
+            const distScreen = Math.sqrt(dx2d * dx2d + dy2d * dy2d);
+            
+            // GCD difference
+            const gcdDiff = Math.abs(point1.g - point2.g);
+            
+            // Check if the pairs share common factors
+            const gcdBoth = gcd(point1.g, point2.g);
+            const coprime1 = point1.g === 1 ? 'Yes' : 'No';
+            const coprime2 = point2.g === 1 ? 'Yes' : 'No';
+            const coprimeStatus = (coprime1 === 'Yes' && coprime2 === 'Yes') ? 
+                'Both coprime pairs' : 
+                (coprime1 === 'Yes' || coprime2 === 'Yes') ? 
+                'One coprime pair' : 
+                'Neither coprime';
+            
+            // LCM of the two pairs
+            const lcm1 = (point1.a * point1.b) / point1.g;
+            const lcm2 = (point2.a * point2.b) / point2.g;
+            
+            return {
+                dist3D: dist3D.toFixed(3),
+                distScreen: distScreen.toFixed(2),
+                gcdDiff: gcdDiff,
+                coprimeStatus: coprimeStatus,
+                lcm1: Math.round(lcm1),
+                lcm2: Math.round(lcm2),
+                gcdRelation: gcdBoth
+            };
+        }
+        
+        function updateGCDDistanceDisplay(metrics) {
+            if (!metrics) {
+                document.getElementById('gcdDist3D').textContent = '—';
+                document.getElementById('gcdDistScreen').textContent = '—';
+                document.getElementById('gcdDistGCD').textContent = '—';
+                document.getElementById('gcdDistCoprime').textContent = '—';
+                document.getElementById('gcdDistLCM').textContent = '—';
+                return;
+            }
+            
+            document.getElementById('gcdDist3D').textContent = `${metrics.dist3D} units`;
+            document.getElementById('gcdDistScreen').textContent = `${metrics.distScreen} px`;
+            document.getElementById('gcdDistGCD').textContent = 
+                `|${gcdDistanceSelectedPoints[0].g} - ${gcdDistanceSelectedPoints[1].g}| = ${metrics.gcdDiff}`;
+            document.getElementById('gcdDistCoprime').textContent = metrics.coprimeStatus;
+            document.getElementById('gcdDistLCM').textContent = 
+                `lcm(${gcdDistanceSelectedPoints[0].a},${gcdDistanceSelectedPoints[0].b}) = ${metrics.lcm1}, ` +
+                `lcm(${gcdDistanceSelectedPoints[1].a},${gcdDistanceSelectedPoints[1].b}) = ${metrics.lcm2}`;
+        }
+        
+        function updateGCDDistancePointDisplay(pointNum, point) {
+            const elem = document.getElementById(`gcdDistancePoint${pointNum}`);
+            if (!point) {
+                elem.textContent = `Point ${pointNum}: Not selected`;
+                elem.style.color = 'var(--text-secondary)';
+                return;
+            }
+            
+            elem.innerHTML = `<strong>Point ${pointNum}:</strong> (${point.a}, ${point.b}) with gcd=${point.g}`;
+            elem.style.color = 'var(--gold)';
+        }
+        
+        function clearGCDDistanceMeasurement() {
+            gcdDistanceSelectedPoints = [];
+            gcdLastHoverPoint = null;
+            updateGCDDistancePointDisplay(1, null);
+            updateGCDDistancePointDisplay(2, null);
+            updateGCDDistanceDisplay(null);
+            updateGCDVisualization();
+        }
+        
+        function updateGCDPairStatistics(m) {
+            // Count pairs
+            let totalPairs = 0;
+            let coprimePairs = 0;
+            let maxGCD = 0;
+            const gcdCounts = new Map();
+            
+            for (let a = 0; a < m; a++) {
+                for (let b = a + 1; b < m; b++) {
+                    const g = gcd(a, b);
+                    if (g >= 1) {
+                        totalPairs++;
+                        if (g === 1) coprimePairs++;
+                        if (g > maxGCD) maxGCD = g;
+                        gcdCounts.set(g, (gcdCounts.get(g) || 0) + 1);
+                    }
+                }
+            }
+            
+            document.getElementById('gcdTotalPairs').textContent = totalPairs;
+            document.getElementById('gcdCoprimePairs').textContent = coprimePairs;
+            document.getElementById('gcdMaxValue').textContent = maxGCD;
+            
+            // Build distribution string
+            const sortedGCDs = Array.from(gcdCounts.keys()).sort((a, b) => a - b);
+            let distStr = '';
+            for (let i = 0; i < Math.min(4, sortedGCDs.length); i++) {
+                const g = sortedGCDs[i];
+                const count = gcdCounts.get(g);
+                const percent = ((count / totalPairs) * 100).toFixed(1);
+                distStr += `• GCD=${g}: ${count} pairs (${percent}%)<br>`;
+            }
+            
+            if (sortedGCDs.length > 4) {
+                const remaining = sortedGCDs.slice(4).reduce((sum, g) => sum + gcdCounts.get(g), 0);
+                const percent = ((remaining / totalPairs) * 100).toFixed(1);
+                distStr += `• GCD>3: ${remaining} pairs (${percent}%)`;
+            }
+            
+            document.getElementById('gcdDistribution').innerHTML = distStr;
+        }
         let distanceSelectedPoints = [];
         let lastHoverPoint = null;
         
@@ -3955,6 +4244,10 @@
                 for (let r = 0; r < mod; r++) {
                     const gcdVal = gcd(r, mod);
                     
+                    // Apply GCD filter
+                    if (gcdFilter === 'coprime' && gcdVal !== 1) continue;
+                    if (gcdFilter === 'noncoprime' && gcdVal === 1) continue;
+                    
                     // Calculate angle: 2πr/mod + phase rotation + per-ring rotation offset
                     // For mod=1: angle = 0 (r=0, so 2π*0/1 = 0), at center
                     let angle = (2 * Math.PI * r) / mod + phaseAngle + ringRotationOffset;
@@ -3985,32 +4278,77 @@
                         color = `hsl(${hue}, 70%, 60%)`;
                     }
                     
-                    // Draw point for +2πr/mod
-                    ctx.fillStyle = color;
-                    ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
-                    ctx.beginPath();
-                    // Make mod=1 point slightly larger and more visible
-                    const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
-                    ctx.arc(x, y, basePointSize, 0, 2 * Math.PI);
-                    ctx.fill();
-                    ctx.globalAlpha = 1.0;
-                    
-                    // Add glow for mod=1
-                    if (mod === 1) {
-                        ctx.strokeStyle = color;
-                        ctx.lineWidth = 2;
-                        ctx.beginPath();
-                        ctx.arc(x, y, basePointSize + 2, 0, 2 * Math.PI);
-                        ctx.stroke();
+                    // Determine what label to show
+                    let labelText = '';
+                    if (labelMode === 'gcd') {
+                        labelText = gcdVal.toString();
+                    } else if (labelMode === 'r') {
+                        labelText = r.toString();
+                    } else if (labelMode === 'fraction') {
+                        labelText = `${r}/${mod}`;
+                    } else if (labelMode === 'theta') {
+                        const thetaVal = (2 * Math.PI * r) / mod;
+                        labelText = thetaVal.toFixed(2);
+                    } else if (labelMode === 'thetaNeg') {
+                        const thetaVal = -(2 * Math.PI * r) / mod;
+                        labelText = thetaVal.toFixed(2);
                     }
                     
-                    // Draw point for -2πr/mod (if r > 0)
-                    if (r > 0) {
-                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
+                    // Draw label instead of point for +2πr/mod
+                    if (labelMode !== 'none' && labelText) {
+                        ctx.fillStyle = color;
+                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
+                        ctx.font = `bold ${circleLabelSize}px Arial`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+                        ctx.shadowBlur = 3;
+                        ctx.fillText(labelText, x, y);
+                        ctx.shadowBlur = 0;
+                        ctx.globalAlpha = 1.0;
+                    } else {
+                        // Draw point for +2πr/mod (when no labels)
+                        ctx.fillStyle = color;
+                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
                         ctx.beginPath();
-                        ctx.arc(xNeg, yNeg, basePointSize * 0.8, 0, 2 * Math.PI);
+                        // Make mod=1 point slightly larger and more visible
+                        const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
+                        ctx.arc(x, y, basePointSize, 0, 2 * Math.PI);
                         ctx.fill();
                         ctx.globalAlpha = 1.0;
+                        
+                        // Add glow for mod=1
+                        if (mod === 1) {
+                            ctx.strokeStyle = color;
+                            ctx.lineWidth = 2;
+                            ctx.beginPath();
+                            ctx.arc(x, y, basePointSize + 2, 0, 2 * Math.PI);
+                            ctx.stroke();
+                        }
+                    }
+                    
+                    // Draw negative angle point (if r > 0) - smaller or as label
+                    if (r > 0) {
+                        if (labelMode !== 'none' && labelText) {
+                            ctx.fillStyle = color;
+                            ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
+                            ctx.font = `bold ${Math.round(circleLabelSize * 0.8)}px Arial`;
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+                            ctx.shadowBlur = 2;
+                            ctx.fillText(labelText, xNeg, yNeg);
+                            ctx.shadowBlur = 0;
+                            ctx.globalAlpha = 1.0;
+                        } else {
+                            ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
+                            ctx.fillStyle = color;
+                            ctx.beginPath();
+                            const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
+                            ctx.arc(xNeg, yNeg, basePointSize * 0.8, 0, 2 * Math.PI);
+                            ctx.fill();
+                            ctx.globalAlpha = 1.0;
+                        }
                     }
                     
                     // Store point data
@@ -4023,7 +4361,7 @@
                     pointsByResidue.get(r).push(pointData);
                     
                     // Label mod=1 point
-                    if (mod === 1) {
+                    if (mod === 1 && labelMode === 'none') {
                         ctx.fillStyle = '#FFD700';
                         ctx.font = 'bold 11px Arial';
                         ctx.textAlign = 'center';
@@ -4031,35 +4369,7 @@
                         ctx.fillText('m=1', x, y - 10);
                     }
                     
-                    // Label points based on mode
-                    if (labelMode !== 'none' && (mod === m || (mod > m * 0.8 && gcdVal === 1))) {
-                        ctx.fillStyle = color;
-                        ctx.font = 'bold 9px Arial';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'top';
-                        
-                        let labelText = '';
-                        if (labelMode === 'r') {
-                            labelText = r.toString();
-                        } else if (labelMode === 'fraction') {
-                            labelText = `${r}/${mod}`;
-                        } else if (labelMode === 'theta') {
-                            const thetaVal = (2 * Math.PI * r) / mod;
-                            labelText = thetaVal.toFixed(2);
-                        } else if (labelMode === 'thetaNeg') {
-                            const thetaVal = -(2 * Math.PI * r) / mod;
-                            labelText = thetaVal.toFixed(2);
-                        }
-                        
-                        if (labelText) {
-                            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-                            ctx.shadowBlur = 3;
-                            ctx.fillText(labelText, x, y + basePointSize + 3);
-                            ctx.shadowBlur = 0;
-                        }
-                    }
-                    
-                    // Label important points on outer ring
+                    // Label important points on outer ring (only when not showing labels on all points)
                     if (mod === m && gcdVal === 1 && r > 0 && labelMode === 'none') {
                         const labelRadius = ringRadius * 1.08;
                         const labelX = centerX + labelRadius * Math.cos(angle - Math.PI / 2);
@@ -4701,6 +5011,20 @@
                     }
                 }
                 
+                // Handle GCD distance measurement modes
+                const gcdDistanceMode = document.querySelector('input[name="gcdDistanceMode"]:checked')?.value || 'off';
+                
+                if (gcdDistanceMode === 'hover' && closestPoint) {
+                    gcdLastHoverPoint = closestPoint;
+                    
+                    if (gcdDistanceSelectedPoints.length === 1) {
+                        // Show distance to hovered point
+                        const metrics = calculateGCDDistanceMetrics(gcdDistanceSelectedPoints[0], closestPoint);
+                        updateGCDDistanceDisplay(metrics);
+                        updateGCDDistancePointDisplay(2, closestPoint);
+                    }
+                }
+                
                 if (closestPoint) {
                     let tooltipText = `<strong>Pair (${closestPoint.a}, ${closestPoint.b})</strong>`;
                     tooltipText += `<br>gcd(${closestPoint.a}, ${closestPoint.b}) = ${closestPoint.g}`;
@@ -4715,15 +5039,83 @@
                     
                     tooltipText += `<br>Depth: ${closestPoint.depth.toFixed(1)}`;
                     
+                    if (gcdDistanceMode === 'click') {
+                        tooltipText += '<br><span style="color: #FFD700;">Click to select for distance measurement</span>';
+                    }
+                    
                     showTooltip(tooltipText, e.clientX, e.clientY);
                 } else {
                     hideTooltip();
+                    if (gcdDistanceMode === 'hover' && gcdDistanceSelectedPoints.length === 1) {
+                        updateGCDDistancePointDisplay(2, null);
+                        updateGCDDistanceDisplay(null);
+                    }
                 }
             };
             
             canvas.onmouseleave = () => {
                 if (!isDragging) {
                     hideTooltip();
+                    if (document.querySelector('input[name="gcdDistanceMode"]:checked')?.value === 'hover') {
+                        if (gcdDistanceSelectedPoints.length === 1) {
+                            updateGCDDistancePointDisplay(2, null);
+                            updateGCDDistanceDisplay(null);
+                        }
+                    }
+                }
+            };
+            
+            // Add click handler for GCD distance measurement
+            const originalOnClick = canvas.onclick;
+            canvas.onclick = (e) => {
+                const gcdDistanceMode = document.querySelector('input[name="gcdDistanceMode"]:checked')?.value || 'off';
+                if (gcdDistanceMode !== 'click') return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                
+                // Find clicked point
+                let clickedPoint = null;
+                let minDist = 20;
+                
+                for (let point of points3D) {
+                    const dist = Math.sqrt((mouseX - point.x2d) ** 2 + (mouseY - point.y2d) ** 2);
+                    
+                    if (dist < minDist) {
+                        minDist = dist;
+                        clickedPoint = point;
+                    }
+                }
+                
+                if (clickedPoint) {
+                    if (gcdDistanceSelectedPoints.length === 0) {
+                        // First point
+                        gcdDistanceSelectedPoints.push(clickedPoint);
+                        updateGCDDistancePointDisplay(1, clickedPoint);
+                        updateGCDVisualization();
+                        showNotification('Point 1 Selected', `(${clickedPoint.a}, ${clickedPoint.b}) with gcd=${clickedPoint.g} - Click another point`, 3000);
+                    } else if (gcdDistanceSelectedPoints.length === 1) {
+                        // Second point
+                        gcdDistanceSelectedPoints.push(clickedPoint);
+                        updateGCDDistancePointDisplay(2, clickedPoint);
+                        
+                        // Calculate and display metrics
+                        const metrics = calculateGCDDistanceMetrics(gcdDistanceSelectedPoints[0], gcdDistanceSelectedPoints[1]);
+                        updateGCDDistanceDisplay(metrics);
+                        updateGCDVisualization();
+                        
+                        showNotification('Distance Measured', 
+                            `(${gcdDistanceSelectedPoints[0].a},${gcdDistanceSelectedPoints[0].b}) to (${gcdDistanceSelectedPoints[1].a},${gcdDistanceSelectedPoints[1].b})<br>` +
+                            `GCD Difference: ${metrics.gcdDiff}`, 5000);
+                    } else {
+                        // Reset and start over
+                        gcdDistanceSelectedPoints = [clickedPoint];
+                        updateGCDDistancePointDisplay(1, clickedPoint);
+                        updateGCDDistancePointDisplay(2, null);
+                        updateGCDDistanceDisplay(null);
+                        updateGCDVisualization();
+                    }
                 }
             };
         }
@@ -4783,6 +5175,9 @@
                     • Depth Sorting: Active
                 `;
             }
+            
+            // Update GCD pair statistics
+            updateGCDPairStatistics(m);
         }
 
         function resetGCD3DView() {
@@ -5523,26 +5918,50 @@
                 }
             }
             
+            // Get current settings for all canvases
+            const circleLabelMode = document.querySelector('input[name="circleLabelMode"]:checked')?.value || 'gcd';
+            const gcdFilter = document.querySelector('input[name="gcdFilter"]:checked')?.value || 'all';
+            const showResidueLayers = document.getElementById('showResidueLayers')?.checked !== false;
+            const connectByR = document.getElementById('connectByR')?.checked || false;
+            const connectToNextMod = document.getElementById('connectToNextMod')?.checked || false;
+            const connectDyadicPowers = document.getElementById('connectDyadicPowers')?.checked || false;
+            
+            const rotX = document.getElementById('rotationX')?.value || 45;
+            const rotY = document.getElementById('rotationY')?.value || 45;
+            const zoom = document.getElementById('zoomLevel')?.value || 100;
+            const showGCDConnections = document.getElementById('show3DConnections')?.checked !== false;
+            const showGCDGrid = document.getElementById('showGCDSphereGrid')?.checked || false;
+            const gcdLabelMode = document.querySelector('input[name="gcdLabelMode"]:checked')?.value || 'none';
+            
+            const showBaselLine = document.getElementById('showBaselLine')?.checked !== false;
+            const showDensityGrid = document.getElementById('showDensityGrid')?.checked !== false;
+            const connectPoints = document.getElementById('connectPoints')?.checked || false;
+            const densityLabelMode = document.querySelector('input[name="densityLabelMode"]:checked')?.value || 'none';
+            
             const canvasMap = {
                 'grid': { 
                     id: 'gridCanvas', 
                     title: '⊗ Multiplication Table',
-                    subtitle: `ℤ/${m}ℤ (m=${m}) · ${tableType} · ${colorScheme} · φ(${m})=${units.length} units · ${zeroDivisors.length} zero divisors`
+                    subtitle: `ℤ/${m}ℤ (m=${m}) · ${tableType} · ${colorScheme} · φ(${m})=${units.length} units · ${zeroDivisors.length} zero divisors`,
+                    settings: `Type: ${tableType} | Colors: ${colorScheme} | Labels: ${document.querySelector('input[name="labelColor"]:checked')?.value || 'white'}`
                 },
                 'circle': { 
                     id: 'circleCanvas', 
                     title: '○ Unit Circle - Farey Channels',
-                    subtitle: `m=${m} · Layers 1→${m} (${totalResidues} residues) · Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(3)}° · φ(${m})=${units.length}`
+                    subtitle: `m=${m} · Layers 1→${m} (${totalResidues} residues) · Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(3)}° · φ(${m})=${units.length}`,
+                    settings: `Labels: ${circleLabelMode} | Filter: ${gcdFilter} | Layers: ${showResidueLayers ? 'ON' : 'OFF'} | Connections: ${[connectByR && 'r', connectToNextMod && 'radial', connectDyadicPowers && 'dyadic'].filter(Boolean).join(', ') || 'none'}`
                 },
                 'gcd': { 
                     id: 'gcdCanvas', 
                     title: '⊚ GCD Structure - 3D Sphere',
-                    subtitle: `m=${m} · 3D Spherical View · ${coprimePairs} coprime pairs · φ(${m})=${units.length} · Density ${(units.length/m).toFixed(4)}`
+                    subtitle: `m=${m} · 3D Spherical View · ${coprimePairs} coprime pairs · φ(${m})=${units.length} · Density ${(units.length/m).toFixed(4)}`,
+                    settings: `View: ${rotX}°×${rotY}° | Zoom: ${zoom}% | Labels: ${gcdLabelMode} | Connections: ${showGCDConnections ? 'ON' : 'OFF'} | Grid: ${showGCDGrid ? 'ON' : 'OFF'}`
                 },
                 'density': { 
                     id: 'densityCanvas', 
                     title: '◬ Coprime Density Analysis',
-                    subtitle: `m=${m} · φ(m)/m = ${(units.length/m).toFixed(6)} · Basel limit 6/π² ≈ 0.6079 · ${m} data points`
+                    subtitle: `m=${m} · φ(m)/m = ${(units.length/m).toFixed(6)} · Basel limit 6/π² ≈ 0.6079 · ${m} data points`,
+                    settings: `Labels: ${densityLabelMode} | Basel: ${showBaselLine ? 'ON' : 'OFF'} | Grid: ${showDensityGrid ? 'ON' : 'OFF'} | Connected: ${connectPoints ? 'YES' : 'NO'}`
                 }
             };
             
@@ -5593,6 +6012,12 @@
                 ctx.fillText(line, exportCanvas.width / 2, subtitleY);
                 subtitleY += 45;
             }
+            
+            // Draw settings info
+            ctx.font = '32px Arial';
+            ctx.fillStyle = '#718096';
+            ctx.fillText(info.settings, exportCanvas.width / 2, subtitleY + 10);
+            subtitleY += 50;
             
             // Draw canvas
             ctx.save();
