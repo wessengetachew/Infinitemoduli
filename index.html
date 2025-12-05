@@ -3660,6 +3660,10 @@
                 for (let r = 0; r < mod; r++) {
                     const gcdVal = gcd(r, mod);
                     
+                    // Apply GCD filter
+                    if (gcdFilter === 'coprime' && gcdVal !== 1) continue;
+                    if (gcdFilter === 'noncoprime' && gcdVal === 1) continue;
+                    
                     // Calculate angle: 2πr/mod + phase rotation + per-ring rotation offset
                     // For mod=1: angle = 0 (r=0, so 2π*0/1 = 0), at center
                     let angle = (2 * Math.PI * r) / mod + phaseAngle + ringRotationOffset;
@@ -3690,32 +3694,77 @@
                         color = `hsl(${hue}, 70%, 60%)`;
                     }
                     
-                    // Draw point for +2πr/mod
-                    ctx.fillStyle = color;
-                    ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
-                    ctx.beginPath();
-                    // Make mod=1 point slightly larger and more visible
-                    const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
-                    ctx.arc(x, y, basePointSize, 0, 2 * Math.PI);
-                    ctx.fill();
-                    ctx.globalAlpha = 1.0;
-                    
-                    // Add glow for mod=1
-                    if (mod === 1) {
-                        ctx.strokeStyle = color;
-                        ctx.lineWidth = 2;
-                        ctx.beginPath();
-                        ctx.arc(x, y, basePointSize + 2, 0, 2 * Math.PI);
-                        ctx.stroke();
+                    // Determine what label to show
+                    let labelText = '';
+                    if (labelMode === 'gcd') {
+                        labelText = gcdVal.toString();
+                    } else if (labelMode === 'r') {
+                        labelText = r.toString();
+                    } else if (labelMode === 'fraction') {
+                        labelText = `${r}/${mod}`;
+                    } else if (labelMode === 'theta') {
+                        const thetaVal = (2 * Math.PI * r) / mod;
+                        labelText = thetaVal.toFixed(2);
+                    } else if (labelMode === 'thetaNeg') {
+                        const thetaVal = -(2 * Math.PI * r) / mod;
+                        labelText = thetaVal.toFixed(2);
                     }
                     
-                    // Draw point for -2πr/mod (if r > 0)
-                    if (r > 0) {
-                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
+                    // Draw label instead of point for +2πr/mod
+                    if (labelMode !== 'none' && labelText) {
+                        ctx.fillStyle = color;
+                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
+                        ctx.font = `bold ${circleLabelSize}px Arial`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+                        ctx.shadowBlur = 3;
+                        ctx.fillText(labelText, x, y);
+                        ctx.shadowBlur = 0;
+                        ctx.globalAlpha = 1.0;
+                    } else {
+                        // Draw point for +2πr/mod (when no labels)
+                        ctx.fillStyle = color;
+                        ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
                         ctx.beginPath();
-                        ctx.arc(xNeg, yNeg, basePointSize * 0.8, 0, 2 * Math.PI);
+                        // Make mod=1 point slightly larger and more visible
+                        const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
+                        ctx.arc(x, y, basePointSize, 0, 2 * Math.PI);
                         ctx.fill();
                         ctx.globalAlpha = 1.0;
+                        
+                        // Add glow for mod=1
+                        if (mod === 1) {
+                            ctx.strokeStyle = color;
+                            ctx.lineWidth = 2;
+                            ctx.beginPath();
+                            ctx.arc(x, y, basePointSize + 2, 0, 2 * Math.PI);
+                            ctx.stroke();
+                        }
+                    }
+                    
+                    // Draw negative angle point (if r > 0) - smaller or as label
+                    if (r > 0) {
+                        if (labelMode !== 'none' && labelText) {
+                            ctx.fillStyle = color;
+                            ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
+                            ctx.font = `bold ${Math.round(circleLabelSize * 0.8)}px Arial`;
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+                            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+                            ctx.shadowBlur = 2;
+                            ctx.fillText(labelText, xNeg, yNeg);
+                            ctx.shadowBlur = 0;
+                            ctx.globalAlpha = 1.0;
+                        } else {
+                            ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.15 : 0.5;
+                            ctx.fillStyle = color;
+                            ctx.beginPath();
+                            const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
+                            ctx.arc(xNeg, yNeg, basePointSize * 0.8, 0, 2 * Math.PI);
+                            ctx.fill();
+                            ctx.globalAlpha = 1.0;
+                        }
                     }
                     
                     // Store point data
@@ -3728,7 +3777,7 @@
                     pointsByResidue.get(r).push(pointData);
                     
                     // Label mod=1 point
-                    if (mod === 1) {
+                    if (mod === 1 && labelMode === 'none') {
                         ctx.fillStyle = '#FFD700';
                         ctx.font = 'bold 11px Arial';
                         ctx.textAlign = 'center';
@@ -3736,35 +3785,7 @@
                         ctx.fillText('m=1', x, y - 10);
                     }
                     
-                    // Label points based on mode
-                    if (labelMode !== 'none' && (mod === m || (mod > m * 0.8 && gcdVal === 1))) {
-                        ctx.fillStyle = color;
-                        ctx.font = 'bold 9px Arial';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'top';
-                        
-                        let labelText = '';
-                        if (labelMode === 'r') {
-                            labelText = r.toString();
-                        } else if (labelMode === 'fraction') {
-                            labelText = `${r}/${mod}`;
-                        } else if (labelMode === 'theta') {
-                            const thetaVal = (2 * Math.PI * r) / mod;
-                            labelText = thetaVal.toFixed(2);
-                        } else if (labelMode === 'thetaNeg') {
-                            const thetaVal = -(2 * Math.PI * r) / mod;
-                            labelText = thetaVal.toFixed(2);
-                        }
-                        
-                        if (labelText) {
-                            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-                            ctx.shadowBlur = 3;
-                            ctx.fillText(labelText, x, y + basePointSize + 3);
-                            ctx.shadowBlur = 0;
-                        }
-                    }
-                    
-                    // Label important points on outer ring
+                    // Label important points on outer ring (only when not showing labels on all points)
                     if (mod === m && gcdVal === 1 && r > 0 && labelMode === 'none') {
                         const labelRadius = ringRadius * 1.08;
                         const labelX = centerX + labelRadius * Math.cos(angle - Math.PI / 2);
@@ -5172,26 +5193,50 @@
                 }
             }
             
+            // Get current settings for all canvases
+            const circleLabelMode = document.querySelector('input[name="circleLabelMode"]:checked')?.value || 'gcd';
+            const gcdFilter = document.querySelector('input[name="gcdFilter"]:checked')?.value || 'all';
+            const showResidueLayers = document.getElementById('showResidueLayers')?.checked !== false;
+            const connectByR = document.getElementById('connectByR')?.checked || false;
+            const connectToNextMod = document.getElementById('connectToNextMod')?.checked || false;
+            const connectDyadicPowers = document.getElementById('connectDyadicPowers')?.checked || false;
+            
+            const rotX = document.getElementById('rotationX')?.value || 45;
+            const rotY = document.getElementById('rotationY')?.value || 45;
+            const zoom = document.getElementById('zoomLevel')?.value || 100;
+            const showGCDConnections = document.getElementById('show3DConnections')?.checked !== false;
+            const showGCDGrid = document.getElementById('showGCDSphereGrid')?.checked || false;
+            const gcdLabelMode = document.querySelector('input[name="gcdLabelMode"]:checked')?.value || 'none';
+            
+            const showBaselLine = document.getElementById('showBaselLine')?.checked !== false;
+            const showDensityGrid = document.getElementById('showDensityGrid')?.checked !== false;
+            const connectPoints = document.getElementById('connectPoints')?.checked || false;
+            const densityLabelMode = document.querySelector('input[name="densityLabelMode"]:checked')?.value || 'none';
+            
             const canvasMap = {
                 'grid': { 
                     id: 'gridCanvas', 
                     title: '⊗ Multiplication Table',
-                    subtitle: `ℤ/${m}ℤ (m=${m}) · ${tableType} · ${colorScheme} · φ(${m})=${units.length} units · ${zeroDivisors.length} zero divisors`
+                    subtitle: `ℤ/${m}ℤ (m=${m}) · ${tableType} · ${colorScheme} · φ(${m})=${units.length} units · ${zeroDivisors.length} zero divisors`,
+                    settings: `Type: ${tableType} | Colors: ${colorScheme} | Labels: ${document.querySelector('input[name="labelColor"]:checked')?.value || 'white'}`
                 },
                 'circle': { 
                     id: 'circleCanvas', 
                     title: '○ Unit Circle - Farey Channels',
-                    subtitle: `m=${m} · Layers 1→${m} (${totalResidues} residues) · Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(3)}° · φ(${m})=${units.length}`
+                    subtitle: `m=${m} · Layers 1→${m} (${totalResidues} residues) · Phase ${phaseR}/${phaseM} = ${phaseAngleDeg.toFixed(3)}° · φ(${m})=${units.length}`,
+                    settings: `Labels: ${circleLabelMode} | Filter: ${gcdFilter} | Layers: ${showResidueLayers ? 'ON' : 'OFF'} | Connections: ${[connectByR && 'r', connectToNextMod && 'radial', connectDyadicPowers && 'dyadic'].filter(Boolean).join(', ') || 'none'}`
                 },
                 'gcd': { 
                     id: 'gcdCanvas', 
                     title: '⊚ GCD Structure - 3D Sphere',
-                    subtitle: `m=${m} · 3D Spherical View · ${coprimePairs} coprime pairs · φ(${m})=${units.length} · Density ${(units.length/m).toFixed(4)}`
+                    subtitle: `m=${m} · 3D Spherical View · ${coprimePairs} coprime pairs · φ(${m})=${units.length} · Density ${(units.length/m).toFixed(4)}`,
+                    settings: `View: ${rotX}°×${rotY}° | Zoom: ${zoom}% | Labels: ${gcdLabelMode} | Connections: ${showGCDConnections ? 'ON' : 'OFF'} | Grid: ${showGCDGrid ? 'ON' : 'OFF'}`
                 },
                 'density': { 
                     id: 'densityCanvas', 
                     title: '◬ Coprime Density Analysis',
-                    subtitle: `m=${m} · φ(m)/m = ${(units.length/m).toFixed(6)} · Basel limit 6/π² ≈ 0.6079 · ${m} data points`
+                    subtitle: `m=${m} · φ(m)/m = ${(units.length/m).toFixed(6)} · Basel limit 6/π² ≈ 0.6079 · ${m} data points`,
+                    settings: `Labels: ${densityLabelMode} | Basel: ${showBaselLine ? 'ON' : 'OFF'} | Grid: ${showDensityGrid ? 'ON' : 'OFF'} | Connected: ${connectPoints ? 'YES' : 'NO'}`
                 }
             };
             
@@ -5242,6 +5287,12 @@
                 ctx.fillText(line, exportCanvas.width / 2, subtitleY);
                 subtitleY += 45;
             }
+            
+            // Draw settings info
+            ctx.font = '32px Arial';
+            ctx.fillStyle = '#718096';
+            ctx.fillText(info.settings, exportCanvas.width / 2, subtitleY + 10);
+            subtitleY += 50;
             
             // Draw canvas
             ctx.save();
@@ -6490,4 +6541,4 @@
         }
     </script>
 </body>
-                            </html>
+    </html>
