@@ -5549,30 +5549,57 @@
                     }
                     
                     // Label points based on mode
-                    if (labelMode !== 'none' && (mod === m || (mod > m * 0.8 && gcdVal === 1))) {
-                        ctx.fillStyle = color;
-                        ctx.font = 'bold 9px Arial';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'top';
+                    if (labelMode !== 'none') {
+                        // Determine if this point should be labeled
+                        let shouldLabel = false;
                         
-                        let labelText = '';
-                        if (labelMode === 'r') {
-                            labelText = r.toString();
-                        } else if (labelMode === 'fraction') {
-                            labelText = `${r}/${mod}`;
-                        } else if (labelMode === 'theta') {
-                            const thetaVal = (2 * Math.PI * r) / mod;
-                            labelText = thetaVal.toFixed(2);
-                        } else if (labelMode === 'thetaNeg') {
-                            const thetaVal = -(2 * Math.PI * r) / mod;
-                            labelText = thetaVal.toFixed(2);
+                        if (labelMode === 'gcd') {
+                            // Label all points with GCD value
+                            shouldLabel = true;
+                        } else if (labelMode === 'r' || labelMode === 'fraction') {
+                            // Label based on modulus size - more labels for smaller m
+                            if (m <= 20) {
+                                shouldLabel = true; // Label all points
+                            } else if (m <= 50) {
+                                shouldLabel = (r % 2 === 0) || gcdVal === 1; // Label even r or coprime
+                            } else if (m <= 100) {
+                                shouldLabel = (r % 5 === 0) || (gcdVal === 1 && mod > m * 0.7); // Label multiples of 5 or outer coprime
+                            } else {
+                                shouldLabel = (r % 10 === 0) || (gcdVal === 1 && mod > m * 0.9); // Label multiples of 10 or very outer coprime
+                            }
+                        } else if (labelMode === 'theta' || labelMode === 'thetaNeg') {
+                            // For angle modes, label key angles
+                            const angleDeg = Math.abs((360 * r) / mod);
+                            shouldLabel = (angleDeg % 30 === 0) || (angleDeg % 45 === 0) || (r === 0) || (gcdVal === 1 && mod === m);
                         }
                         
-                        if (labelText) {
-                            ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-                            ctx.shadowBlur = 3;
-                            ctx.fillText(labelText, x, y + basePointSize + 3);
-                            ctx.shadowBlur = 0;
+                        if (shouldLabel) {
+                            ctx.fillStyle = color;
+                            ctx.font = `bold ${circleLabelSize}px Arial`;
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'top';
+                            
+                            let labelText = '';
+                            if (labelMode === 'gcd') {
+                                labelText = gcdVal.toString();
+                            } else if (labelMode === 'r') {
+                                labelText = r.toString();
+                            } else if (labelMode === 'fraction') {
+                                labelText = `${r}/${mod}`;
+                            } else if (labelMode === 'theta') {
+                                const thetaVal = (2 * Math.PI * r) / mod;
+                                labelText = thetaVal.toFixed(2);
+                            } else if (labelMode === 'thetaNeg') {
+                                const thetaVal = -(2 * Math.PI * r) / mod;
+                                labelText = thetaVal.toFixed(2);
+                            }
+                            
+                            if (labelText) {
+                                ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+                                ctx.shadowBlur = 3;
+                                ctx.fillText(labelText, x, y + basePointSize + 3);
+                                ctx.shadowBlur = 0;
+                            }
                         }
                     }
                     
