@@ -1263,6 +1263,8 @@
                             </label>
                         </div>
                     </div>
+                    
+                    <div style="margin-top: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
                         <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Cell Opacity:</label>
                         <input type="range" id="cellOpacity" min="0.3" max="1" step="0.1" value="1" 
                                style="width: 100%;" oninput="updateVisualization(); document.getElementById('cellOpacityValue').textContent = Math.round(this.value * 100) + '%'">
@@ -1556,8 +1558,8 @@
                             <span style="color: var(--text-primary);">Highlight Prime GCD Channels</span>
                         </label>
                         <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
-                            <input type="checkbox" id="showRingLabels" checked onchange="updateCircleVisualization()">
-                            <span style="color: var(--text-primary);">Show Ring Labels</span>
+                            <input type="checkbox" id="showRingLabels" onchange="updateCircleVisualization()">
+                            <span style="color: var(--text-primary);">Show Ring Labels (m=n)</span>
                         </label>
                         <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
                             <input type="checkbox" id="showAngleMarkers" onchange="updateCircleVisualization()">
@@ -5477,7 +5479,7 @@
             const connectToNextMod = document.getElementById('connectToNextMod')?.checked || false;
             const connectDyadicPowers = document.getElementById('connectDyadicPowers')?.checked || false;
             const highlightPrimeGCD = document.getElementById('highlightPrimeGCD')?.checked !== false;
-            const showRingLabels = document.getElementById('showRingLabels')?.checked !== false;
+            const showRingLabels = document.getElementById('showRingLabels')?.checked || false;
             const showAngleMarkers = document.getElementById('showAngleMarkers')?.checked || false;
             const fadeNonCoprime = document.getElementById('fadeNonCoprime')?.checked || false;
             const pointSize = document.getElementById('circlePointSize') ? parseFloat(document.getElementById('circlePointSize').value) : 4;
@@ -5565,20 +5567,11 @@
                     ctx.fillStyle = color;
                     ctx.globalAlpha = fadeNonCoprime && gcdVal > 1 ? 0.3 : 1.0;
                     ctx.beginPath();
-                    // Make mod=1 point slightly larger and more visible
-                    const basePointSize = mod === 1 ? 6 : (gcdVal === 1 ? pointSize : pointSize * 0.75);
+                    // Regular point size for all
+                    const basePointSize = gcdVal === 1 ? pointSize : pointSize * 0.75;
                     ctx.arc(x, y, basePointSize, 0, 2 * Math.PI);
                     ctx.fill();
                     ctx.globalAlpha = 1.0;
-                    
-                    // Add glow for mod=1
-                    if (mod === 1) {
-                        ctx.strokeStyle = color;
-                        ctx.lineWidth = 2;
-                        ctx.beginPath();
-                        ctx.arc(x, y, basePointSize + 2, 0, 2 * Math.PI);
-                        ctx.stroke();
-                    }
                     
                     // Draw point for -2πr/mod (if r > 0 and not locked to circle)
                     if (r > 0 && !lockToCircle) {
@@ -5598,14 +5591,7 @@
                     }
                     pointsByResidue.get(r).push(pointData);
                     
-                    // Label mod=1 point
-                    if (mod === 1) {
-                        ctx.fillStyle = '#FFD700';
-                        ctx.font = 'bold 11px Arial';
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'bottom';
-                        ctx.fillText('m=1', x, y - 10);
-                    }
+
                     
                     // Label points based on mode
                     if (labelMode !== 'none') {
