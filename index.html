@@ -1238,7 +1238,31 @@
                         </div>
                     </div>
                     
-                    <div style="margin-top: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Cell Labeling Mode:</label>
+                        <div class="radio-group" style="gap: 8px;">
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="gridLabelMode" value="value" checked onchange="updateVisualization()">
+                                <span>Result Value</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="gridLabelMode" value="fraction" onchange="updateVisualization()">
+                                <span>Fraction a/m</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="gridLabelMode" value="theta" onchange="updateVisualization()">
+                                <span>Angle 2πa/m</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="gridLabelMode" value="gcd" onchange="updateVisualization()">
+                                <span>gcd(a,m)</span>
+                            </label>
+                            <label class="radio-option" style="padding: 8px 12px;">
+                                <input type="radio" name="gridLabelMode" value="order" onchange="updateVisualization()">
+                                <span>Order</span>
+                            </label>
+                        </div>
+                    </div>
                         <label style="color: var(--cyan); font-weight: 600; display: block; margin-bottom: 8px;">Cell Opacity:</label>
                         <input type="range" id="cellOpacity" min="0.3" max="1" step="0.1" value="1" 
                                style="width: 100%;" oninput="updateVisualization(); document.getElementById('cellOpacityValue').textContent = Math.round(this.value * 100) + '%'">
@@ -5258,13 +5282,48 @@
                             textColor = getBrightness(color) > 128 ? '#000000' : '#ffffff';
                         }
                         
+                        // Get labeling mode
+                        const gridLabelMode = document.querySelector('input[name="gridLabelMode"]:checked')?.value || 'value';
+                        
+                        let displayValue;
+                        if (gridLabelMode === 'value') {
+                            // Default: show result value
+                            displayValue = tableType === 'inverse' && value === -1 ? '—' : value;
+                        } else if (gridLabelMode === 'fraction') {
+                            // Show as fraction a/m
+                            displayValue = `${a}/${m}`;
+                        } else if (gridLabelMode === 'theta') {
+                            // Show as angle 2πa/m in radians
+                            const theta = (2 * Math.PI * a) / m;
+                            displayValue = theta.toFixed(2);
+                        } else if (gridLabelMode === 'gcd') {
+                            // Show gcd(a,m)
+                            const gcdVal = gcd(a, m);
+                            displayValue = gcdVal;
+                        } else if (gridLabelMode === 'order') {
+                            // Show multiplicative order
+                            if (gcd(a, m) !== 1) {
+                                displayValue = '—';
+                            } else {
+                                let temp = 1;
+                                let ord = 0;
+                                for (let k = 1; k <= m; k++) {
+                                    temp = (temp * a) % m;
+                                    if (temp === 1) {
+                                        ord = k;
+                                        break;
+                                    }
+                                }
+                                displayValue = ord;
+                            }
+                        }
+                        
                         ctx.fillStyle = textColor;
                         ctx.font = `${boldLabels ? 'bold' : ''} ${Math.max(8, cellSize / 3)}px Arial`;
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
                         ctx.shadowColor = labelColor === 'black' ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.8)';
                         ctx.shadowBlur = 2;
-                        const displayValue = tableType === 'inverse' && value === -1 ? '—' : value;
                         ctx.fillText(displayValue, x + cellSize / 2, y + cellSize / 2);
                         ctx.shadowBlur = 0;
                     }
@@ -7324,10 +7383,16 @@
                 subtitleY += 45;
             }
             
-            // Draw canvas
+            // Draw canvas with dark border
             ctx.save();
             ctx.translate(0, margin);
             const sourceCanvas = document.getElementById(info.id);
+            
+            // Draw dark border around canvas
+            ctx.strokeStyle = '#2a3150';
+            ctx.lineWidth = 8;
+            ctx.strokeRect(0, 0, 3840, 3840);
+            
             ctx.scale(3840 / sourceCanvas.width, 3840 / sourceCanvas.height);
             ctx.drawImage(sourceCanvas, 0, 0);
             ctx.restore();
@@ -7867,13 +7932,25 @@
                 ctx.drawImage(sourceCanvas, 0, 0);
                 ctx.restore();
                 
-                // Label with matching color background
+                // Draw title with colored background and gold text
                 ctx.fillStyle = info.color;
-                ctx.fillRect(x + 20 * scale, y + 20 * scale, 600 * scale, 80 * scale);
-                ctx.fillStyle = '#ffffff';
-                ctx.font = `bold ${52 * scale}px Arial`;
+                ctx.fillRect(x + 20 * scale, y + 20 * scale, 700 * scale, 90 * scale);
+                
+                // Add gradient overlay for depth
+                const titleGradient = ctx.createLinearGradient(x + 20 * scale, y + 20 * scale, x + 720 * scale, y + 110 * scale);
+                titleGradient.addColorStop(0, 'rgba(255, 215, 0, 0.3)');
+                titleGradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+                ctx.fillStyle = titleGradient;
+                ctx.fillRect(x + 20 * scale, y + 20 * scale, 700 * scale, 90 * scale);
+                
+                // Title text in gold
+                ctx.fillStyle = '#FFD700';
+                ctx.font = `bold ${56 * scale}px Arial`;
                 ctx.textAlign = 'left';
-                ctx.fillText(info.title, x + 40 * scale, y + 70 * scale);
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                ctx.shadowBlur = 4 * scale;
+                ctx.fillText(info.title, x + 40 * scale, y + 75 * scale);
+                ctx.shadowBlur = 0;
             });
             
             // ========== COMPREHENSIVE ANALYSIS PANEL ==========
