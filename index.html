@@ -3,6 +3,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modular Arithmetic Explorer - Multi-Canvas Visualization Suite</title>
+    <!-- MathJax for LaTeX rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
     <style>
         :root {
             --bg-deep: #0a0e1a;
@@ -624,8 +638,222 @@
             </div>
         </header>
 
-        <!-- Introduction Section (Collapsible) -->
+        <!-- Theoretical Foundation Section (Collapsible) -->
         <div class="intro-section">
+            <div class="intro-header" onclick="toggleTheory()">
+                <h2>
+                    <span id="theoryToggle" class="collapsed">▶</span> Theoretical Foundation
+                </h2>
+            </div>
+            <div class="intro-content collapsed" id="theoryContent">
+                <div class="intro-grid">
+                    <div class="intro-card">
+                        <h3>Visibility Indicator</h3>
+                        <p>
+                            For any lattice point $(a,b) \in \mathbb{Z}^2$, define the <strong>visibility indicator</strong>:
+                        </p>
+                        <p style="text-align: center; margin: 20px 0;">
+                            $$
+                            \operatorname{vis}(a,b) =
+                            \begin{cases}
+                            1, & \gcd(a,b)=1,\\[4pt]
+                            0, & \text{otherwise}.
+                            \end{cases}
+                            $$
+                        </p>
+                        <p>
+                            Primitive lattice points with $\gcd(a,b)=1$ determine rays from the origin that
+                            encounter no other lattice point before reaching $(a,b)$.
+                        </p>
+                        <p style="text-align: center; margin: 20px 0; font-style: italic; color: var(--gold);">
+                            Primitive rays $(a,b)$ correspond naturally to reduced residues $r \bmod m$.
+                        </p>
+                    </div>
+
+                    <div class="intro-card">
+                        <h3>Modular Embedding</h3>
+                        <p>
+                            Each reduced residue class $r$ with $\gcd(r,m)=1$ embeds into the unit circle by:
+                        </p>
+                        <p style="text-align: center; margin: 20px 0;">
+                            $$
+                            \phi_m : (\mathbb{Z}/m\mathbb{Z})^{\times} 
+                                \longrightarrow S^1,
+                                \qquad
+                                \phi_m(r) = e^{2\pi i r/m}.
+                            $$
+                        </p>
+                        <p>
+                            This mapping creates a natural connection between abstract algebraic objects (unit groups of residue rings) 
+                            and geometric objects (points on the unit circle). The <strong>Farey Channel</strong> visualization exploits 
+                            this correspondence by showing how all residue classes for moduli from $1$ to $m$ form concentric layers.
+                        </p>
+                    </div>
+
+                    <div class="intro-card">
+                        <h3>Norms and Gaussian Integers</h3>
+                        <p>
+                            A primitive vector $(a,b)$ with norm
+                        </p>
+                        <p style="text-align: center; margin: 20px 0;">
+                            $$
+                            N = a^2 + b^2
+                            $$
+                        </p>
+                        <p>
+                            corresponds to the Gaussian integer $a + bi \in \mathbb{Z}[i]$, with
+                        </p>
+                        <p style="text-align: center; margin: 20px 0;">
+                            $$
+                            |a+bi|^2 = a^2 + b^2 = N.
+                            $$
+                        </p>
+                        <p>
+                            The <strong>GCD 3D Sphere</strong> visualization maps these relationships to spherical coordinates, 
+                            where the radius encodes the GCD value and creates natural shells of coprime and non-coprime pairs.
+                        </p>
+                    </div>
+
+                    <div class="intro-card">
+                        <h3>Prime Norm Uniqueness</h3>
+                        <p>
+                            If 
+                        </p>
+                        <p style="text-align: center; margin: 20px 0;">
+                            $$
+                            a^2 + b^2 = p,
+                            \qquad p \equiv 1 \pmod{4},
+                            $$
+                        </p>
+                        <p>
+                            where $p$ is prime, then the Gaussian integer representation is unique up to signs and swapping coordinates:
+                        </p>
+                        <p style="text-align: center; margin: 20px 0;">
+                            $$
+                            a + bi \sim \{\pm a \pm bi,\ \pm b \pm ai\}.
+                            $$
+                        </p>
+                        <p>
+                            This is a consequence of unique factorization in $\mathbb{Z}[i]$. Primes $p \equiv 1 \pmod{4}$ split 
+                            as $(a+bi)(a-bi)$ in the Gaussian integers, while primes $p \equiv 3 \pmod{4}$ remain inert.
+                        </p>
+                    </div>
+
+                    <div class="intro-card">
+                        <h3>Basel Problem Connection</h3>
+                        <p>
+                            The density of visible (coprime) lattice points in large squares is given by:
+                        </p>
+                        <p style="text-align: center; margin: 20px 0;">
+                            $$
+                            \lim_{N\to\infty}
+                            \frac{
+                            \#\{(a,b)\in[-N,N]^2 : \gcd(a,b)=1\}
+                            }{
+                            (2N+1)^2
+                            }
+                            = \frac{6}{\pi^2},
+                            $$
+                        </p>
+                        <p>
+                            the classical <strong>Basel constant</strong>. This remarkable result connects:
+                        </p>
+                        <p style="margin-left: 20px; line-height: 2;">
+                            • Number theory (coprimality and GCD)<br>
+                            • Analysis (the Riemann zeta function $\zeta(2) = \pi^2/6$)<br>
+                            • Probability (the chance that two random integers are coprime)<br>
+                            • Geometry (visible lattice points from the origin)
+                        </p>
+                        <p>
+                            The <strong>Coprime Density</strong> canvas tracks $\phi(n)/n$ for each modulus $n$, showing how individual 
+                            values fluctuate around this limiting density of $6/\pi^2 \approx 0.6079$.
+                        </p>
+                    </div>
+
+                    <div class="intro-card">
+                        <h3>Euler's Totient Function</h3>
+                        <p>
+                            The Euler totient function $\phi(n)$ counts integers coprime to $n$:
+                        </p>
+                        <p style="text-align: center; margin: 20px 0;">
+                            $$
+                            \phi(n) = n \prod_{p \mid n} \left(1 - \frac{1}{p}\right),
+                            $$
+                        </p>
+                        <p>
+                            where the product runs over all prime divisors $p$ of $n$. Key properties:
+                        </p>
+                        <p style="margin-left: 20px; line-height: 2;">
+                            • $\phi(p) = p-1$ for prime $p$ (field structure)<br>
+                            • $\phi(p^k) = p^{k-1}(p-1)$ for prime powers<br>
+                            • $\phi(mn) = \phi(m)\phi(n)$ when $\gcd(m,n)=1$ (multiplicative)<br>
+                            • $\sum_{d \mid n} \phi(d) = n$ (Gauss's theorem)<br>
+                            • $\phi(n)/n = \prod_{p \mid n}(1-1/p)$ approaches $6/\pi^2$ on average
+                        </p>
+                    </div>
+
+                    <div class="intro-card">
+                        <h3>Chinese Remainder Theorem</h3>
+                        <p>
+                            For coprime moduli $m_1, m_2, \ldots, m_k$, the ring isomorphism holds:
+                        </p>
+                        <p style="text-align: center; margin: 20px 0;">
+                            $$
+                            \mathbb{Z}/(m_1 m_2 \cdots m_k)\mathbb{Z} 
+                            \cong 
+                            \mathbb{Z}/m_1\mathbb{Z} \times \mathbb{Z}/m_2\mathbb{Z} \times \cdots \times \mathbb{Z}/m_k\mathbb{Z}.
+                            $$
+                        </p>
+                        <p>
+                            This fundamental result predicts the structure of $\mathbb{Z}/m\mathbb{Z}$:
+                        </p>
+                        <p style="margin-left: 20px; line-height: 2;">
+                            • If $m = \prod p_i^{k_i}$ has $\omega(m)$ distinct prime factors, then<br>
+                            • The ring has exactly $2^{\omega(m)}$ idempotents<br>
+                            • The unit group $(\mathbb{Z}/m\mathbb{Z})^{\times}$ decomposes as $\prod (\mathbb{Z}/p_i^{k_i}\mathbb{Z})^{\times}$<br>
+                            • Zero divisors exist iff $m$ is composite
+                        </p>
+                    </div>
+
+                    <div class="intro-card">
+                        <h3>Geometric Interpretation</h3>
+                        <p>
+                            This tool visualizes multiple geometric interpretations simultaneously:
+                        </p>
+                        <p style="margin-left: 20px; line-height: 2;">
+                            <strong>1. Multiplication Table:</strong> Cayley table of the ring $(\mathbb{Z}/m\mathbb{Z}, +, \times)$ showing 
+                            algebraic structure through color patterns<br><br>
+                            
+                            <strong>2. Unit Circle:</strong> Embedding $\phi_m : r \mapsto e^{2\pi i r/m}$ creates concentric Farey sequences, 
+                            connecting rational approximation to modular arithmetic<br><br>
+                            
+                            <strong>3. GCD Sphere:</strong> Spherical coordinates $(a,b) \mapsto (\theta, \phi, r)$ where radius $r \propto \gcd(a,b)$ 
+                            creates natural shells separating coprime from non-coprime pairs<br><br>
+                            
+                            <strong>4. Density Plot:</strong> The function $n \mapsto \phi(n)/n$ oscillates around $6/\pi^2$, revealing 
+                            number-theoretic patterns in totient distribution
+                        </p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; padding: 30px; background: linear-gradient(135deg, var(--bg-panel), var(--bg-card)); border-radius: 12px; border: 2px solid var(--gold);">
+                    <h3 style="color: var(--gold); text-align: center; font-size: 1.5em; margin-bottom: 20px;">
+                        Unifying Philosophy
+                    </h3>
+                    <p style="color: var(--text-primary); line-height: 2; font-size: 1.05em; text-align: justify;">
+                        These visualizations reveal a deep unity: <strong>algebraic structure (rings, groups, fields)</strong>, 
+                        <strong>geometric patterns (circles, lattices, spheres)</strong>, and <strong>analytic phenomena (density, 
+                        limits, zeta functions)</strong> are different facets of the same mathematical reality. The Farey channels 
+                        show how rational numbers organize themselves on the circle; the GCD sphere reveals the geometry of divisibility; 
+                        the multiplication tables expose the combinatorial essence of modular arithmetic; and the density plots connect 
+                        it all to the probabilistic interpretation via the Basel problem. Together, they form a complete picture of 
+                        the modular world—one that is simultaneously algebraic, geometric, and analytic.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Introduction Section (Collapsible) -->
             <div class="intro-header" onclick="toggleIntro()">
                 <h2>
                     <span id="introToggle">▼</span> Introduction & Guide
@@ -1098,6 +1326,17 @@
                                    style="width: 100%; margin-top: 8px;"
                                    onchange="document.getElementById('gridModulusSlider').value = Math.min(this.value, 200); updateIndependentCanvas('grid')">
                         </div>
+                    </div>
+                    
+                    <!-- Per-Canvas Animation Controls -->
+                    <div style="margin-bottom: 15px; padding: 15px; background: var(--bg-panel); border-radius: 8px; border: 2px solid var(--border);">
+                        <label style="color: var(--gold); font-weight: 700; font-size: 1.1em; display: block; margin-bottom: 10px;">Canvas Animation</label>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button class="btn btn-secondary" onclick="startCanvasAnimation('grid')" id="gridPlayBtn" style="padding: 8px 15px;">▶ Play</button>
+                            <button class="btn btn-secondary" onclick="pauseCanvasAnimation('grid')" id="gridPauseBtn" style="padding: 8px 15px;" disabled>⏸ Pause</button>
+                            <button class="btn btn-secondary" onclick="stopCanvasAnimation('grid')" id="gridStopBtn" style="padding: 8px 15px;" disabled>⏹ Stop</button>
+                        </div>
+                        <div id="gridAnimProgress" style="margin-top: 8px; color: var(--cyan); font-size: 0.9em;">Ready</div>
                     </div>
                     
                     <!-- Collapsible Controls -->
@@ -1933,6 +2172,10 @@
                         </div>
                     </div>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
+                            <input type="checkbox" id="gcdUse2DMode" onchange="updateGCDVisualization()">
+                            <span style="color: var(--text-primary);">2D Projection Mode</span>
+                        </label>
                         <label style="display: flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--bg-panel); border: 2px solid var(--border); border-radius: 8px; cursor: pointer;">
                             <input type="checkbox" id="show3DConnections" checked onchange="updateGCDVisualization()">
                             <span style="color: var(--text-primary);">Show Connections</span>
@@ -4283,6 +4526,26 @@
             }
         }
 
+        // Toggle theory section
+        function toggleTheory() {
+            const content = document.getElementById('theoryContent');
+            const toggle = document.getElementById('theoryToggle');
+            
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                toggle.classList.remove('collapsed');
+                toggle.textContent = '▼';
+                // Trigger MathJax to render equations after expansion
+                if (window.MathJax) {
+                    MathJax.typesetPromise([content]).catch((err) => console.log('MathJax error:', err));
+                }
+            } else {
+                content.classList.add('collapsed');
+                toggle.classList.add('collapsed');
+                toggle.textContent = '▶';
+            }
+        }
+
         // Initialize intro as collapsed
         window.addEventListener('DOMContentLoaded', function() {
             const content = document.getElementById('introContent');
@@ -4290,6 +4553,13 @@
             content.classList.add('collapsed');
             toggle.classList.add('collapsed');
             toggle.textContent = '▶';
+            
+            // Initialize theory section as collapsed
+            const theoryContent = document.getElementById('theoryContent');
+            const theoryToggle = document.getElementById('theoryToggle');
+            theoryContent.classList.add('collapsed');
+            theoryToggle.classList.add('collapsed');
+            theoryToggle.textContent = '▶';
         });
 
         // ========== REFERENCES MODAL ==========
@@ -4524,6 +4794,83 @@
             }
         }
 
+        // ========== PER-CANVAS ANIMATION SYSTEM ==========
+        const canvasAnimationStates = {
+            grid: { interval: null, current: 2, paused: false },
+            circle: { interval: null, current: 2, paused: false },
+            gcd: { interval: null, current: 2, paused: false },
+            density: { interval: null, current: 2, paused: false }
+        };
+        
+        function startCanvasAnimation(canvasId) {
+            const state = canvasAnimationStates[canvasId];
+            const speed = 200; // ms per step
+            const startMod = state.paused ? state.current : 2;
+            const endMod = 100;
+            
+            state.current = startMod;
+            state.paused = false;
+            
+            document.getElementById(`${canvasId}PlayBtn`).disabled = true;
+            document.getElementById(`${canvasId}PauseBtn`).disabled = false;
+            document.getElementById(`${canvasId}StopBtn`).disabled = false;
+            
+            state.interval = setInterval(() => {
+                if (state.current > endMod) {
+                    stopCanvasAnimation(canvasId);
+                    return;
+                }
+                
+                // Update canvas-specific modulus
+                if (canvasId === 'density') {
+                    document.getElementById('densityEndValue').value = state.current;
+                    updateIndependentCanvas(canvasId);
+                } else {
+                    document.getElementById(`${canvasId}ModulusValue`).value = state.current;
+                    document.getElementById(`${canvasId}ModulusSlider`).value = Math.min(state.current, 200);
+                    
+                    // Enable independent mode if not already
+                    if (!canvasIndependentStates[canvasId].active) {
+                        document.getElementById(`${canvasId}Independent`).checked = true;
+                        toggleCanvasMode(canvasId);
+                    }
+                    updateIndependentCanvas(canvasId);
+                }
+                
+                document.getElementById(`${canvasId}AnimProgress`).textContent = `m = ${state.current} / ${endMod}`;
+                state.current++;
+            }, speed);
+        }
+        
+        function pauseCanvasAnimation(canvasId) {
+            const state = canvasAnimationStates[canvasId];
+            if (state.interval) {
+                clearInterval(state.interval);
+                state.interval = null;
+                state.paused = true;
+                
+                document.getElementById(`${canvasId}PlayBtn`).disabled = false;
+                document.getElementById(`${canvasId}PauseBtn`).disabled = true;
+                document.getElementById(`${canvasId}AnimProgress`).textContent = `Paused at m = ${state.current - 1}`;
+            }
+        }
+        
+        function stopCanvasAnimation(canvasId) {
+            const state = canvasAnimationStates[canvasId];
+            if (state.interval) {
+                clearInterval(state.interval);
+                state.interval = null;
+            }
+            
+            state.current = 2;
+            state.paused = false;
+            
+            document.getElementById(`${canvasId}PlayBtn`).disabled = false;
+            document.getElementById(`${canvasId}PauseBtn`).disabled = true;
+            document.getElementById(`${canvasId}StopBtn`).disabled = true;
+            document.getElementById(`${canvasId}AnimProgress`).textContent = 'Ready';
+        }
+        
         // ========== MATHEMATICAL UTILITY FUNCTIONS ==========
         function gcd(a, b) {
             const cacheKey = `gcd_${a}_${b}`;
@@ -6044,7 +6391,8 @@
             ctx.fillStyle = '#0a0e1a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Get rotation parameters
+            // Get rotation parameters and 2D mode
+            const use2DMode = document.getElementById('gcdUse2DMode')?.checked || false;
             const rotX = (document.getElementById('rotationX')?.value || 45) * Math.PI / 180;
             const rotY = (document.getElementById('rotationY')?.value || 45) * Math.PI / 180;
             const zoom = (document.getElementById('zoomLevel')?.value || 100) / 100;
@@ -6069,45 +6417,7 @@
 
             const baseRadius = Math.min(centerX, centerY) * 0.7 * zoom;
 
-            // 3D rotation matrices
-            function rotateX(point, angle) {
-                const cos = Math.cos(angle);
-                const sin = Math.sin(angle);
-                return {
-                    x: point.x,
-                    y: point.y * cos - point.z * sin,
-                    z: point.y * sin + point.z * cos
-                };
-            }
-
-            function rotateY(point, angle) {
-                const cos = Math.cos(angle);
-                const sin = Math.sin(angle);
-                return {
-                    x: point.x * cos + point.z * sin,
-                    y: point.y,
-                    z: -point.x * sin + point.z * cos
-                };
-            }
-
-            function project3D(point) {
-                // Apply rotations
-                let rotated = rotateY(point, rotY);
-                rotated = rotateX(rotated, rotX);
-                
-                // Perspective projection
-                const perspective = 1000;
-                const scale = perspective / (perspective + rotated.z);
-                
-                return {
-                    x: centerX + rotated.x * scale,
-                    y: centerY + rotated.y * scale,
-                    z: rotated.z,
-                    scale: scale
-                };
-            }
-
-            // Calculate positions for all elements on sphere
+            // Calculate positions for all elements
             const points3D = [];
             const maxGCD = Math.floor(m / 2);
             
@@ -6118,38 +6428,93 @@
                         // Skip if coprime-only mode is enabled and this isn't coprime
                         if (showCoprimeOnly && g > 1) continue;
                         
-                        // Map to sphere using spherical coordinates
-                        const theta = (2 * Math.PI * a) / m; // azimuthal
-                        const phi = Math.PI * b / m; // polar
-                        const r = (g / Math.max(maxGCD, 1)) * baseRadius;
-                        
-                        const x = r * Math.sin(phi) * Math.cos(theta);
-                        const y = r * Math.sin(phi) * Math.sin(theta);
-                        const z = r * Math.cos(phi);
-                        
-                        points3D.push({
-                            a, b, g,
-                            x3d: x, y3d: y, z3d: z,
-                            r: r
-                        });
+                        if (use2DMode) {
+                            // 2D polar projection: map to circle based on angle and GCD radius
+                            const theta = (2 * Math.PI * a) / m;
+                            const r = (g / Math.max(maxGCD, 1)) * baseRadius;
+                            
+                            points3D.push({
+                                a, b, g,
+                                x2d: centerX + r * Math.cos(theta),
+                                y2d: centerY + r * Math.sin(theta),
+                                depth: 0, // no depth in 2D
+                                scale: 1,
+                                r: r
+                            });
+                        } else {
+                            // 3D sphere using spherical coordinates
+                            const theta = (2 * Math.PI * a) / m; // azimuthal
+                            const phi = Math.PI * b / m; // polar
+                            const r = (g / Math.max(maxGCD, 1)) * baseRadius;
+                            
+                            const x = r * Math.sin(phi) * Math.cos(theta);
+                            const y = r * Math.sin(phi) * Math.sin(theta);
+                            const z = r * Math.cos(phi);
+                            
+                            points3D.push({
+                                a, b, g,
+                                x3d: x, y3d: y, z3d: z,
+                                r: r
+                            });
+                        }
                     }
                 }
             }
 
-            // Project all points
-            points3D.forEach(p => {
-                const proj = project3D({ x: p.x3d, y: p.y3d, z: p.z3d });
-                p.x2d = proj.x;
-                p.y2d = proj.y;
-                p.depth = proj.z;
-                p.scale = proj.scale;
-            });
+            if (!use2DMode) {
+                // 3D rotation matrices
+                function rotateX(point, angle) {
+                    const cos = Math.cos(angle);
+                    const sin = Math.sin(angle);
+                    return {
+                        x: point.x,
+                        y: point.y * cos - point.z * sin,
+                        z: point.y * sin + point.z * cos
+                    };
+                }
 
-            // Sort by depth (back to front)
-            points3D.sort((a, b) => a.depth - b.depth);
+                function rotateY(point, angle) {
+                    const cos = Math.cos(angle);
+                    const sin = Math.sin(angle);
+                    return {
+                        x: point.x * cos + point.z * sin,
+                        y: point.y,
+                        z: -point.x * sin + point.z * cos
+                    };
+                }
 
-            // Draw sphere grid if enabled
-            if (showGrid) {
+                function project3D(point) {
+                    // Apply rotations
+                    let rotated = rotateY(point, rotY);
+                    rotated = rotateX(rotated, rotX);
+                    
+                    // Perspective projection
+                    const perspective = 1000;
+                    const scale = perspective / (perspective + rotated.z);
+                    
+                    return {
+                        x: centerX + rotated.x * scale,
+                        y: centerY + rotated.y * scale,
+                        z: rotated.z,
+                        scale: scale
+                    };
+                }
+
+                // Project all points
+                points3D.forEach(p => {
+                    const proj = project3D({ x: p.x3d, y: p.y3d, z: p.z3d });
+                    p.x2d = proj.x;
+                    p.y2d = proj.y;
+                    p.depth = proj.z;
+                    p.scale = proj.scale;
+                });
+
+                // Sort by depth (back to front)
+                points3D.sort((a, b) => a.depth - b.depth);
+            }
+
+            // Draw grid if enabled
+            if (showGrid && !use2DMode) {
                 ctx.strokeStyle = 'rgba(255, 215, 0, 0.15)';
                 ctx.lineWidth = 1;
                 
@@ -7124,7 +7489,14 @@
         
         // Element Inspector Functions
         function updateElementInspector() {
-            const m = parseInt(document.getElementById('modulusInput').value);
+            // Get the correct modulus - check if grid canvas is in independent mode
+            let m;
+            if (canvasIndependentStates.grid.active) {
+                m = canvasIndependentStates.grid.modulus;
+            } else {
+                m = parseInt(document.getElementById('modulusInput').value);
+            }
+            
             let element = parseInt(document.getElementById('inspectorElement').value);
             
             // Clamp element to valid range
@@ -8634,4 +9006,4 @@
         }
     </script>
 </body>
-    </html>
+                            </html>
